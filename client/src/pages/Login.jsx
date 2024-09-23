@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "../layout/Layout";
+import Layout from '../components/Layout.jsx';
 import { Link } from "react-router-dom";
 
 function Login() {
