@@ -1,0 +1,116 @@
+.footer-wrapper {
+    padding: 21px 40px 21px 40px;
+    background-color: var(--primary);
+    color: var(--off-white);
+  }
+
+  .social-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    position: relative;
+  }
+  .social-wrapper::before,
+  .social-wrapper::after {
+    content: "";
+    height: 1px;
+    position: absolute;
+    background-color: var(--off-white);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36%;
+  }
+  .social-wrapper::before {
+    left: 0;
+  }
+  .social-wrapper::after {
+    right: 0;
+  }
+  .img-fluid {
+    max-width: 100%;
+    height: auto;
+  }
+  .footer-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 120px;
+    margin: 15px auto;
+  }
+  .footer-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+  .footer-navigation a {
+    color: var(--off-white);
+    padding: 2px;
+    border-bottom: 1px solid var(--off-white);
+    text-decoration: none;
+  }
+  
+.fall-text {
+  text-align: center;
+  margin-top: 15px;
+}
+
+ /* Mobile Styles */
+ @media (max-width: 1023px) {
+  .nav-links {
+    display: none;
+  }
+  .hamburger {
+    display: block;
+  }
+  .login-signup-container {
+    max-width: 410px;
+  }
+  .social-wrapper {
+    gap: 14px;
+  }
+  .social-wrapper a img {
+    max-width: 30px;
+  }
+  .social-wrapper::before,
+  .social-wrapper::after {
+    width: 30%;
+  }
+  .login {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .login-signup-container {
+    max-width: 350px;
+  }
+  .main-container {
+    padding: 40px 40px;
+  }
+  .social-wrapper a img {
+    max-width: 20px;
+  }
+}
+@media (max-width: 576px) {
+  .login-signup-container {
+    max-width: 100%;
+  }
+  .main-container {
+    padding: 20px 15px;
+  }
+  .footer-wrapper {
+    padding: 15px;
+  }
+  .social-wrapper::before,
+  .social-wrapper::after {
+    max-width: 20%;
+  }
+}
+
+@media (max-width: 424px) {
+  .login-signup-container {
+    padding: 20px;
+  }
+}
