@@ -1,0 +1,163 @@
+/* Hero Section */
+.hero {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+.hero-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.hero-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.search-bar {
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.search-btn {
+    padding: 10px 20px;
+    background-color: #243254;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    background-color: #3e5377;
+}
+
+/* Popular Services */
+.popular-services {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.popular-services h2 {
+    margin-bottom: 30px;
+}
+
+.service-cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.service-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 150px;
+}
+
+.service-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.service-card p {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* How it Works Section */
+.how-it-works {
+    background-color: #fff;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.how-it-works h2 {
+    margin-bottom: 40px;
+}
+
+.steps {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.step {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    width: 200px;
+    margin: 10px;
+    text-align: center;
+}
+
+.step h3 {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+/* Call to Action Section */
+.cta-section {
+    background-color: #eef2f5;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.cta {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.cta-btn {
+    background-color: #243254;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.cta-btn:hover {
+    background-color: #3e5377;
+}
+
+/* Customer Reviews Section */
+.customer-reviews {
+    background-color: #f9f9f9;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.customer-reviews .review {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.customer-reviews img {
+    width: 80px;
+    border-radius: 50%;
+}
+
+.rating {
+    margin-top: 10px;
+    font-size: 1.2em;
+    color: #ffcc00;
+}

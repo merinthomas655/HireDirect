@@ -1,10 +1,10 @@
 import React from "react";
+import Header from "../components/Header";
+import Footer from "../components/Footer"; 
 import { Link } from "react-router-dom";
 import Layout from "../components/Layout";
 
-import "./home.css";
-import "./App.css";
-import "./index.css";
+import "../css/home.css";
 
 const Home = () => {
     return (
