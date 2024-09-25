@@ -15,7 +15,7 @@ const Home = () => {
             {/* Hero Section */}
             <section className="hero">
                 <img
-                    src="/assets/img/banner.jpg"
+                    src="/assets/img/banner.jpeg"
                     alt="Image for Home-service"
                     className="hero-image"
                 />
@@ -35,22 +35,22 @@ const Home = () => {
                 <h2>Popular Services</h2>
                 <div className="service-cards">
                     <div className="service-card">
-                        <img src="/assets/img/plumbing.jpg" alt="Plumbing" />
+                        <img src="/assets/img/plumbing.jpeg" alt="Plumbing" />
                         <p>Plumbing</p>
                     </div>
                     <div className="service-card">
                         <img
-                            src="/assets/img/electrical.jpg"
+                            src="/assets/img/electrical.jpeg"
                             alt="Electrical"
                         />
                         <p>Electrical</p>
                     </div>
                     <div className="service-card">
-                        <img src="/assets/img/cleaning.jpg" alt="Cleaning" />
+                        <img src="/assets/img/cleaning.jpeg" alt="Cleaning" />
                         <p>Cleaning Services</p>
                     </div>
                     <div className="service-card">
-                        <img src="/assets/img/painting.jpg" alt="Painting" />
+                        <img src="/assets/img/painting.jpeg" alt="Painting" />
                         <p>Painting</p>
                     </div>
                 </div>
