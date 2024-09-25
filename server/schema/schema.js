@@ -6,19 +6,100 @@ const typeDefs = gql`
     _id: ID!
     username: String!
     email: String!
-    password_hash: String!
-    phone_number: String!
-    address: String
+    phone_number: String
+    address: Address
     role: String!
     created_at: String
     updated_at: String
   }
 
-  type Query {
-    # Queries for Users
-    users: [User]
-    user(_id: ID!): User
+  type Address {
+    street: String
+    city: String
+    state: String
+    zip_code: String
+  }
 
+  type Provider {
+    _id: ID!
+    user: User!
+    bio: String!
+    location: Location!
+    ratings: Float
+    reviews: [Review]
+    created_at: String
+    updated_at: String
+  }
+
+  type Location {
+    latitude: Float
+    longitude: Float
+    address: String
+  }
+
+  type Service {
+    _id: ID!
+    provider: Provider!
+    service_name: String!
+    description: String!
+    pricing: Float!
+    category: Category!
+    created_at: String
+    updated_at: String
+  }
+
+  type Category {
+    _id: ID!
+    category_name: String!
+    description: String
+    created_at: String
+    updated_at: String
+  }
+
+
+  type Booking {
+    _id: ID!
+    user: User!
+    provider: Provider!
+    total_price: Float!
+    status: String!
+    booking_services: [BookingService]!
+    created_at: String
+    updated_at: String
+  }
+
+  type BookingService {
+    service: Service!
+    slot: AvailableSlot!
+    price: Float!
+  }
+
+  type AvailableSlot {
+    _id: ID!
+    provider: Provider!
+    date: String!
+    start_time: String!
+    end_time: String!
+    created_at: String
+    updated_at: String
+  }
+
+  type Review {
+    _id: ID!
+    user: User!
+    service: Service!
+    rating: Int!
+    comment: String
+    created_at: String
+  }
+
+  type Payment {
+    _id: ID!
+    booking: Booking!
+    amount: Float!
+    payment_method: String!
+    payment_status: String!
+    created_at: String
   }
 `;
 
