@@ -1,7 +1,7 @@
 const User = require('../models/Singup');
 
 // Here create new user entry
-exports.createUser = async (req, res) => {
+exports.newUserCreate = async (req, res) => {
     try {
         const { username, email, password,usertype } = req.body;
 
@@ -21,7 +21,7 @@ exports.createUser = async (req, res) => {
 };
 
 // Get user data base on user ID
-exports.getUser = async (req, res) => {
+exports.getUserDetails = async (req, res) => {
     try {
         const userId = req.params.id;
         const user = await User.findById(userId);
