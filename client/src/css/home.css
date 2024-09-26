@@ -63,22 +63,23 @@
     font-size: 1.8em;
     text-align: left;
     margin-left: 110px;
+    color: #233244;
 }
 
 .service-cards {
     display: flex;
     justify-content: center;
-    gap: 130px;
+    gap: 90px;
     flex-wrap: wrap;
 }
 
 .service-card {
-    background-color: var(--primary);
+    background-color: #4e6684;
     padding: 20px 35px 10px 35px;
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 180px;
+    width: 250px;
 }
 
 .service-card img {
@@ -95,34 +96,41 @@
     margin-top: 12px;
     font-weight: bold;
     font-size: 1.1em;
+    color: #f7f7f7;
 }
 /* How it Works Section */
 .how-it-works h2 {
-    margin-bottom: 20px;
+    margin-bottom: 35px;
     font-size: 1.8em;
+    text-align: left;
+    margin-left: 110px;
 }
 
 .how-it-works {
-    background-color: #f7f7f7;
-
     text-align: center;
 }
 
 .steps {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
+    background-color: #f7f7f7;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    padding: 60px;
+    max-width: 1250px;
+    margin: 0 auto;
+    margin-bottom: 40px;
 }
 
 .step {
     background-color: #fff;
     padding: 25px;
-    border-radius: 12px;
-    width: 220px;
+    width: 320px;
+    height: 220px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .step h3 {
@@ -132,24 +140,20 @@
 
 /* Call to Action Section */
 .cta-section {
-    background-color: #eef0f2;
+    background-color: #f6f6e8;
     padding: 60px 0;
     text-align: center;
-}
-
-.cta {
-    padding: 25px;
-    background-color: #fff;
-    border-radius: 12px;
-    display: inline-block;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 60px;
+    max-width: 1250px;
+    margin: 0 auto;
+    border: 1px solid #090808;
+    margin-bottom: 40px;
 }
 
 .cta-btn {
     background-color: #233244;
     color: white;
     padding: 12px 30px;
-    border-radius: 6px;
     border: none;
     cursor: pointer;
     margin-top: 15px;
@@ -164,10 +168,13 @@
     background-color: #f7f7f7;
     padding: 55px 0;
     text-align: center;
+    max-width: 1250px;
+    margin: 0 auto;
+    margin-bottom: 40px;
 }
 
 .customer-reviews .review {
-    background-color: white;
+    /* background-color: black; */
     padding: 25px;
     border-radius: 12px;
     display: inline-block;
