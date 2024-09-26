@@ -36,6 +36,7 @@ const Home = () => {
                 <div className="service-cards">
                     <div className="service-card">
                         <img src="/assets/img/plumbing.jpeg" alt="Plumbing" />
+                        {/*https://prenticeplumbingandheating.ca/wp-content/uploads/elementor/thumbs/Depositphotos_9312342_XL-scaled-q52fosp0050fzbeofxknu6qsgwyebscgm1fbbg5n08.jpg */}
                         <p>Plumbing</p>
                     </div>
                     <div className="service-card">
@@ -43,14 +44,17 @@ const Home = () => {
                             src="/assets/img/electrical.jpeg"
                             alt="Electrical"
                         />
+                        {/*https://www.shutterstock.com/image-photo/electrician-installing-electric-cable-wires-fuse-1659836386 */}
                         <p>Electrical</p>
                     </div>
                     <div className="service-card">
                         <img src="/assets/img/cleaning.jpeg" alt="Cleaning" />
+                        {/* https://cleaningservices365.com/wp-content/uploads/2024/06/3.jpg */}
                         <p>Cleaning Services</p>
                     </div>
                     <div className="service-card">
                         <img src="/assets/img/painting.jpeg" alt="Painting" />
+                        {/* https://huddlemarkets.ca/wp-content/uploads/2024/04/AF1QipM_nHDLJOjSmTn-qBH9hdKCChiKbmilsAtBNxgdw260-h175-n-k-no.jpeg */}
                         <p>Painting</p>
                     </div>
                 </div>
@@ -108,14 +112,31 @@ const Home = () => {
             {/* Customer Reviews */}
             <section className="customer-reviews">
                 <div className="review">
-                    <img src="/assets/img/customer.jpg" alt="Customer" />
-                    <h3>Customer Reviews</h3>
+                    <img src="/assets/img/user.png" alt="Customer" />
+                    {/* https://www.seekpng.com/png/detail/17-176376_person-free-download-and-person-icon-png.png */}
+                    <h3>Michelle </h3>
                     <p>
-                        John Doe was quick, professional, and fixed my leak
-                        perfectly. Great service at a fair price. Highly
-                        recommend!
+                        Emily was outstanding! She quickly diagnosed the electrical issue and had it fixed within an hour. Very polite and professional. The service exceeded my expectations.
                     </p>
                     <div className="rating">⭐⭐⭐⭐⭐</div>
+                </div>
+                <div className="review">
+                    <img src="/assets/img/user.png" alt="Customer" />
+                    {/* https://www.seekpng.com/png/detail/17-176376_person-free-download-and-person-icon-png.png */}
+                    <h3>Canel</h3>
+                    <p>
+                        Amazing service! Jane arrived on time, was incredibly knowledgeable, and solved the issue with my AC unit in no time. Super friendly and efficient. I will definitely use this service again!
+                    </p>
+                    <div className="rating">⭐⭐⭐</div>
+                </div>
+                <div className="review">
+                    <img src="/assets/img/user.png" alt="Customer" />
+                    {/* https://www.seekpng.com/png/detail/17-176376_person-free-download-and-person-icon-png.png */}
+                    <h3>Olivia</h3>
+                    <p>
+                        Michael did a fantastic job replacing my water heater. He explained the process clearly, worked fast, and left everything spotless. The pricing was transparent, and I’m really happy with the results.
+                    </p>
+                    <div className="rating">⭐⭐⭐⭐</div>
                 </div>
             </section>
 
