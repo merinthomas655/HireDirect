@@ -1,12 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/Header";
-import Footer from "../components/Footer"; 
-import { Link } from "react-router-dom";
-import Layout from "../components/Layout";
-
+import Footer from "../components/Footer";
+import { useHistory } from "react-router-dom";  // Import this to programmatically navigate
+import { useLazyQuery } from "@apollo/client";  // Apollo's useLazyQuery for triggering a query
+import gql from "graphql-tag";
 import "../css/home.css";
 
+// Define the GraphQL query for searching users
+const SEARCH_USERS = gql`
+  query searchUsers($search: String, $page: Int, $limit: Int) {
+    users(search: $search, page: $page, limit: $limit) {
+      users {
+        id
+        username
+        email
+      }
+      totalPages
+      currentPage
+      totalUsers
+    }
+  }
+`;
+
 const Home = () => {
+  const [searchTerm, setSearchTerm] = useState("");  // State to track input value
+  const history = useHistory();  // Use history to navigate to the service listing page
+
+  // Use Apollo Client's useLazyQuery for the search query
+  const [searchUsers, { data, loading, error }] = useLazyQuery(SEARCH_USERS);
+
+  const handleSearch = () => {
+    if (searchTerm.trim() !== "") {
+      // Call the GraphQL query when the search button is clicked
+      searchUsers({ variables: { search: searchTerm, page: 1, limit: 10 } });
+      
+      // Redirect to the service listing page, passing the search term as state
+      history.push("/services", { searchTerm });
+    }
+  };
+
     return (
         <div className="home-container">
             {/* Header */}
