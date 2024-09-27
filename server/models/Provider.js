@@ -5,7 +5,7 @@ const ProviderSchema = new mongoose.Schema({
   bio: { type: String },
   location: { latitude: Number, longitude: Number, address: String },
   ratings: { type: Number, default: 0 },
-  services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }],
+  services: [{ type: mongoose.Schema.Types.ObjectId, ref:"Service" }],
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now }
