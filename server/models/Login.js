@@ -6,6 +6,8 @@ const LoginSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     usertype: { type: String, required: true },
+    password: { type: String, required: true },
+
 }, { collection: SINGUP_TABLE_NAME });
 
 
