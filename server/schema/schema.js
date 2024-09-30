@@ -9,7 +9,6 @@ const typeDefs = gql`
     phone_number: String
     address: Address
     role: String!
-    password: String!
     created_at: String
     updated_at: String
   }
