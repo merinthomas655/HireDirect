@@ -31,10 +31,10 @@ function Login() {
     mutation {
       login(email: "${email}", password: "${password}") {
         user {
-          id
-          name
+          _id
+          username
           email
-          usertype
+          role
         }
         message
         success
@@ -57,7 +57,7 @@ function Login() {
         setMessage(result.data.login.message || "Login failed!");
       }
     } catch (error) {
-      setMessage("Signup fail please try again.");
+      setMessage("Login fail please try again.");
     }
   };
 

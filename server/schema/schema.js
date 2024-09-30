@@ -107,25 +107,22 @@ const typeDefs = gql`
     users: [User]
   }
 
-  type LoginResponse {
+  type LoginSingupResponse {
     user: User
     message: String
     success: Boolean!
   }
 
-  type Mutation {
-    login(email: String!, password: String!): LoginResponse
-  }
-
-  
-  type SignupResponse {
-    user: User
-    message: String
-    success: Boolean!
-  }
+  #This is login mutation
 
   type Mutation {
-    signup(username: String!, email: String!, password: String!, role: String!): SignupResponse
+    login(email: String!, password: String!): LoginSingupResponse
+  }
+
+  #This is singup mutation
+
+  type Mutation {
+    signup(username: String!, email: String!, password: String!, role: String!): LoginSingupResponse
   }
 `;
 

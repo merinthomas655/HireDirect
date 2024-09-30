@@ -99,9 +99,8 @@ const resolvers = {
 
         const password_hash = await bcrypt.hash(password, 10);
 
-
         // Create user and save in database
-        const signupUser = new User({ username, email, password_hash, role });
+        const signupUser = new User({ username, email, password: password_hash, role });
         await signupUser.save();
 
         return {

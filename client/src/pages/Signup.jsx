@@ -11,7 +11,7 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [usertype, setUsertype] = useState('User');
+  const [usertype, setUsertype] = useState('user');
   const [message, setMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setConfirmShowPassword] = useState(false);
@@ -48,12 +48,12 @@ function Signup() {
 
     const query = `
       mutation {
-        signup(name: "${name}", email: "${email}", password: "${password}", usertype: "${usertype}") {
+        signup(username: "${name}", email: "${email}", password: "${password}", role: "${usertype}") {
           user {
-            id
-            name
+            _id
+            username
             email
-            usertype
+            role
           }
           message
           success
@@ -146,9 +146,9 @@ function Signup() {
             <select name="" id="" placeholder="Select user"
               value={usertype}
               onChange={(e) => setUsertype(e.target.value)}>
-              <option value="sasa">User</option>
-              <option value="sasa">User1</option>
-              <option value="sasa">User2</option>
+              <option value="v1">user</option>
+              <option value="v2">provider</option>
+              <option value="v3">admin</option>
             </select>
             <span className="icon">
               <img
