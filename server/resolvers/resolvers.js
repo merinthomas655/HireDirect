@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
+
 const resolvers = {
   Query: {
     users: async (_, { search, page = 1, limit = 10 }) => {
@@ -106,8 +107,8 @@ const resolvers = {
         }
 
         // Check if the email already exists
-        const user = await User.findOne({ email });
-        if (user) {
+        const exitUser = await User.findOne({ email });
+        if (exitUser) {
           return {
             user: null,
             message: 'This email ID already exists',
@@ -116,7 +117,7 @@ const resolvers = {
         }
 
         // Here check user role match or not 
-        if (!['user', 'provider'].includes(role.toLowerCase())) {
+        if (!['user', 'provider', 'admin'].includes(role.toLowerCase())) {
           return {
             user: null,
             message: 'Invalid role provided',
@@ -126,8 +127,9 @@ const resolvers = {
 
         const password_hash = await bcrypt.hash(password, 10);
 
+
         // Create user and save in database
-        const signupUser = new User({ username, email, password: password_hash, role });
+        const signupUser = new User({ username, email, password_hash, role });
         await signupUser.save();
 
         return {
@@ -140,6 +142,7 @@ const resolvers = {
       }
     },
   },
+
 };
 
 module.exports = resolvers;
