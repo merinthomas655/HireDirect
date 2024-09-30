@@ -9,6 +9,7 @@ const typeDefs = gql`
     phone_number: String
     address: Address
     role: String!
+    password: String!
     created_at: String
     updated_at: String
   }
@@ -100,6 +101,31 @@ const typeDefs = gql`
     payment_method: String!
     payment_status: String!
     created_at: String
+  }
+
+   type Query {
+    users: [User]
+  }
+
+  type LoginResponse {
+    user: User
+    message: String
+    success: Boolean!
+  }
+
+  type Mutation {
+    login(email: String!, password: String!): LoginResponse
+  }
+
+  
+  type SignupResponse {
+    user: User
+    message: String
+    success: Boolean!
+  }
+
+  type Mutation {
+    signup(username: String!, email: String!, password: String!, role: String!): SignupResponse
   }
 `;
 
