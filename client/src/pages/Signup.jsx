@@ -148,7 +148,6 @@ function Signup() {
               onChange={(e) => setUsertype(e.target.value)}>
               <option value="v1">user</option>
               <option value="v2">provider</option>
-              <option value="v3">admin</option>
             </select>
             <span className="icon">
               <img

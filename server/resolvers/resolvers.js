@@ -89,7 +89,7 @@ const resolvers = {
         }
 
         // Here check user role match or not 
-        if (!['user', 'provider', 'admin'].includes(role.toLowerCase())) {
+        if (!['user', 'provider'].includes(role.toLowerCase())) {
           return {
             user: null,
             message: 'Invalid role provided',
