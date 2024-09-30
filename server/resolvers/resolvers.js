@@ -79,8 +79,8 @@ const resolvers = {
         }
 
         // Check if the email already exists
-        const exitUser = await User.findOne({ email });
-        if (exitUser) {
+        const user = await User.findOne({ email });
+        if (user) {
           return {
             user: null,
             message: 'This email ID already exists',
