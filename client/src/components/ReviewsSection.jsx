@@ -10,6 +10,7 @@ const ReviewsSection = ({ reviews }) => {
       </div>
     );
   }
+  
   return (
     <div>
       {reviewCards.length > 0 ? reviewCards : <p>No reviews available.</p>}
