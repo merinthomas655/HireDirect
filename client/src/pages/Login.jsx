@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import Layout from '../components/Layout.jsx';
 import { Link } from "react-router-dom";
 import '../css/loginsignup.css'; 
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
+  const navigate = useNavigate(); // Initialize navigate
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -52,7 +55,20 @@ function Login() {
       });
       const result = await response.json();
       if (result.data.login.success) {
+
+        const userData = {
+          _id: result.data.login.user._id,
+          username: result.data.login.user.username,
+          email: result.data.login.user.email,
+          role: result.data.login.user.role,
+        };
+
+        sessionStorage.setItem('usersession', JSON.stringify(userData));
+
         setMessage(result.data.login.message || "Login successful!");
+
+        navigate('/HomePage');
+
       } else {
         setMessage(result.data.login.message || "Login failed!");
       }
