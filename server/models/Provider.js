@@ -10,4 +10,6 @@ const ProviderSchema = new mongoose.Schema({
   updated_at: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Provider', ProviderSchema);
+// Ensure you are checking if the model is already compiled
+const Provider = mongoose.models.Provider || mongoose.model('Provider', ProviderSchema);
+module.exports = Provider;

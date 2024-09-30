@@ -1,141 +1,164 @@
 import React, { useState } from 'react';
+import { useQuery, gql } from '@apollo/client';
+import '../css/ServicePage.css'; // Import the CSS file for styling
 import Layout from '../components/Layout';
-import '../css/ServicePage.css'; 
 
+// GraphQL Queries
+const GET_SERVICES = gql`
+  query GetServices($categoryId: ID, $location: String, $minRating: Float) {
+    services(categoryId: $categoryId, location: $location, minRating: $minRating) {
+      _id
+      service_name
+      description
+      pricing
+      provider {
+        _id
+        bio
+        ratings
+        location {
+          address
+        }
+      }
+      category {
+        category_name
+      }
+    }
+  }
+`;
+
+const GET_CATEGORIES = gql`
+  query GetCategories {
+    categories {
+      _id
+      category_name
+    }
+  }
+`;
 
 const ServicePage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     category: '',
-    rating: '',
     location: '',
+    rating: ''
   });
 
-  const services = [
-    {
-      _id: '1',
-      service_name: 'Plumbing Service',
-      description: 'Expert in plumbing and repairs.',
-      provider: {
-        user: {
-          username: 'John Doe',
-          address: { city: 'New York' }
-        },
-        ratings: 4.5,
-      },
-      category: {
-        category_name: 'Plumbing'
-      },
-    },
-    
-  ];
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  const { loading: servicesLoading, error: servicesError, data: servicesData, refetch } = useQuery(GET_SERVICES, {
+    variables: {
+      categoryId: filters.category || null,
+      location: filters.location || null,
+      minRating: filters.rating ? parseFloat(filters.rating) : null
+    }
+  });
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
-  };
+  const { loading: categoriesLoading, error: categoriesError, data: categoriesData } = useQuery(GET_CATEGORIES);
 
-  const clearFilters = () => {
-    setFilters({
-      category: '',
-      rating: '',
-      location: '',
+  const handleApplyFilters = () => {
+    refetch({
+      categoryId: filters.category || null,
+      location: filters.location || null,
+      minRating: filters.rating ? parseFloat(filters.rating) : null
     });
   };
 
-  const applyFilters = () => {
-    console.log('Filters Applied:', filters);
+  const handleClearFilters = () => {
+    setFilters({ category: '', location: '', rating: '' });
+    setSearchTerm('');
+    refetch({ categoryId: null, location: null, minRating: null });
   };
 
+  const handleSearch = () => {
+    if (searchTerm) {
+      return servicesData.services.filter(service =>
+        service.service_name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    return servicesData.services; // Return all services if no search term
+  };
+
+  if (servicesLoading || categoriesLoading) return <p>Loading...</p>;
+  if (servicesError) return <p>Error: {servicesError.message}</p>;
+  if (categoriesError) return <p>Error: {categoriesError.message}</p>;
+
+  const filteredServices = handleSearch();
+
   return (
-    
     <Layout>
-        <div className='container-servicepage'>
-            <div>
-        <div className='title-servcepage'>
-            <h1>Services</h1>
+              <h1>Services</h1>
 
-            
-          </div>
-
-      <div className="service-page-container">
-
-        <div className="filter-panel">
-          <h3>Filters</h3>
-          <button className='clear-button' onClick={clearFilters}>Clear all filter</button>
+      <div className="service-page">
+        <div className="filter-section">
+          <h2>Filters</h2>
+          <button className="clear-button" onClick={handleClearFilters}>Clear All Filters</button>
 
           <div className="filter-group">
-            <select name="category" value={filters.category} onChange={handleFilterChange}>
-              <option value="">Categories</option>
-              <option value="plumbing">Plumbing</option>
-              <option value="cleaning">Cleaning</option>
-              <option value="cleaning">Electrician</option>
+            <label>Category:</label>
+            <select onChange={(e) => setFilters({ ...filters, category: e.target.value })}>
+              <option value="">Select Category</option>
+              {categoriesData.categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.category_name}
+                </option>
+              ))}
             </select>
           </div>
-
           <div className="filter-group">
+            <label>Location:</label>
             <input
               type="text"
-              name="location"
               value={filters.location}
-              onChange={handleFilterChange}
-              placeholder="Location"
+              onChange={(e) => setFilters({ ...filters, location: e.target.value })}
             />
           </div>
-
           <div className="filter-group">
-            <select name="rating" value={filters.rating} onChange={handleFilterChange}>
-              <option value="">Ratings</option>
-              <option value="5">5 Stars</option>
-              <option value="4">4 Stars & Up</option>
-              <option value="3">3 Stars & Up</option>
-            </select>
+            <label>Minimum Rating:</label>
+            <input
+              type="number"
+              min="0"
+              max="5"
+              step="0.1"
+              value={filters.rating}
+              onChange={(e) => setFilters({ ...filters, rating: e.target.value })}
+            />
           </div>
+          <button className="apply-button" onClick={handleApplyFilters}>Apply</button>
+        </div>
 
-          <div>
-            <button onClick={applyFilters} className="apply-button">Apply</button>
-          </div>
-          
-        </div>
-        </div>
-        </div>
-        <div className="main-content">
-        
-        <div className="search-bar">
+        <div className="results-section">
+          <div className="search-section">
             <input
               type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder="Search for services..."
-              className="search-input"
+              placeholder="Search services..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="search-button">Search</button>
+            <button className='search-button' onClick={handleSearch}>Search</button>
           </div>
 
           <div className="service-list">
-            {services.map((service) => (
-              <div key={service._id} className="service-card">
-                <div>
-                <img
-                  src="https://via.placeholder.com/150"
-                  alt={service.provider.user.username}
-                  className="service-image"
-                />
-                <p><strong>Rating:</strong> {service.provider.ratings} / 5</p>
-                </div>
-
-                <div className="service-details">
+            {filteredServices.length > 0 ? (
+              filteredServices.map((service) => (
+                <div key={service._id} className="service-card">
                   <h3>{service.service_name}</h3>
                   <p>{service.description}</p>
-                  <p><strong>City:</strong> {service.provider.user.address.city}</p>
-                  <button className="profile-button">View Profile</button>
+                  <p>Pricing: ${service.pricing}</p>
+                  {/* Check if provider exists before accessing properties */}
+                  {service.provider ? (
+                    <>
+                      <p>Provider: {service.provider.bio}</p>
+                      <p>Location: {service.provider.location.address}</p>
+                      <p>Rating: {service.provider.ratings}</p>
+                    </>
+                  ) : (
+                    <p>Provider information is not available.</p>
+                  )}
+                  <button className='profile-button'>View Profile</button>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>No services found.</p>
+            )}
           </div>
         </div>
       </div>
