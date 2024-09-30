@@ -9,6 +9,8 @@ const typeDefs = gql`
     role: String!
     phone_number: String
     address: Address
+    role: String!
+    password: String!
     created_at: String
     updated_at: String
   }
@@ -99,22 +101,25 @@ const typeDefs = gql`
     users: [User]
   }
 
-  type LoginSingupResponse {
+  type LoginResponse {
     user: User
     message: String
     success: Boolean!
   }
 
-  #This is login mutation
-
   type Mutation {
-    login(email: String!, password: String!): LoginSingupResponse
+    login(email: String!, password: String!): LoginResponse
   }
 
-  #This is singup mutation
+  
+  type SignupResponse {
+    user: User
+    message: String
+    success: Boolean!
+  }
 
   type Mutation {
-    signup(username: String!, email: String!, password: String!, role: String!): LoginSingupResponse
+    signup(username: String!, email: String!, password: String!, role: String!): SignupResponse
   }
 `;
 
