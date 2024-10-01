@@ -1,18 +1,93 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout from '../components/Layout.jsx';
 import { Link } from "react-router-dom";
 import '../css/loginsignup.css'; 
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
+  const navigate = useNavigate(); // Initialize navigate
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const showPasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    //Check here email validation formate
+    const validateEmail = (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+
+    if (!validateEmail(email)) {
+      return setMessage('Please enter a valid email address.');
+    }
+
+  const query = `
+    mutation {
+      login(email: "${email}", password: "${password}") {
+        user {
+          _id
+          username
+          email
+          role
+        }
+        message
+        success
+      }
+    }
+  `;
+
+    try {
+      const response = await fetch('http://localhost:5000/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+      const result = await response.json();
+      if (result.data.login.success) {
+
+        const userData = {
+          _id: result.data.login.user._id,
+          username: result.data.login.user.username,
+          email: result.data.login.user.email,
+          role: result.data.login.user.role,
+        };
+
+        sessionStorage.setItem('usersession', JSON.stringify(userData));
+
+        setMessage(result.data.login.message || "Login successful!");
+
+        navigate('/HomePage');
+
+      } else {
+        setMessage(result.data.login.message || "Login failed!");
+      }
+    } catch (error) {
+      setMessage("Login fail please try again.");
+    }
+  };
+
   return (
     <Layout>
       <div className="login-signup-container">
         <h2 className="login-text">Login</h2>
+        <form onSubmit={handleSubmit}>
+
         <div className="input-group-box">
-          <input type="text" placeholder="User Name" required />
-          <span className="icon">
+        <input type="text" placeholder="Email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+        <span className="icon">
             <img
-              src="./assets/img/user.png"
+              src="./assets/img/email.png"
               alt="user.png"
               className="img-fluid"
             />
@@ -23,9 +98,9 @@ function Login() {
             type="password"
             id="password"
             placeholder="Password"
-            required
+            required value={password} onChange={(e) => setPassword(e.target.value)}
           />
-          <span className="icon">
+            <span className="icon" onClick={showPasswordVisibility}>
             <img
               src="./assets/img/eye.png"
               alt="eye.png"
@@ -39,6 +114,9 @@ function Login() {
         <button className="signup-login-button" type="submit">
           Login
         </button>
+        </form>
+
+        {message && <p className="message-text" style={{ color: 'red' }}>{message}</p>}
 
         <Link to="/signup" className="signup-text">
           Don't have an account? Sign Up

@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const resolvers = require('./resolvers/resolvers');
 const typeDefs = require('./schema/schema');
+
 const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   const app = express();

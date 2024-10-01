@@ -2,12 +2,13 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/HomePage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import SessionRoute from "./components/SessionRoute";
 
 
 const router = createBrowserRouter([
     {
-    path: "/HomePage",
-    element: <Home />,
+        path: "/HomePage",
+        element: <SessionRoute element={<Home />} />, 
     },
     {
         path:'/',
