@@ -9,4 +9,4 @@ const AvailableSlotSchema = new mongoose.Schema({
   updated_at: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('AvailableSlot', AvailableSlotSchema);
+module.exports = mongoose.model('AvailableSlot', AvailableSlotSchema,'AvailableSlot');

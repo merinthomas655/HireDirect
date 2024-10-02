@@ -10,4 +10,4 @@ const ServiceSchema = new mongoose.Schema({
   updated_at: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Service', ServiceSchema);
+module.exports = mongoose.model('Service', ServiceSchema,'Service');
