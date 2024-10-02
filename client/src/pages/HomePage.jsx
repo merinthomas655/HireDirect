@@ -1,50 +1,47 @@
 import React, { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useHistory } from "react-router-dom";  // Import this to programmatically navigate
-import { useLazyQuery } from "@apollo/client";  // Apollo's useLazyQuery for triggering a query
+import { useNavigate } from "react-router-dom"; 
+import { useLazyQuery } from "@apollo/client"; 
 import gql from "graphql-tag";
 import "../css/home.css";
 
 // Define the GraphQL query for searching users
 const SEARCH_USERS = gql`
-  query searchUsers($search: String, $page: Int, $limit: Int) {
-    users(search: $search, page: $page, limit: $limit) {
-      users {
-        id
-        username
-        email
-      }
-      totalPages
-      currentPage
-      totalUsers
+    query searchUsers($search: String, $page: Int, $limit: Int) {
+        users(search: $search, page: $page, limit: $limit) {
+            users {
+                id
+                username
+                email
+            }
+            totalPages
+            currentPage
+            totalUsers
+        }
     }
-  }
 `;
 
 const Home = () => {
-  const [searchTerm, setSearchTerm] = useState("");  // State to track input value
-  const history = useHistory();  // Use history to navigate to the service listing page
+    const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate();
 
-  // Use Apollo Client's useLazyQuery for the search query
-  const [searchUsers, { data, loading, error }] = useLazyQuery(SEARCH_USERS);
+    const [searchUsers, { data, loading, error }] = useLazyQuery(SEARCH_USERS);
 
-  const handleSearch = () => {
-    if (searchTerm.trim() !== "") {
-      // Call the GraphQL query when the search button is clicked
-      searchUsers({ variables: { search: searchTerm, page: 1, limit: 10 } });
-      
-      // Redirect to the service listing page, passing the search term as state
-      history.push("/services", { searchTerm });
-    }
-  };
+    const handleSearch = () => {
+        if (searchTerm.trim() !== "") {
+            searchUsers({
+                variables: { search: searchTerm, page: 1, limit: 10 },
+            });
+
+            navigate("/services", { state: { searchTerm } }); 
+        }
+    };
 
     return (
         <div className="home-container">
-            {/* Header */}
             <Header />
 
-            {/* Hero Section */}
             <section className="hero">
                 <img
                     src="/assets/img/banner.jpeg"
@@ -57,12 +54,13 @@ const Home = () => {
                         type="text"
                         className="search-bar"
                         placeholder="Search for services or professionals..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)} 
                     />
                     <button className="search-btn">Search</button>
                 </div>
             </section>
 
-            {/* Popular Services */}
             <section className="popular-services">
                 <h2>Popular Services</h2>
                 <div className="service-cards">
@@ -92,7 +90,6 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* How it Works Section */}
             <section className="how-it-works">
                 <h2>How it Works</h2>
                 <div className="steps">
@@ -141,14 +138,16 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Customer Reviews */}
             <section className="customer-reviews">
                 <div className="review">
                     <img src="/assets/img/user.png" alt="Customer" />
                     {/* https://www.seekpng.com/png/detail/17-176376_person-free-download-and-person-icon-png.png */}
                     <h3>Michelle </h3>
                     <p>
-                        Emily was outstanding! She quickly diagnosed the electrical issue and had it fixed within an hour. Very polite and professional. The service exceeded my expectations.
+                        Emily was outstanding! She quickly diagnosed the
+                        electrical issue and had it fixed within an hour. Very
+                        polite and professional. The service exceeded my
+                        expectations.
                     </p>
                     <div className="rating">⭐⭐⭐⭐⭐</div>
                 </div>
@@ -157,7 +156,10 @@ const Home = () => {
                     {/* https://www.seekpng.com/png/detail/17-176376_person-free-download-and-person-icon-png.png */}
                     <h3>Canel</h3>
                     <p>
-                        Amazing service! Jane arrived on time, was incredibly knowledgeable, and solved the issue with my AC unit in no time. Super friendly and efficient. I will definitely use this service again!
+                        Amazing service! Jane arrived on time, was incredibly
+                        knowledgeable, and solved the issue with my AC unit in
+                        no time. Super friendly and efficient. I will definitely
+                        use this service again!
                     </p>
                     <div className="rating">⭐⭐⭐</div>
                 </div>
@@ -166,13 +168,15 @@ const Home = () => {
                     {/* https://www.seekpng.com/png/detail/17-176376_person-free-download-and-person-icon-png.png */}
                     <h3>Olivia</h3>
                     <p>
-                        Michael did a fantastic job replacing my water heater. He explained the process clearly, worked fast, and left everything spotless. The pricing was transparent, and I’m really happy with the results.
+                        Michael did a fantastic job replacing my water heater.
+                        He explained the process clearly, worked fast, and left
+                        everything spotless. The pricing was transparent, and
+                        I’m really happy with the results.
                     </p>
                     <div className="rating">⭐⭐⭐⭐</div>
                 </div>
             </section>
 
-            {/* Footer */}
             <Footer />
         </div>
     );
