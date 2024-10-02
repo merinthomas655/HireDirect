@@ -6,9 +6,9 @@ const typeDefs = gql`
     _id: ID!
     username: String!
     email: String!
+    role: String!
     phone_number: String
     address: Address
-    role: String!
     created_at: String
     updated_at: String
   }
@@ -22,10 +22,11 @@ const typeDefs = gql`
 
   type Provider {
     _id: ID!
-    user: User!
+    user: User
     bio: String!
     location: Location!
     ratings: Float
+    services:[Service]
     reviews: [Review]
     created_at: String
     updated_at: String
@@ -39,21 +40,15 @@ const typeDefs = gql`
 
   type Service {
     _id: ID!
-    provider: Provider!
     service_name: String!
     description: String!
     pricing: Float!
-    category: Category!
-    created_at: String
-    updated_at: String
   }
 
   type Category {
     _id: ID!
     category_name: String!
     description: String
-    created_at: String
-    updated_at: String
   }
 
 
@@ -76,7 +71,7 @@ const typeDefs = gql`
 
   type AvailableSlot {
     _id: ID!
-    provider: Provider!
+    provider_id: Provider!
     date: String!
     start_time: String!
     end_time: String!
@@ -86,11 +81,9 @@ const typeDefs = gql`
 
   type Review {
     _id: ID!
-    user: User!
-    service: Service!
     rating: Int!
     comment: String
-    created_at: String
+    user: User
   }
 
   type Payment {
