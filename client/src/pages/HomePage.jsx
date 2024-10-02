@@ -11,6 +11,7 @@ const SEARCH_USERS = gql`
     query searchUsers($search: String, $page: Int, $limit: Int) {
         users(search: $search, page: $page, limit: $limit) {
             users {
+            
                 id
                 username
                 email
