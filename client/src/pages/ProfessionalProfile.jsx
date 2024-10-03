@@ -19,6 +19,10 @@ function ProfessionalProfile() {
             <button className="book-now-button">Book Now</button>
           </div>
         </div>
+        <div className="services-section">
+          <h3>Pricing and Available Services</h3>
+          <ServicesTable services={provider.services} />
+        </div>
 
       </div>
     </Layout>
