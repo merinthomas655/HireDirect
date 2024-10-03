@@ -12,9 +12,8 @@ function ServicesTable({ services }) {
       </tr>
     );
   }
-
   return (
-    <table>
+    <table className="service-table">
       <thead>
         <tr>
           <th>Service Name</th>
