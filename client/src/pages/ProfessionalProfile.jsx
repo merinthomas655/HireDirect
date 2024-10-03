@@ -23,7 +23,10 @@ function ProfessionalProfile() {
           <h3>Pricing and Available Services</h3>
           <ServicesTable services={provider.services} />
         </div>
-
+        <div className="reviews-section">
+          <h3>Customer Reviews</h3>
+          <ReviewsSection reviews={provider.reviews} />
+        </div>
       </div>
     </Layout>
   );
