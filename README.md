@@ -1,23 +1,72 @@
-Here HireIDrecttailed steps on how to run a website.
- 
-Frontend Steps:
-Step 1: Unzip the submission folder and open it in the Visual Studio code.
-Step 2: In our website, we have 2 folders, which are client and server. first open a terminal in Visual Studio code and go to the client folder with the help of the below command.
-		cd client
-Step 3: In the same terminal, now run the below command.
-		npm install
-Step 4: Now, we have installed all the dependencies to run our client. To run the client, use the below command in the same terminal.
-		npm start
- 
-Backend Steps:
-Step 1: Open a new terminal in Visual Studio code and go to the backend folder with the help of the below command.
-		cd backend
-Step 2: In the same terminal, run the below command.
-		npm install
-Step 4: After this, we are good with dependencies, and we can run server with the below command.
-		npm start
- 
-Now the whole website is running, and you can do signup, login, home page and many more.
- 
-Thank you
-Team HireIDrect
+# HireDirect
+
+HireDirect is an on-demand professional services marketplace where users can browse and book service providers across various categories. The platform supports user, provider, and admin roles with dedicated dashboards for each. Built using the MERN stack, HireDirect aims to streamline the process of connecting professionals with those who need their services.
+
+## Key Features
+
+1. **User Side:**
+   - Browse and search for services
+   - View provider profiles with ratings and reviews
+   - Book services with date and time selection
+
+2. **Provider Side:**
+   - Manage personal services and bookings
+   - Update provider profiles and availability
+
+3. **Admin Side:**
+   - Manage users, services, categories, and reviews
+   - Oversee bookings and payment systems
+
+## Installation
+
+### Steps:
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yourusername/HireDirect.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd HireDirect
+   ```
+
+3. Install server dependencies:
+
+   ```bash
+   cd server
+   npm install
+   ```
+
+4. Install client dependencies:
+
+   ```bash
+   cd ../client
+   npm install
+   ```
+
+5. Set up environment variables by creating `.env` files in both `client` and `server` directories:
+
+   ```plaintext
+   MONGO_URI=your_mongodb_uri
+   PORT=your_port_number
+   ```
+
+6. Run the project:
+
+   - **Server**: Run the Node.js server:
+
+     ```bash
+     cd server
+     npm run dev
+     ```
+
+   - **Client**: Run the React frontend:
+
+     ```bash
+     cd ../client
+     npm start
+     ```
+
