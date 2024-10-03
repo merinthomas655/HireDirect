@@ -1,64 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { useNavigate } from "react-router-dom"; 
-import { useLazyQuery } from "@apollo/client"; 
-import gql from "graphql-tag";
+import Footer from "../components/Footer"; 
+import { Link } from "react-router-dom";
+import Layout from "../components/Layout";
+
 import "../css/home.css";
 
-// Define the GraphQL query for searching users or services
-const SEARCH_USERS = gql`
-    query searchUsers($search: String, $page: Int, $limit: Int) {
-        users(search: $search, page: $page, limit: $limit) {
-            users {
-                id
-                username
-                email
-            }
-            totalPages
-            currentPage
-            totalUsers
-        }
-    }
-`;
-
-const services = [
-    "Plumbing",
-    "Electrical",
-    "Cleaning Services",
-    "Painting",
-];
-
 const Home = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filteredServices, setFilteredServices] = useState([]);
-    const [showDropdown, setShowDropdown] = useState(false);
-    const navigate = useNavigate();
-
-    const [searchUsers, { data, loading, error }] = useLazyQuery(SEARCH_USERS);
-
-    const handleSearchChange = (e) => {
-        const value = e.target.value;
-        setSearchTerm(value);
-
-        // Filter services based on search term
-        if (value.trim() !== "") {
-            const filtered = services.filter((service) =>
-                service.toLowerCase().includes(value.toLowerCase())
-            );
-            setFilteredServices(filtered);
-            setShowDropdown(true); // Show the dropdown when there are filtered results
-        } else {
-            setShowDropdown(false); // Hide the dropdown when the input is cleared
-        }
-    };
-
-    const handleServiceSelect = (service) => {
-        setSearchTerm(service); // Update search bar with selected service
-        setShowDropdown(false); // Hide dropdown after selection
-        navigate(`/services/${service.toLowerCase()}`); // Navigate to service page
-    };
-
     return (
         <div className="home-container">
             {/* Header */}
