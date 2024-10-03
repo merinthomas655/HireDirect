@@ -1,0 +1,72 @@
+.professional-profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px; 
+    border-bottom: 1px solid #e3e3e3;
+    padding-bottom: 20px;
+  }
+  
+  .profile-avatar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+  }
+  
+  .profile-info {
+    flex: 1;
+  }
+  
+  .profile-info h1 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .profile-info .bio {
+    font-size: 16px;
+    color: #555;
+    margin-top: 10px;
+  }
+  
+  .profile-info .rating,.profile-info .location {
+    font-size: 14px;
+    margin-top: 10px;
+    color: #777;
+  }
+  
+  .book-now-button {
+    background-color: #52658F;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+  }
+  
+  .book-now-button:hover {
+    background-color: #4168b0;
+  }
+  
+  .services-section,.reviews-section {
+    margin-top: 40px;
+  }
+  
+  .services-section h3,.reviews-section h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .services-section table,.reviews-section {
+    width: 100%;
+  }
+  
