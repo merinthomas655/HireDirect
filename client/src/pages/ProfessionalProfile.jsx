@@ -1,5 +1,10 @@
 import React from "react";
-import Layout from "../components/Layout";
+import ReviewsSection from '../components/ReviewsSection';
+import ServicesTable from '../components/ServicesTable';
+import Layout from '../components/Layout';
+import "../css/professionalprofile.css";
+import "../css/servicestable.css";
+import "../css/reviewssection.css";
 
 function ProfessionalProfile() {
   return (
