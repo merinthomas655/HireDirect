@@ -1,29 +1,38 @@
-import React, { useEffect, useState } from "react";
-import Services from "../components/Services";
-import Reviews from "../components/Reviews";
-import Layout from "../components/Layout";
+import React from "react";
+import ReviewsSection from '../components/ReviewsSection';
+import ServicesTable from '../components/ServicesTable';
+import Layout from '../components/Layout';
+import "../css/professionalprofile.css";
+import "../css/servicestable.css";
+import "../css/reviewssection.css";
 
 function ProfessionalProfile() {
-  const [provider, setProvider] = useState(null);
-
-  useEffect(() => {
-    fetch("/api/provider/1")
-      .then((response) => response.json())
-      .then((data) => setProvider(data));
-  }, []);
-
   return (
     <Layout>
-      {provider ? (
-        <div className="professional-profile">
-          <h1>{provider.name}'s Profile</h1>
-          <p>{provider.bio}</p>
-          <Services services={provider.services} />
-          <Reviews reviews={provider.reviews} />
+      <div className="professional-profile">
+        <h1>Professional Profile</h1>
+        <div className="profile-header">
+          <div className="profile-avatar">
+            <img src="../assets/img/user.png" alt="Profile Avatar" />
+          </div>
+         
+          <div className="profile-info">
+            <h1>{provider.user.username}</h1>
+            <p className="bio">{provider.bio}</p>
+            <p className="rating">Rating: {provider.ratings}</p>
+            <p className="location">Location: {provider.location.address}</p>
+            <button className="book-now-button">Book Now</button>
+          </div>
         </div>
-      ) : (
-        <p>Loading...</p>
-      )}
+        <div className="services-section">
+          <h3>Pricing and Available Services</h3>
+          <ServicesTable services={provider.services} />
+        </div>
+        <div className="reviews-section">
+          <h3>Customer Reviews</h3>
+          <ReviewsSection reviews={provider.reviews} />
+        </div>
+      </div>
     </Layout>
   );
 }
