@@ -1,0 +1,55 @@
+.booking-wrapper {
+    margin: 0 auto;
+    max-width: 1500px;
+  }
+  
+  .booking-container {
+    padding: 7% 8%;
+    background-color: var(--light-yellow);
+  }
+  .booking-title,
+  .selected-service-title,
+  .payment-title {
+    font-size: 28px;
+    font-weight: 500;
+    margin-bottom: 25px;
+  }
+  .booking-title,
+  .payment-box {
+    padding-left: 20px;
+  }
+  .booking-details-title {
+    font-weight: 400;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  .booking-form-field {
+    display: block;
+    max-width: 400px;
+    width: 100%;
+  }
+  .booking-form-field input {
+    width: 100%;
+    outline: none;
+    height: 48px;
+    color: var(--primary);
+    font-weight: 600;
+  }
+  .booking-form-field input::placeholder {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .booking-form-field input[type="date"],
+  .booking-form-field input[type="time"],
+  .booking-form-field.currency-input,
+  .booking-form-field.address-input,
+  .booking-form-field.select-filed {
+    background-color: #fff;
+    border: 1px solid var(--border-black);
+    border-radius: 4px;
+    padding: 0px 12px;
+    font-size: 16px;
+  }
+  
+  
