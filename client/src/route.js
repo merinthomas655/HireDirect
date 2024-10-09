@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import SessionRoute from "./components/SessionRoute";
 import Booking from "./pages/Booking";
+import BookingConfirmation from "./pages/BookingConfirmation";
 
 
 const router = createBrowserRouter([
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
     {
         path:'/booking',
         element: <Booking />,
+    },
+    {
+        path:'/bookingconfirmation',
+        element: <BookingConfirmation />,
     }
 ])
 
