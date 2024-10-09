@@ -1,44 +1,49 @@
 const User = require('../models/User');
-const Service = require('../models/Service');
 const Provider = require('../models/Provider');
 const Category = require('../models/Category');
+const Review = require('../models/Review');
 
 const resolvers = {
   Query: {
-    // Fetch services with filters
-    services: async () => {
+    providers: async (_, { categoryId, location, minRating }) => {
       try {
-        // Fetch services and populate provider and category fields
-        const services = await Service.find()
-          .populate('provider_id')  // Populate provider details
-          .populate('category_id');  // Populate category details
+        const filters = {};
 
+        if (categoryId) {
+          filters.category = categoryId; // Adjust based on your schema
+        }
+        if (location) {
+          filters['location.address'] = { $regex: location, $options: 'i' }; // Case-insensitive search
+        }
+        if (minRating) {
+          filters.ratings = { $gte: minRating };
+        }
 
+        // Populate user and reviews when fetching providers
+        const providers = await Provider.find(filters)
+          .populate('user_id') // Ensure user_id is populated
+          .populate('reviews'); // Populate reviews if needed
 
-services.forEach(service => {
-  console.log(`Service ID: ${service._id}`);
-  console.log(`Provider ID: ${service.provider_id}`);
-  console.log(`Category ID: ${service.category_id}`);
-  console.log(`Provider Data: ${service.provider_id ? JSON.stringify(service.provider_id) : 'null'}`);
-  console.log(`Category Data: ${service.category_id ? JSON.stringify(service.category_id) : 'null'}`);
-});
-
-
-        console.log('Fetched Services:', JSON.stringify(services, null, 2)); // Log the fetched services
-        return services; // Return all services with populated provider and category details
+        return providers;
       } catch (error) {
-        console.error('Error fetching services:', error); // Log the error for better debugging
-        throw new Error('Error fetching services: ' + error.message);
+        throw new Error('Failed to fetch providers: ' + error.message);
       }
     },
-
-    // Fetch all categories
     categories: async () => {
       try {
         return await Category.find();
       } catch (error) {
-        console.error('Error fetching categories:', error); // Log the error for better debugging
-        throw new Error('Error fetching categories: ' + error.message);
+        throw new Error('Failed to fetch categories: ' + error.message);
+      }
+    },
+  },
+
+  Provider: {
+    user: async (provider) => { // Change from user_id to user
+      try {
+        return await User.findById(provider.user_id); // Ensure this matches your model
+      } catch (error) {
+        throw new Error('Failed to fetch user: ' + error.message);
       }
     },
   },

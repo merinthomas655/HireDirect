@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const connectDB = async () => {
   try {
+    mongoose.set('strictPopulate', false); // Add this line before your connection
     const conn = await mongoose.connect(process.env.MONGO_URI); 
     console.log(`MongoDB is connected`);
   } catch (error) {

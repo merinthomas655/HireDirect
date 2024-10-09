@@ -19,16 +19,19 @@ const typeDefs = gql`
     zip_code: String
   }
 
-  type Provider {
-    _id: ID
-    user: User
-    bio: String
-    location: Location
-    ratings: Float
-    reviews: [Review]
-    created_at: String
-    updated_at: String
-  }
+type Provider {
+  _id: ID!
+  user: User! # Keep this field for the user reference
+  user_id: ID! # Add this field for user ID reference
+  bio: String
+  location: Location
+  image: String
+  ratings: Float
+  reviews: [Review]
+  created_at: String
+  updated_at: String
+}
+
 
   type Location {
     latitude: Float
@@ -36,48 +39,20 @@ const typeDefs = gql`
     address: String
   }
 
-  type Service {
-    _id: ID
-    provider: Provider
-    service_name: String
-    description: String
-    pricing: Float
-    category: Category
-    created_at: String
-    updated_at: String
-  }
-
   type Category {
-    _id: ID
+    _id: ID!
     category_name: String
     description: String
     created_at: String
     updated_at: String
   }
 
-  type Booking {
+  type Service {
     _id: ID!
-    user: User!
-    provider: Provider!
-    total_price: Float!
-    status: String!
-    booking_services: [BookingService]!
-    created_at: String
-    updated_at: String
-  }
-
-  type BookingService {
-    service: Service!
-    slot: AvailableSlot!
-    price: Float!
-  }
-
-  type AvailableSlot {
-    _id: ID!
-    provider: Provider!
-    date: String!
-    start_time: String!
-    end_time: String!
+    title: String!
+    description: String
+    provider: Provider
+    category: Category
     created_at: String
     updated_at: String
   }
@@ -85,38 +60,23 @@ const typeDefs = gql`
   type Review {
     _id: ID!
     user: User!
-    service: Service!
+    provider: Provider!
     rating: Int!
     comment: String
-    created_at: String
-  }
-
-  type Payment {
-    _id: ID!
-    booking: Booking!
-    amount: Float!
-    payment_method: String!
-    payment_status: String!
     created_at: String
   }
 
   type Query {
     users: [User]
     user(id: ID!): User
-    providers: [Provider]
     provider(id: ID!): Provider
-    services(categoryId: ID, location: String, minRating: Float): [Service]
-    service(id: ID!): Service
-    categories: [Category]
     category(id: ID!): Category
-    bookings: [Booking]
-    booking(id: ID!): Booking
-    availableSlots: [AvailableSlot]
-    availableSlot(id: ID!): AvailableSlot
     reviews: [Review]
     review(id: ID!): Review
-    payments: [Payment]
-    payment(id: ID!): Payment
+    services: [Service]  
+    service(id: ID!): Service  
+    providers(categoryId: ID, location: String, minRating: Float): [Provider]
+    categories: [Category]
   }
 
   type Mutation {
@@ -142,31 +102,17 @@ const typeDefs = gql`
       user: ID!
       bio: String!
       location: LocationInput!
+      image: String
       ratings: Float
     ): Provider
     updateProvider(
       id: ID!
       bio: String
       location: LocationInput
+      image: String
       ratings: Float
     ): Provider
     deleteProvider(id: ID!): Provider
-
-    createService(
-      provider: ID!
-      service_name: String!
-      description: String!
-      pricing: Float!
-      category: ID!
-    ): Service
-    updateService(
-      id: ID!
-      service_name: String
-      description: String
-      pricing: Float
-      category: ID
-    ): Service
-    deleteService(id: ID!): Service
 
     createCategory(
       category_name: String!
@@ -179,37 +125,24 @@ const typeDefs = gql`
     ): Category
     deleteCategory(id: ID!): Category
 
-    createBooking(
-      user: ID!
-      provider: ID!
-      total_price: Float!
-      status: String!
-      booking_services: [BookingServiceInput]!
-    ): Booking
-    updateBooking(
+    createService(
+      title: String!
+      description: String
+      provider: ID
+      category: ID
+    ): Service  
+    updateService(
       id: ID!
-      total_price: Float
-      status: String
-    ): Booking
-    deleteBooking(id: ID!): Booking
-
-    createAvailableSlot(
-      provider: ID!
-      date: String!
-      start_time: String!
-      end_time: String!
-    ): AvailableSlot
-    updateAvailableSlot(
-      id: ID!
-      date: String
-      start_time: String
-      end_time: String
-    ): AvailableSlot
-    deleteAvailableSlot(id: ID!): AvailableSlot
+      title: String
+      description: String
+      provider: ID
+      category: ID
+    ): Service  
+    deleteService(id: ID!): Service  
 
     createReview(
       user: ID!
-      service: ID!
+      provider: ID! 
       rating: Int!
       comment: String
     ): Review
@@ -219,20 +152,6 @@ const typeDefs = gql`
       comment: String
     ): Review
     deleteReview(id: ID!): Review
-
-    createPayment(
-      booking: ID!
-      amount: Float!
-      payment_method: String!
-      payment_status: String!
-    ): Payment
-    updatePayment(
-      id: ID!
-      amount: Float
-      payment_method: String
-      payment_status: String
-    ): Payment
-    deletePayment(id: ID!): Payment
   }
 
   input AddressInput {
@@ -246,12 +165,6 @@ const typeDefs = gql`
     latitude: Float
     longitude: Float
     address: String
-  }
-
-  input BookingServiceInput {
-    service: ID!
-    slot: ID!
-    price: Float!
   }
 `;
 
