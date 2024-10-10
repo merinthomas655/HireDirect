@@ -1,4 +1,7 @@
 import React from "react";
+import { useQuery } from '@apollo/client';
+import { GET_PROVIDER_PROFILE } from '../graphql/queries';
+import { useParams } from 'react-router-dom';
 import ReviewsSection from '../components/ReviewsSection';
 import ServicesTable from '../components/ServicesTable';
 import Layout from '../components/Layout';
@@ -7,6 +10,13 @@ import "../css/servicestable.css";
 import "../css/reviewssection.css";
 
 function ProfessionalProfile() {
+  const { providerId } = useParams();
+  const { loading, error, data } = useQuery(GET_PROVIDER_PROFILE, { variables: { id: providerId } });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  const { provider } = data;
   return (
     <Layout>
       <div className="professional-profile">
