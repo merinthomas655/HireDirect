@@ -5,9 +5,9 @@ const typeDefs = gql`
     _id: ID!
     username: String!
     email: String!
+    role: String!
     phone_number: String
     address: Address
-    role: String!
     created_at: String
     updated_at: String
   }
@@ -43,8 +43,6 @@ type Provider {
     _id: ID!
     category_name: String
     description: String
-    created_at: String
-    updated_at: String
   }
 
   type Service {

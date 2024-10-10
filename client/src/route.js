@@ -2,14 +2,15 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/HomePage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import SessionRoute from "./components/SessionRoute";
+import Booking from "./pages/Booking";
 import ServicePage from "./pages/ServicePage";
-
 
 
 const router = createBrowserRouter([
     {
-    path: "/HomePage",
-    element: <Home />,
+        path: "/HomePage",
+        element: <SessionRoute element={<Home />} />, 
     },
     {
         path:'/',
@@ -21,11 +22,15 @@ const router = createBrowserRouter([
     },
     {
         path:'/services',
-        element: <ServicePage />
+        element: <ServicePage/>
     },
     {
         path:'/signup',
         element: <Signup />,
+    },
+    {
+        path:'/booking',
+        element: <Booking />,
     }
 ])
 

@@ -10,6 +10,4 @@ const ServiceSchema = new mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-// Ensure the model is compiled only once
-const Service = mongoose.models.Service || mongoose.model('Service', ServiceSchema);
-module.exports = Service;
+module.exports = mongoose.model('Service', ServiceSchema,'Service');

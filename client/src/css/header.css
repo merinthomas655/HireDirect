@@ -7,7 +7,6 @@ header {
   color: var(--off-white);
 }
 
-
 .logo {
   max-width: 60px;
 }
@@ -129,19 +128,10 @@ header {
   .login-signup-container {
     max-width: 350px;
   }
-  .main-container {
-    padding: 40px 40px;
-  }
-  .social-wrapper a img {
-    max-width: 20px;
-  }
 }
 @media (max-width: 576px) {
   .login-signup-container {
     max-width: 100%;
-  }
-  .main-container {
-    padding: 20px 15px;
   }
   .footer-wrapper {
     padding: 15px;

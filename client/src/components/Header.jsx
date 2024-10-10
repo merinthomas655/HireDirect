@@ -1,9 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../css/header.css";
+import { useNavigate } from 'react-router-dom';
+
 
 function Header() {
-      const [showSidebar, setShowSidebar] = useState(false);
+    const navigate = useNavigate(); // Initialize navigate
+
+    const [showSidebar, setShowSidebar] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); 
+
+    useEffect(() => {
+        const user = sessionStorage.getItem('usersession');
+        if (user) {
+            setIsLoggedIn(true);  // User is already login
+        }
+    }, []);
+
+    //When user logout then sesstion remove
+    const handleLogout = () => {
+        sessionStorage.removeItem('usersession');  // Clear ession
+        setIsLoggedIn(false);  // Set login current status to false
+        navigate('/login');  // Open login page 
+    };
+
+    const openLoginPage = () => {
+        navigate('/login');  // Open login page 
+    };
+
     return (
         <>
             <header>
@@ -26,7 +50,15 @@ function Header() {
                     </Link>
                 </nav>
 
-                <div className="login">Log In</div>
+                <div className="login">
+                    {isLoggedIn ? (
+                        <span onClick={handleLogout}>Log Out</span>
+                    ) : (
+                        <span onClick={openLoginPage}>Log In</span>
+
+                    )}
+                </div>
+
                 <div className="hamburger" onClick={() => setShowSidebar(true)}>
                     &#9776;
                 </div>
@@ -68,6 +100,6 @@ function Header() {
             </div>
         </>
     );
-    }
+}
 
 export default Header;

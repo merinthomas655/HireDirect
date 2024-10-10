@@ -8,11 +8,5 @@ const reviewSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now }, // Auto-set created date
 });
 
-// Define a pre-save hook to update the created_at field
-reviewSchema.pre('save', function (next) {
-  this.created_at = Date.now();
-  next();
-});
-
 const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review;
