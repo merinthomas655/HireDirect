@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import SessionRoute from "./components/SessionRoute";
 import Booking from "./pages/Booking";
+import ServicePage from "./pages/ServicePage";
 
 
 const router = createBrowserRouter([
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
     {
         path:'/login',
         element: <Login />,
+    },
+    {
+        path:'/services',
+        element: <ServicePage/>
     },
     {
         path:'/signup',

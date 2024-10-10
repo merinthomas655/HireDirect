@@ -52,8 +52,8 @@
 }
 
 .fall-text {
-  text-align: center;
-  margin-top: 15px;
+text-align: center;
+margin-top: 15px;
 }
 /* footer {
   position: fixed;
@@ -108,7 +108,7 @@
 }
 
 @media (max-width: 424px) {
-  .login-signup-container {
-    padding: 20px;
-  }
+.login-signup-container {
+  padding: 20px;
+}
 }

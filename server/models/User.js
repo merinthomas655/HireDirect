@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
   address: {street: { type: String },city: { type: String },state: { type: String },zip_code: { type: String }},
   role: { type: String, enum: ['user', 'provider'], required: true },
   created_at: { type: Date, default: Date.now },
-  updated_at: { type: Date, default: Date.now }
+  updated_at: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('User', UserSchema,'User');
