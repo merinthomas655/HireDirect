@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
-import '../css/ServicePage.css'; // Import the CSS file for styling
+import '../css/ServicePage.css'; 
 import Layout from '../components/Layout';
 
-// GraphQL Queries
+
 const GET_PROVIDERS = gql`
   query GetProviders($categoryId: ID, $location: String, $minRating: Float) {
     providers(categoryId: $categoryId, location: $location, minRating: $minRating) {
@@ -37,7 +37,7 @@ const ServicePage = () => {
     rating: ''
   });
   
-  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const [searchTerm, setSearchTerm] = useState(''); 
 
   const { loading: categoriesLoading, error: categoriesError, data: categoriesData } = useQuery(GET_CATEGORIES);
   
@@ -47,11 +47,11 @@ const ServicePage = () => {
       location: filters.location,
       minRating: filters.rating ? parseFloat(filters.rating) : null,
     },
-    skip: !categoriesData, // Only run this query after categories have loaded
+    skip: !categoriesData, 
   });
 
   const handleApplyFilters = () => {
-    // Trigger a refetch with current filters
+    
     refetch({
       categoryId: filters.category,
       location: filters.location,
@@ -61,15 +61,15 @@ const ServicePage = () => {
 
   const handleClearFilters = () => {
     setFilters({ category: '', location: '', rating: '' });
-    setSearchTerm(''); // Clear search term
-    refetch({ categoryId: null, location: '', minRating: null }); // Clear filters on refetch
+    setSearchTerm(''); 
+    refetch({ categoryId: null, location: '', minRating: null }); 
   };
 
   if (providersLoading || categoriesLoading) return <p>Loading...</p>;
   if (providersError) return <p>Error loading providers: {providersError.message}</p>;
   if (categoriesError) return <p>Error loading categories: {categoriesError.message}</p>;
 
-  // Filter providers based on search term
+  
   const filteredProviders = providersData?.providers.filter(provider =>
     provider.user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
