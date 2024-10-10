@@ -21,12 +21,13 @@ const typeDefs = gql`
 
 type Provider {
   _id: ID!
-  user: User! # Keep this field for the user reference
+  user: User # Keep this field for the user reference
   user_id: ID! # Add this field for user ID reference
-  bio: String
-  location: Location
+  bio: String!
+  location: Location!
   image: String
   ratings: Float
+  services: [Service]
   reviews: [Review]
   created_at: String
   updated_at: String
@@ -48,7 +49,8 @@ type Provider {
   type Service {
     _id: ID!
     title: String!
-    description: String
+    description: String!
+    pricing: Float!
     provider: Provider
     category: Category
     created_at: String
@@ -57,10 +59,10 @@ type Provider {
 
   type Review {
     _id: ID!
-    user: User!
+    user: User
     provider: Provider!
     rating: Int!
-    comment: String
+    comment: String!
     created_at: String
   }
 
