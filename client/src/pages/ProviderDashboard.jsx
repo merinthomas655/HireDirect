@@ -1,6 +1,4 @@
-import React from 'react';
-import Header from "../components/Header";
-import Footer from "../components/Footer"; 
+import React from 'react'; 
 import "../css/providerdashboard.css";
 
 
@@ -40,9 +38,11 @@ const ProviderDashboard = () => {
         </div>
       </div>
 
-      <div className="availability-management">
+          <div className="availability-management">
+              <div className='availability-button'>
         <h2>Availability Management</h2>
-        <button className="add-slot-button">Add New Slot</button>
+                  <button className="add-slot-button">Add New Slot</button>
+                  </div>
         <table>
           <thead>
             <tr>
@@ -63,9 +63,11 @@ const ProviderDashboard = () => {
         </table>
       </div>
 
-      <div className="services-management">
+          <div className="services-management">
+              <div className="services-button">
         <h2>Services Management</h2>
-        <button className="add-service-button">Add New Service</button>
+                  <button className="add-service-button">Add New Service</button>
+              </div>
         <table>
           <thead>
             <tr>
