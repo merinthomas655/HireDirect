@@ -60,7 +60,7 @@ function Footer() {
             <img src="./assets/img/logo.png" alt="logo" className="img-fluid" />
           </div>
           <div className="footer-navigation">
-            {isLoggedIn ? ( // Correctly use curly braces for JSX
+            {isLoggedIn ? ( 
               <Link to="/HomePage">Home</Link>
             ) : (
               <div> </div> 
