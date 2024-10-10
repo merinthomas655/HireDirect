@@ -29,6 +29,33 @@ const resolvers = {
         throw new Error('Failed to fetch providers: ' + error.message);
       }
     },
+    provider: async (_, { id }) => {
+      try {
+        const provider = await Provider.findById(id)
+          .populate('services')
+          .populate({
+            path: 'reviews',
+            populate: {
+              path: 'user_id',
+              model: 'User'
+            }
+          });
+
+        if (!provider) {
+          throw new Error('Provider not found');
+        }
+
+        const user = await User.findById(provider.user_id);
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        return { ...provider._doc, user };
+      } catch (error) {
+        throw new Error('Error fetching provider: ' + error.message);
+      }
+    },
+
     categories: async () => {
       try {
         return await Category.find();
