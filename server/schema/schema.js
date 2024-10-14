@@ -166,6 +166,22 @@ type Provider {
     longitude: Float
     address: String
   }
+
+  type LoginSingupResponse {
+    user: User
+    message: String
+    success: Boolean!
+  }
+
+  #This is login mutation
+   type Mutation {
+    login(email: String!, password: String!): LoginSingupResponse
+  }
+
+  #This is singup mutation
+  type Mutation {
+    signup(username: String!, email: String!, password: String!, role: String!): LoginSingupResponse
+  }
 `;
 
 module.exports = typeDefs;
