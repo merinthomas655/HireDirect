@@ -1,0 +1,154 @@
+.booking-confirmation-main {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.booking-confirmation-wrapper {
+  display: flex;
+  gap: 24px;
+}
+.booking-c-box {
+  padding: 60px 15px 30px 15px;
+  border: 1px solid var(--border-black);
+  max-width: 920px;
+  width: 100%;
+}
+.booking-c-image-box {
+  text-align: center;
+  margin-bottom: 50px;
+}
+.booking-c-image-box img {
+  max-width: 100%;
+  height: auto;
+}
+.booking-c-info {
+  display: flex;
+  gap: 40px;
+  padding: 30px 42px;
+  border: 1px solid rgba(112, 112, 112, 0.3);
+  border-width: 1px 0px 1px 0px;
+}
+.booking-c-details h2 {
+  font-size: 32px;
+  line-height: 43px;
+  color: var(--primary);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+.booking-c-details .time-date {
+  color: #686868;
+  font-size: 22px;
+}
+.payment-summary-wrapper {
+  max-width: 448px;
+  width: 100%;
+  border: 1px solid var(--border-black);
+}
+.payment-s-title {
+  background-color: var(--primary);
+  color: #fff;
+  padding: 30px;
+  font-size: 28px;
+  font-weight: 500;
+}
+.payment-details-wrapper {
+  padding: 20px 30px;
+}
+.payment-details-single-date {
+  padding: 30px 0px;
+  border-bottom: 1px solid var(--border-black);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 27px;
+}
+.payment-details-wrapper .payment-details-single-date:nth-last-of-type(1) {
+  border-bottom: 0px;
+}
+.cad-amount.total {
+  font-weight: 600;
+}
+.booking-confirmation-bottom-btn {
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+.booking-confirmation-bottom-btn button {
+  cursor: pointer;
+  color: var(--light-yellow);
+  border-radius: 4px;
+  background-color: var(--primary);
+  padding: 13px 20px;
+  font-size: 16px;
+  outline: none;
+  border: none;
+  font-weight: 600;
+}
+
+@media screen and (max-width: 1144px) {
+  .booking-confirmation-wrapper {
+    flex-wrap: wrap;
+    gap: 50px;
+  }
+  .payment-summary-wrapper {
+    max-width: 100%;
+  }
+  .booking-c-info {
+    gap: 30px;
+    padding: 30px 30px;
+  }
+  .booking-c-image-box {
+    margin: 0 auto;
+    max-width: 70%;
+    margin-bottom: 40px;
+  }
+  .booking-c-details h2 {
+    font-size: 29px;
+  }
+}
+@media screen and (max-width: 767px) {
+  .booking-c-info {
+    gap: 30px;
+    padding: 20px 20px;
+  }
+  .booking-c-user-icon-box img {
+    max-width: 57px;
+  }
+  .booking-c-details h2 {
+    font-size: 18px;
+    line-height: 25px;
+  }
+  .booking-c-details .time-date,
+  .payment-details-single-date {
+    font-size: 16px;
+  }
+  .payment-s-title {
+    font-size: 18px;
+  }
+  .payment-details-single-date {
+    padding: 24px 0px;
+  }
+  .booking-confirmation-bottom-btn {
+    margin-top: 25px;
+    gap: 20px;
+  }
+  .booking-confirmation-bottom-btn button {
+    font-size: 13px;
+  }
+  .booking-c-user-icon-box img {
+    max-width: 50px;
+  }
+}
+@media screen and (max-width: 576px) {
+  .booking-c-box {
+    padding: 22px 15px 22px 15px;
+  }
+  .booking-c-image-box {
+    margin-bottom: 15px;
+  }
+}
+@media screen and (max-width: 375px) {
+  .booking-confirmation-bottom-btn {
+    flex-wrap: wrap;
+  }
+}
