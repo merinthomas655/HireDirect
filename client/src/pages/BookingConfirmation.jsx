@@ -29,7 +29,37 @@ function BookingConfirmation() {
               </div>
             </div>
           </div>
-          
+          <div className="payment-summary-wrapper">
+            <h2 className="payment-s-title">Payment Summary</h2>
+            <div className="payment-details-wrapper">
+              <div className="payment-details-single-date">
+                <div className="title">Total</div>
+                <div className="cad-amount">CAD 500</div>
+              </div>
+
+              <div className="payment-details-single-date">
+                <div className="title">GST (10%)</div>
+                <div className="cad-amount">CAD 90</div>
+              </div>
+
+              <div className="payment-details-single-date">
+                <div className="title">
+                  US Credit <br />
+                  (Balance Rs.0)
+                </div>
+                <div className="cad-amount">CAD 20</div>
+              </div>
+
+              <div className="payment-details-single-date">
+                <div className="title">Total Amount</div>
+                <div className="cad-amount total">CAD 570</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="booking-confirmation-bottom-btn">
+          <button>View Dashboard</button>
+          <button>Continue Browsing</button>
         </div>
       </div>
     </Layout>
