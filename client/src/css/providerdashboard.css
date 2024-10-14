@@ -158,3 +158,77 @@ tbody td {
 .view-details-button:hover {
     background-color: #555;
 }
+
+@media (max-width: 768px) {
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+
+    .availability-button,
+    .services-button {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .profile-inputs input {
+        width: 100%;
+    }
+
+    .profile-form {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-picture {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .provider-dashboard {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .stat-box {
+        padding: 15px;
+    }
+
+    .stat-box h2 {
+        font-size: 16px;
+    }
+
+    .stat-box p {
+        font-size: 28px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .availability-button,
+    .services-button {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .profile-form {
+        padding: 10px;
+    }
+
+    .profile-picture {
+        width: 80px;
+        height: 80px;
+    }
+
+    .add-slot-button,
+    .add-service-button,
+    .save-button {
+        padding: 8px 16px;
+    }
+
+    thead th,
+    tbody td {
+        padding: 8px 10px;
+    }
+}
