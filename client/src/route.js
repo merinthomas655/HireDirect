@@ -27,6 +27,10 @@ const router = createBrowserRouter([
     {
         path:'/booking',
         element: <Booking />,
+    },
+    {
+        path:'/providerdashboard',
+        element: <ProviderDashboard />,
     }
 ])
 
