@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Provider = require('../models/Provider');
 const Category = require('../models/Category');
 const Review = require('../models/Review');
+const Service = require('../models/Service');
 const bcrypt = require('bcrypt');
 
 const resolvers = {
