@@ -7,7 +7,7 @@ import Booking from "./pages/Booking";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ServicePage from "./pages/ServicePage";
 import BookingConfirmation from "./pages/BookingConfirmation";
-
+import ProfessionalProfile from "./pages/ProfessionalProfile";
 
 const router = createBrowserRouter([
     {
