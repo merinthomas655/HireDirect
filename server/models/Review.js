@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
-const reviewSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to User
-  provider: { type: mongoose.Schema.Types.ObjectId, ref: 'Provider', required: true }, // Reference to Provider
-  rating: { type: Number, required: true }, // Assuming rating is a number
+const ReviewSchema = new mongoose.Schema({
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  provider_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Provider' },
+  service_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
+  rating: { type: Number, required: true },
   comment: { type: String },
-  created_at: { type: Date, default: Date.now }, // Auto-set created date
+  created_at: { type: Date, default: Date.now }
 });
 
-const Review = mongoose.model('Review', reviewSchema);
-module.exports = Review;
+module.exports = mongoose.model('Review', ReviewSchema,'Review');
