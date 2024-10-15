@@ -41,7 +41,11 @@ const router = createBrowserRouter([
     {
         path:'/bookingconfirmation',
         element: <BookingConfirmation />,
-    }
+    },
+    {
+        path: '/profile/:providerId',
+        element: <ProfessionalProfile />,
+      }
 ])
 
 export default router;
