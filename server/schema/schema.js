@@ -48,7 +48,8 @@ type Provider {
 
   type Service {
     _id: ID!
-    title: String!
+    service_name: String!
+    title: String
     description: String!
     pricing: Float!
     provider: Provider
