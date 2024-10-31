@@ -19,20 +19,19 @@ const typeDefs = gql`
     zip_code: String
   }
 
-type Provider {
-  _id: ID!
-  user: User # Keep this field for the user reference
-  user_id: ID! # Add this field for user ID reference
-  bio: String!
-  location: Location!
-  image: String
-  ratings: Float
-  services: [Service]
-  reviews: [Review]
-  created_at: String
-  updated_at: String
-}
-
+  type Provider {
+    _id: ID!
+    user: User # Keep this field for the user reference
+    user_id: ID! # Add this field for user ID reference
+    bio: String!
+    location: Location!
+    image: String
+    ratings: Float
+    services: [Service]
+    reviews: [Review]
+    created_at: String
+    updated_at: String
+  }
 
   type Location {
     latitude: Float
@@ -67,6 +66,30 @@ type Provider {
     created_at: String
   }
 
+  type BookingService {
+    service_id: Service!
+    slot_id: ID
+    price: Float!
+  }
+
+  type Booking {
+    _id: ID!
+    user_id: User!
+    provider_id: Provider!
+    total_price: Float!
+    status: String!
+    booking_services: [BookingService]
+    created_at: String
+    updated_at: String
+  }
+
+  type Count {
+    totalUsers: Int
+    totalProviders: Int
+    totalServices: Int
+    totalBookings: Int
+  }
+
   type Query {
     users: [User]
     user(id: ID!): User
@@ -74,10 +97,12 @@ type Provider {
     category(id: ID!): Category
     reviews: [Review]
     review(id: ID!): Review
-    services: [Service]  
-    service(id: ID!): Service  
+    services: [Service]
+    service(id: ID!): Service
     providers(categoryId: ID, location: String, minRating: Float): [Provider]
     categories: [Category]
+    getCounts: Count
+    getBookingHistory: [Booking]
   }
 
   type Mutation {
@@ -131,19 +156,19 @@ type Provider {
       description: String
       provider: ID
       category: ID
-    ): Service  
+    ): Service
     updateService(
       id: ID!
       title: String
       description: String
       provider: ID
       category: ID
-    ): Service  
-    deleteService(id: ID!): Service  
+    ): Service
+    deleteService(id: ID!): Service
 
     createReview(
       user: ID!
-      provider: ID! 
+      provider: ID!
       rating: Int!
       comment: String
     ): Review
@@ -153,6 +178,9 @@ type Provider {
       comment: String
     ): Review
     deleteReview(id: ID!): Review
+
+    login(email: String!, password: String!): LoginSingupResponse
+    signup(username: String!, email: String!, password: String!, role: String!): LoginSingupResponse
   }
 
   input AddressInput {
@@ -172,16 +200,6 @@ type Provider {
     user: User
     message: String
     success: Boolean!
-  }
-
-  #This is login mutation
-   type Mutation {
-    login(email: String!, password: String!): LoginSingupResponse
-  }
-
-  #This is singup mutation
-  type Mutation {
-    signup(username: String!, email: String!, password: String!, role: String!): LoginSingupResponse
   }
 `;
 

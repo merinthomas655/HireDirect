@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
+import { Link } from 'react-router-dom';
 import '../css/ServicePage.css'; 
 import Layout from '../components/Layout';
 
@@ -137,8 +138,9 @@ const ServicePage = () => {
                   <p>Location: {provider.location?.address || 'Address not provided'}</p>
                   <p>Rating: {provider.ratings || 'No ratings available'}</p>
                   <p>{provider.bio || 'No bio available'}</p>
-                  <button className='profile-button'>View Profile</button>
-                </div>
+                  <Link to={`/profile/${provider._id}`}>
+  <button className="profile-button">View Profile</button>
+</Link>                </div>
               ))
             ) : (
               <p>No providers found.</p>
