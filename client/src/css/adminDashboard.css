@@ -1,0 +1,131 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+/* Container */
+.ud-dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* Stats Section */
+  .ud-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .ud-stat-box {
+    background-color: #f5f5f5;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .ud-stat-title {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  .ud-stat-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Management Buttons */
+  .ud-management-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .ud-management-button {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .ud-management-button:hover {
+    background-color: #444;
+  }
+  
+  /* Booking History */
+  .ud-booking-history {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .ud-booking-header {
+    background-color: #f5f5f5;
+    padding: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .ud-booking-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .ud-booking-table th,
+  .ud-booking-table td {
+    padding: 0.75rem;
+    text-align: left;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .ud-booking-table th {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #666;
+  }
+  
+  .ud-booking-table td {
+    color: #333;
+  }
+  
+  /* Status Badges */
+  .ud-status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+  
+  .ud-status-pending {
+    background-color: #ffe08a;
+    color: #a66e00;
+  }
+  
+  .ud-status-completed {
+    background-color: #b4e4a1;
+    color: #317733;
+  }
+  
+  /* Action Button */
+  .ud-view-details-btn {
+    background: none;
+    color: #5a67d8;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .ud-view-details-btn:hover {
+    color: #2c5282;
+  }
+  

@@ -3,6 +3,7 @@ const Provider = require('../models/Provider');
 const Category = require('../models/Category');
 const Review = require('../models/Review');
 const Service = require('../models/Service');
+const Booking = require('../models/Booking');
 const bcrypt = require('bcrypt');
 
 const resolvers = {
@@ -65,6 +66,41 @@ const resolvers = {
         throw new Error('Failed to fetch categories: ' + error.message);
       }
     },
+
+    // Resolver to get total counts for the dashboard
+    getCounts: async () => {
+      try {
+        const totalUsers = await User.countDocuments();
+        const totalProviders = await Provider.countDocuments();
+        const totalServices = await Service.countDocuments();
+        const totalBookings = await Booking.countDocuments();
+
+        return {
+          totalUsers,
+          totalProviders,
+          totalServices,
+          totalBookings,
+        };
+      } catch (error) {
+        throw new Error("Error fetching counts: " + error.message);
+      }
+    },
+
+    // Resolver to get booking history
+    getBookingHistory: async () => {
+      try {
+        return await Booking.find()
+          .populate({
+            path: 'booking_services.service_id',
+            select: 'service_name'
+          })
+          .populate('user_id', 'username')
+          .populate('provider_id', 'bio')
+          .exec();
+      } catch (error) {
+        throw new Error("Error fetching booking history: " + error.message);
+      }
+    },
   },
 
   Provider: {
@@ -78,14 +114,10 @@ const resolvers = {
   },
 
   Mutation: {
-
-    //This is login Mutation
-
+    // This is login Mutation
     login: async (_, { email, password }) => {
       try {
-        // Here check if user sends data null or not
-        if (!email || email.trim() === "" ||
-          !password || password.trim() === "") {
+        if (!email || email.trim() === "" || !password || password.trim() === "") {
           return {
             user: null,
             message: 'Please add all required fields data',
@@ -93,20 +125,16 @@ const resolvers = {
           };
         }
 
-        // Check here email ID exit or not
         const user = await User.findOne({ email });
-
         if (!user) {
           return {
             user: null,
-            message: "This emill ID does not found",
+            message: "This email ID does not exist",
             success: false,
           };
         }
 
-        //Check user enter password with exit password
         const isMatch = await bcrypt.compare(password, user.password);
-
         if (!isMatch) {
           return {
             user: null,
@@ -116,7 +144,7 @@ const resolvers = {
         }
 
         return {
-          user: user,
+          user,
           message: 'Login successfully',
           success: true,
         };
@@ -125,11 +153,9 @@ const resolvers = {
       }
     },
 
-    //This is singup mutation
-
+    // This is signup mutation
     signup: async (_, { username, email, password, role }) => {
       try {
-        // Here check if user sends data null or not
         if (!username || username.trim() === "" ||
           !email || email.trim() === "" ||
           !password || password.trim() === "" ||
@@ -141,9 +167,8 @@ const resolvers = {
           };
         }
 
-        // Check if the email already exists
-        const user = await User.findOne({ email });
-        if (user) {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
           return {
             user: null,
             message: 'This email ID already exists',
@@ -151,7 +176,6 @@ const resolvers = {
           };
         }
 
-        // Here check user role match or not 
         if (!['user', 'provider'].includes(role.toLowerCase())) {
           return {
             user: null,
@@ -161,8 +185,6 @@ const resolvers = {
         }
 
         const password_hash = await bcrypt.hash(password, 10);
-
-        // Create user and save in database
         const signupUser = new User({ username, email, password: password_hash, role });
         await signupUser.save();
 
@@ -176,7 +198,6 @@ const resolvers = {
       }
     },
   },
-
 };
 
 module.exports = resolvers;

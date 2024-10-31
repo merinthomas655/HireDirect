@@ -9,6 +9,8 @@ import UserDashboard from "./pages/UserDashboard";
 import ServicePage from "./pages/ServicePage";
 import BookingConfirmation from "./pages/BookingConfirmation";
 import ProfessionalProfile from "./pages/ProfessionalProfile";
+import AdminDashboard from "./pages/AdminDashboard";
+
 
 const router = createBrowserRouter([
     {
@@ -46,6 +48,10 @@ const router = createBrowserRouter([
     {
         path:'/bookingconfirmation',
         element: <BookingConfirmation />,
+    },
+    {
+        path:'/admin-dashboard',
+        element: <AdminDashboard />,
     },
     {
         path: '/profile/:providerId',
