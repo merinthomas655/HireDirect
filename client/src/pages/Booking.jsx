@@ -163,11 +163,11 @@ function Booking() {
               </MapContainer>
             </div>
 
-            <div className="address-box">
+            {/* <div className="address-box">
               <div className="booking-form-field address-input">
                 <input type="text" placeholder="Address" />
               </div>
-            </div>
+            </div> */}
 
             <div className="selected-service-box-desktop">
               <h3 className="selected-service-title">Selected Service:</h3>
