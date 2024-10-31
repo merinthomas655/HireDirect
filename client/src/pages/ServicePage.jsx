@@ -130,7 +130,7 @@ const ServicePage = () => {
           <div className="service-list">
             {filteredProviders && filteredProviders.length > 0 ? (
               filteredProviders.map((provider) => (
-                <div key={provider._id} className="service-card">
+                <div key={provider._id} className="s-card">
                   {provider.image && (
                     <img src={provider.image} alt={provider.user?.username || 'Provider Image'} className="provider-image" />
                   )}

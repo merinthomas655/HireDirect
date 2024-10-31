@@ -146,7 +146,7 @@
     flex-direction: column;
   }
   
-  .service-card {
+  .s-card {
     display: flex;
     margin-bottom: 20px;
     padding: 20px;
@@ -243,16 +243,16 @@
   
 
 
-  .service-card p {
+  .s-card p {
     color: #333a56;
   }
   
-  .service-card h3 {
+  .s-card h3 {
     margin: 0 0 10px;
     font-size: 20px;
   }
   
-  .service-card p {
+  .s-card p {
     margin: 5px 0;
     font-size: 13px;
   }
