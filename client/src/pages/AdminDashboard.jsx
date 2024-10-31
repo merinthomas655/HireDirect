@@ -25,7 +25,6 @@ const GET_DASHBOARD_DATA = gql`
   }
 `;
 
-// Function to format booking ID as B001, B002, etc.
 const formatBookingId = (index) => {
   return `B${String(index + 1).padStart(3, '0')}`;
 };
@@ -48,7 +47,7 @@ export default function AdminDashboard() {
         totalServices: data.getCounts.totalServices,
         totalBookings: data.getCounts.totalBookings,
         bookings: data.getBookingHistory.map((booking, index) => ({
-          id: formatBookingId(index), // Use index to create sequential IDs
+          id: formatBookingId(index),
           service: booking.booking_services.map(service => service.service_id.service_name).join(", "),
           date: new Date(parseInt(booking.created_at)).toLocaleString(),
           status: booking.status === 'pending' ? 'Pending' : 'Completed'
