@@ -9,12 +9,15 @@ function Header() {
 
     const [showSidebar, setShowSidebar] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false); 
+    const [userRole, setUserRole] = useState("");
 
     useEffect(() => {
-        const user = sessionStorage.getItem('usersession');
-        if (user) {
-            setIsLoggedIn(true);  // User is already login
-        }
+        const userSession = sessionStorage.getItem("usersession");
+        if (userSession) {
+            const user = JSON.parse(userSession);
+            setIsLoggedIn(true);
+            setUserRole(user.role);
+        }   
     }, []);
 
     //When user logout then sesstion remove
@@ -48,6 +51,22 @@ function Header() {
                     <Link to="/contact" onClick={() => setShowSidebar(false)}>
                         Contact Us
                     </Link>
+                    {/* Conditionally render dashboard link based on user role */}
+                    {isLoggedIn && userRole === "user" && (
+                        <Link to="/userdashboard" onClick={() => setShowSidebar(false)}>
+                        User Dashboard
+                        </Link>
+                    )}
+                    {isLoggedIn && userRole === "provider" && (
+                        <Link to="/providerdashboard" onClick={() => setShowSidebar(false)}>
+                        Provider Dashboard
+                        </Link>
+                    )}
+                    {isLoggedIn && userRole === "admin" && (
+                        <Link to="/admin-dashboard" onClick={() => setShowSidebar(false)}>
+                        Admin Dashboard
+                        </Link>
+                    )}
                 </nav>
 
                 <div className="login">
@@ -89,12 +108,32 @@ function Header() {
                         >
                             Contact Us
                         </Link>
+                        {/* Conditionally render dashboard link based on user role */}
+                        {isLoggedIn && userRole === "user" && (
+                        <Link to="/userdashboard" onClick={() => setShowSidebar(false)}>
+                            User Dashboard
+                        </Link>
+                        )}
+                        {isLoggedIn && userRole === "provider" && (
+                        <Link to="/providerdashboard" onClick={() => setShowSidebar(false)}>
+                            Provider Dashboard
+                        </Link>
+                        )}
+                        {isLoggedIn && userRole === "admin" && (
+                        <Link to="/admin-dashboard" onClick={() => setShowSidebar(false)}>
+                            Admin Dashboard
+                        </Link>
+                        )}
+                        
                     </div>
-                    <div
-                        className="sidebar-login"
-                        onClick={() => setShowSidebar(false)}
-                    >
-                        <Link to="/login">Log In</Link>
+                    <div className="sidebar-login">
+                        {isLoggedIn ? (
+                        <span onClick={handleLogout}>Log Out</span>
+                        ) : (
+                        <Link to="/login" onClick={() => setShowSidebar(false)}>
+                            Log In
+                        </Link>
+                        )}
                     </div>
                 </div>
             </div>
