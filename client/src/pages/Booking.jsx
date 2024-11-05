@@ -5,6 +5,8 @@ import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import L from 'leaflet';
+import { useLocation } from "react-router-dom";
+
 
 // Highlight location icon
 const customIcon = new L.Icon({
@@ -26,6 +28,9 @@ function LocationSearch({ location }) {
 }
 
 function Booking() {
+  const routerdom = useLocation();
+  const services = routerdom.state?.services || []; // Retrieve services from state
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [location, setLocation] = useState(null);
@@ -33,11 +38,11 @@ function Booking() {
   const [errorMessage, setErrorMessage] = useState(''); 
   const dropdownRef = useRef(null);
 
-  const options = [
-    { id: 1, label: "Option 1" },
-    { id: 2, label: "Option 2" },
-    { id: 3, label: "Option 3" },
-  ];
+  const options = services.map((service, index) => ({
+    id: index + 1,
+    label: service.service_name, 
+  }));
+  
   const handleToggle = () => setIsOpen((prev) => !prev);
 
   const handleOptionChange = (option) => {
