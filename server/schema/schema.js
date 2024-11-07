@@ -108,6 +108,7 @@ const typeDefs = gql`
     categories: [Category]
     getCounts: Count
     getBookingHistory: [Booking]
+    fetchUserProfile(id: ID!): User
     getBookingCounts(userId: ID): BookingCounts
   }
 
