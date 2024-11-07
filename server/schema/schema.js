@@ -90,6 +90,11 @@ const typeDefs = gql`
     totalBookings: Int
   }
 
+  type BookingCounts {
+    totalBookings: Int
+    upcomingBookings: Int
+  }
+
   type Query {
     users: [User]
     user(id: ID!): User
@@ -103,6 +108,7 @@ const typeDefs = gql`
     categories: [Category]
     getCounts: Count
     getBookingHistory: [Booking]
+    getBookingCounts(userId: ID): BookingCounts
   }
 
   type Mutation {
