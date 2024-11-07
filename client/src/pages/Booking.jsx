@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import L from 'leaflet';
+import { useLocation } from "react-router-dom";
 
 // Highlight location icon
 const customIcon = new L.Icon({
@@ -15,36 +16,40 @@ const customIcon = new L.Icon({
 
 function LocationSearch({ location }) {
   const map = useMap();
-
   useEffect(() => {
     if (location) {
       map.setView([location.lat, location.lng], 13); 
     }
   }, [location, map]);
-
   return null;
 }
 
 function Booking() {
+  const routerdom = useLocation();
+  const services = routerdom.state?.services || []; // Retrieve services from state
+
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]); // Store selected services as objects
   const [location, setLocation] = useState(null);
   const [searchInput, setSearchInput] = useState(''); 
   const [errorMessage, setErrorMessage] = useState(''); 
   const dropdownRef = useRef(null);
 
-  const options = [
-    { id: 1, label: "Option 1" },
-    { id: 2, label: "Option 2" },
-    { id: 3, label: "Option 3" },
-  ];
+  // Create options from services data
+  const options = services.map((service, index) => ({
+    id: index + 1,
+    label: service.service_name,
+    value: service, // Store the entire service object
+  }));
+
   const handleToggle = () => setIsOpen((prev) => !prev);
 
-  const handleOptionChange = (option) => {
+  // Update selected options by adding/removing the full service object
+  const handleOptionChange = (service) => {
     setSelectedOptions((prev) =>
-      prev.includes(option)
-        ? prev.filter((o) => o !== option)
-        : [...prev, option]
+      prev.some((s) => s.service_name === service.service_name)
+        ? prev.filter((s) => s.service_name !== service.service_name)
+        : [...prev, service]
     );
   };
 
@@ -55,10 +60,10 @@ function Booking() {
   };
 
   const renderSelectedLabels = () => {
-    if (selectedOptions.length === 0) return "Select Name";
-    if (selectedOptions.length === 1) return selectedOptions[0];
-    if (selectedOptions.length === 2) return selectedOptions.join(", ");
-    return `${selectedOptions.slice(0, 2).join(", ")} (+${
+    if (selectedOptions.length === 0) return "Select Service";
+    if (selectedOptions.length === 1) return selectedOptions[0].service_name;
+    if (selectedOptions.length === 2) return selectedOptions.map(s => s.service_name).join(", ");
+    return `${selectedOptions.slice(0, 2).map(s => s.service_name).join(", ")} (+${
       selectedOptions.length - 2
     })`;
   };
@@ -111,11 +116,11 @@ function Booking() {
                         <div className="form-group">
                           <input
                             type="checkbox"
-                            id={"opt" + index}
-                            checked={selectedOptions.includes(option.label)}
-                            onChange={() => handleOptionChange(option.label)}
+                            id={`opt${index}`}
+                            checked={selectedOptions.some(s => s.service_name === option.value.service_name)}
+                            onChange={() => handleOptionChange(option.value)}
                           />
-                          <label htmlFor={"opt" + index}>{option.label}</label>
+                          <label htmlFor={`opt${index}`}>{option.label}</label>
                         </div>
                       </div>
                     ))}
@@ -163,35 +168,21 @@ function Booking() {
               </MapContainer>
             </div>
 
-            {/* <div className="address-box">
-              <div className="booking-form-field address-input">
-                <input type="text" placeholder="Address" />
-              </div>
-            </div> */}
-
             <div className="selected-service-box-desktop">
-              <h3 className="selected-service-title">Selected Service:</h3>
+              <h3 className="selected-service-title">Selected Services:</h3>
               <div className="selected-slote-price-wrapper">
-                <div className="selected-slote-price">
-                  <div className="selected-slote-price-title">
-                    Service 1 (Description , Price)
-                  </div>
-                  <div className="selected-slote-price-filed">
-                    <div className="booking-form-field">
-                      <input type="time" placeholder="Available Slots" />
+                {selectedOptions.map((service, index) => (
+                  <div key={index} className="selected-slote-price">
+                    <div className="selected-slote-price-title">
+                      {service.service_name} ({service.description}, ${service.pricing})
+                    </div>
+                    <div className="selected-slote-price-filed">
+                      <div className="booking-form-field">
+                        <input type="time" placeholder="Available Slots" />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="selected-slote-price">
-                  <div className="selected-slote-price-title">
-                    Service 1 (Description , Price)
-                  </div>
-                  <div className="selected-slote-price-filed">
-                    <div className="booking-form-field">
-                      <input type="time" placeholder="Available Slots" />
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -200,7 +191,7 @@ function Booking() {
         <div className="payment-box">
           <h3 className="payment-title">Payment</h3>
           <div className="booking-form-field select-filed">
-            <select name="paymet-type" id="" defaultValue="Payment opt">
+            <select name="payment-type" id="" defaultValue="Payment opt">
               <option value="Payment opt" disabled hidden>
                 Payment Options
               </option>
