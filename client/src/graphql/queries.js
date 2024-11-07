@@ -30,3 +30,11 @@ export const GET_PROVIDER_PROFILE = gql`
     }
   }
 `;
+export const GET_BOOKING_COUNTS = gql`
+  query GetBookingCounts($userId: ID) {
+    getBookingCounts(userId: $userId) {
+      totalBookings
+      upcomingBookings
+    }
+  }
+`;
