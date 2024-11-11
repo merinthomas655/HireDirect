@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const AvailableSlot = require('../models/AvailableSlot');
+
 const Provider = require('../models/Provider');
 const Category = require('../models/Category');
 const Review = require('../models/Review');
@@ -195,6 +197,51 @@ const resolvers = {
         };
       } catch (error) {
         throw new Error('Internal server error' + error);
+      }
+    },
+
+    // This is available slot mutation
+    availableslot: async (_, { provider_id }) => {
+      try {
+        if (!provider_id || provider_id.trim() === "") {
+          return {
+            availableSlot: null,
+            message: 'Invalid provider ID',
+            success: false,
+          };
+        }
+
+        // Check if the provider exists
+        const provider = await Provider.findById(provider_id);
+        if (!provider) {
+          return {
+            availableSlot: null,
+            message: 'This provider ID does not exist',
+            success: false,
+          };
+        }
+
+        // Fetch a single available slot for the provider (adjust criteria as needed)
+        const availableSlot = await AvailableSlot.findOne({ provider_id });
+        if (!availableSlot) {
+          return {
+            availableSlot: null,
+            message: 'No available slots found for this provider',
+            success: false,
+          };
+        }
+
+        return {
+          availableSlot,
+          message: 'Available slot retrieved successfully',
+          success: true,
+        };
+      } catch (error) {
+        return {
+          availableSlot: null,
+          message: 'Internal server error: ' + error.message,
+          success: false,
+        };
       }
     },
   },
