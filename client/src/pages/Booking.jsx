@@ -18,23 +18,65 @@ function LocationSearch({ location }) {
   const map = useMap();
   useEffect(() => {
     if (location) {
-      map.setView([location.lat, location.lng], 13); 
+      map.setView([location.lat, location.lng], 13);
     }
   }, [location, map]);
   return null;
 }
 
+
 function Booking() {
-  const routerdom = useLocation();
-  const services = routerdom.state?.services || []; // Retrieve services from state
+  const provider_id = useLocation();
+  const services = provider_id.state?.services || []; // Retrieve services from state
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]); // Store selected services as objects
   const [location, setLocation] = useState(null);
-  const [searchInput, setSearchInput] = useState(''); 
-  const [errorMessage, setErrorMessage] = useState(''); 
+  const [searchInput, setSearchInput] = useState('');
+  const [availableSlot, setAvailableSlot] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const dropdownRef = useRef(null);
 
+
+  // Fetch available slots in useEffect
+  useEffect(() => {
+    const fetchAvailableSlots = async () => {
+      const query = `
+        mutation {
+          availableslot(provider_id: "${provider_id}") {
+            availableSlot {
+              _id
+              start_time
+              end_time
+            }
+            message
+            success
+          }
+        }
+      `;
+
+      try {
+        const response = await fetch('http://localhost:5000/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query }),
+        });
+        const result = await response.json();
+        if (result.data.availableslot.success) {
+          setAvailableSlot(result.data.availableslot.availableSlot);
+        } else {
+          console.log(result.data.login.message || "Not found provider ID")
+        }
+      } catch (error) {
+        console.log("Not found provider ID");
+      }
+    };
+
+    fetchAvailableSlots();
+  }, [provider_id]);
   // Create options from services data
   const options = services.map((service, index) => ({
     id: index + 1,
@@ -63,9 +105,8 @@ function Booking() {
     if (selectedOptions.length === 0) return "Select Service";
     if (selectedOptions.length === 1) return selectedOptions[0].service_name;
     if (selectedOptions.length === 2) return selectedOptions.map(s => s.service_name).join(", ");
-    return `${selectedOptions.slice(0, 2).map(s => s.service_name).join(", ")} (+${
-      selectedOptions.length - 2
-    })`;
+    return `${selectedOptions.slice(0, 2).map(s => s.service_name).join(", ")} (+${selectedOptions.length - 2
+      })`;
   };
 
   useEffect(() => {
@@ -178,8 +219,14 @@ function Booking() {
                     </div>
                     <div className="selected-slote-price-filed">
                       <div className="booking-form-field">
-                        <input type="time" placeholder="Available Slots" />
-                      </div>
+                      <input
+                  type="time"
+                  placeholder="Available Slots"
+                  min={availableSlot ? new Date(availableSlot.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                  max={availableSlot ? new Date(availableSlot.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                  value={availableSlot ? new Date(availableSlot.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                  
+                />                      </div>
                     </div>
                   </div>
                 ))}
