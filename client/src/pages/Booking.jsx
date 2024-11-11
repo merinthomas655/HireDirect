@@ -219,14 +219,8 @@ function Booking() {
                     </div>
                     <div className="selected-slote-price-filed">
                       <div className="booking-form-field">
-                      <input
-                  type="time"
-                  placeholder="Available Slots"
-                  min={availableSlot ? new Date(availableSlot.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                  max={availableSlot ? new Date(availableSlot.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                  value={availableSlot ? new Date(availableSlot.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                  
-                />                      </div>
+                        <input type="time" placeholder="Available Slots" />
+                      </div>
                     </div>
                   </div>
                 ))}
