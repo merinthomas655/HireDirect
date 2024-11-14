@@ -124,6 +124,12 @@ const typeDefs = gql`
     getBookingCounts(userId: ID): BookingCounts
   }
 
+type Payment {
+  clientSecret: String
+  message: String
+  success: Boolean
+}
+
   type Mutation {
     createUser(
       username: String!
@@ -201,7 +207,7 @@ const typeDefs = gql`
     login(email: String!, password: String!): LoginSingupResponse
     signup(username: String!, email: String!, password: String!, role: String!): LoginSingupResponse
     availableslot(provider_id: ID!): AvailableSlotResponse
-
+    createPaymentIntent(amount: Int!): PaymentResponse
   }
 
   input AddressInput {
@@ -227,6 +233,12 @@ const typeDefs = gql`
     availableSlot: AvailableSlot
     message: String
     success: Boolean!
+  }
+
+  type PaymentResponse {
+   payment: Payment
+   message: String
+   success: Boolean!
   }
     
 `;
