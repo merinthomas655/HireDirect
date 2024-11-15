@@ -8,6 +8,13 @@ import "../css/userdashboard.css";
 const UserDashboard = () => {
   const [profile, setProfile] = useState(null);
   const [bookingCounts, setBookingCounts] = useState({ totalBookings: 0, upcomingBookings: 0 });
+
+  const { loading: profileLoading, error: profileError, data: profileData } = useQuery(FETCH_USER_PROFILE, {
+    variables: { id: userId },
+  });
+  const { loading: countsLoading, error: countsError, data: countsData } = useQuery(GET_BOOKING_COUNTS, {
+    variables: { userId },
+  });
   return (
     <Layout>
       <div className="dashboard-container">
