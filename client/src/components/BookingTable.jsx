@@ -4,6 +4,7 @@ import { FETCH_USER_BOOKING_HISTORY } from '../graphql/queries';
 import "../css/userdashboard.css";
 
 const BookingTable = () => {
+    const [bookings, setBookings] = useState([]);
   return (
     <div className="history-section">
       <h2>Booking History</h2>
