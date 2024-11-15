@@ -109,6 +109,7 @@ const typeDefs = gql`
     getCounts: Count
     getBookingHistory: [Booking]
     fetchUserProfile(id: ID!): User
+    fetchUserBookingHistory(userId: ID!): [Booking]
     getBookingCounts(userId: ID): BookingCounts
   }
 
@@ -185,7 +186,14 @@ const typeDefs = gql`
       comment: String
     ): Review
     deleteReview(id: ID!): Review
-
+    modifyUserProfile(
+      id: ID!
+      username: String
+      email: String
+      phone_number: String
+      address: AddressInput
+      password: String
+  ): User
     login(email: String!, password: String!): LoginSingupResponse
     signup(username: String!, email: String!, password: String!, role: String!): LoginSingupResponse
   }
