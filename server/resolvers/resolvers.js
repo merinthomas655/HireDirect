@@ -103,6 +103,60 @@ const resolvers = {
         throw new Error("Error fetching booking history: " + error.message);
       }
     },
+    fetchUserProfile: async (_, { id }) => {
+      try {
+        console.log(`fetchUserProfile: Fetching profile for user ID ${id}`); // Add logging
+        const user = await User.findById(id);
+        if (!user) {
+          console.error(`fetchUserProfile: No user found with ID ${id}`);
+          throw new Error('User not found');
+        }
+        console.log(`fetchUserProfile: Retrieved user ${JSON.stringify(user)}`);
+        return user;
+      } catch (error) {
+        console.error(`Error in fetchUserProfile: ${error.message}`);
+        throw new Error('Error fetching user profile: ' + error.message);
+      }
+    },
+    getBookingCounts: async (_, { userId }) => {
+      try {
+
+        const totalBookings = await Booking.countDocuments({ user_id: userId });  
+        const upcomingBookings = await Booking.countDocuments({
+          user_id: userId,
+          status: 'pending' 
+        });
+        
+        return {
+          totalBookings,
+          upcomingBookings
+        };
+      } catch (error) {
+        throw new Error("Error fetching booking counts: " + error.message);
+      }
+    },
+    fetchUserBookingHistory: async (_, { userId }) => {
+      try {
+        const bookings = await Booking.find({ user_id: userId })
+          .populate({
+            path: 'booking_services.service_id',
+            select: 'service_name',
+            match: { service_name: { $ne: null } },
+          })
+          .exec();
+    
+    
+        bookings.forEach((booking) => {
+          booking.booking_services = booking.booking_services.filter(
+            (service) => service.service_id
+          );
+        });
+    
+        return bookings;
+      } catch (error) {
+        throw new Error('Error fetching booking history: ' + error.message);
+      }
+    }
   },
 
   Provider: {
@@ -200,6 +254,7 @@ const resolvers = {
       }
     },
 
+
     // This is available slot mutation
     availableslot: async (_, { provider_id }) => {
       try {
@@ -244,6 +299,29 @@ const resolvers = {
         };
       }
     },
+
+    modifyUserProfile: async (_, { id, username, email, phone_number, address, password }) => {
+      try {
+        const user = await User.findById(id);
+        if (!user) {
+          throw new Error('User not found');
+        }
+    
+        user.username = username || user.username;
+        user.email = email || user.email;
+        user.phone_number = phone_number || user.phone_number;
+        user.address = address || user.address;
+    
+        if (password) {
+          user.password = await bcrypt.hash(password, 10); // Hash the password
+        }
+    
+        const updatedUser = await user.save();
+        return updatedUser;
+      } catch (error) {
+        throw new Error('Error updating user profile: ' + error.message);
+      }
+    }
   },
 };
 

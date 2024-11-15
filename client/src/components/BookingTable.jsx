@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { FETCH_USER_BOOKING_HISTORY } from '../graphql/queries';
 import "../css/userdashboard.css";
 
 const BookingTable = () => {
-  return (
+    const userId = JSON.parse(sessionStorage.getItem('usersession'))._id;
+    const { loading, error, data } = useQuery(FETCH_USER_BOOKING_HISTORY, {
+        variables: { userId },
+      });
+    const [bookings, setBookings] = useState([]);
+    useEffect(() => {
+        if (data && data.fetchUserBookingHistory) {
+          setBookings(data.fetchUserBookingHistory);
+        }
+    }, [data]);
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
+    return (
     <div className="history-section">
       <h2>Booking History</h2>
       <div className="table-responsive">
@@ -17,34 +31,21 @@ const BookingTable = () => {
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>#B10000</td>
-                <td>Pipe Repair</td>
-                <td>Sep 14, 2024 01:40 pm</td>
-                <td>Pending</td>
-                <td><button className="details-button">View Details</button></td>
-            </tr>
-            <tr>
-                <td>#B10001</td>
-                <td>Drain Cleaning</td>
-                <td>Sep 14, 2024 01:40 pm</td>
-                <td>Completed</td>
-                <td><button className="details-button">View Details</button></td>
-            </tr>
-            <tr>
-                <td>#B10002</td>
-                <td>Toilet Installation</td>
-                <td>Sep 14, 2024 01:40 pm</td>
-                <td>Pending</td>
-                <td><button className="details-button">View Details</button></td>
-            </tr>
-            <tr>
-                <td>#B10003</td>
-                <td>Leak Detection</td>
-                <td>Sep 14, 2024 01:40 pm</td>
-                <td>Completed</td>
-                <td><button className="details-button">View Details</button></td>
-            </tr>
+                {bookings.length > 0 ? (
+                bookings.map((booking) => (
+                    <tr key={booking._id}>
+                    <td>{booking._id}</td>
+                    <td>{booking.booking_services[0]?.service_id?.service_name || 'N/A'}</td>
+                    <td>{new Date(parseInt(booking.created_at)).toLocaleString()}</td>
+                    <td>{booking.status}</td>
+                    <td><button className="details-button">View Details</button></td>
+                    </tr>
+                ))
+                ) : (
+                <tr>
+                    <td colSpan="5">No booking history available</td>
+                </tr>
+                )}
             </tbody>
         </table>
         </div>
