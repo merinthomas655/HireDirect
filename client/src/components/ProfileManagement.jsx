@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { MODIFY_USER_PROFILE } from '../graphql/queries';
 import "../css/userdashboard.css"; 
 
 const ProfileManagement = ({profile}) => {
@@ -10,6 +12,10 @@ const ProfileManagement = ({profile}) => {
   const [state, setState] = useState(profile.address?.state || '');
   const [zipCode, setZipCode] = useState(profile.address?.zip_code || '');
   const [password, setPassword] = useState('');
+  const [modifyUserProfile, { loading, error }] = useMutation(MODIFY_USER_PROFILE, {
+    onCompleted: () => alert('Profile updated successfully!'),
+    onError: (err) => alert(`Error updating profile: ${err.message}`),
+  });
   return (
     <div className="profile-section">
       <h2>Profile Management</h2>
