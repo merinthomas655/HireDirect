@@ -23,7 +23,7 @@ const UserDashboard = () => {
       setBookingCounts(countsData.getBookingCounts);
     }
   }, [profileData, countsData]);
-  
+
   if (profileLoading || countsLoading) return <p>Loading...</p>;
   if (profileError) return <p>Error: {profileError.message}</p>;
   if (countsError) return <p>Error: {countsError.message}</p>;
@@ -33,11 +33,11 @@ const UserDashboard = () => {
         <div className="dashboard-stats">
           <div className="stat-item">
             <h2>Total Bookings</h2>
-            <p>35</p>
+            <p>{bookingCounts.totalBookings}</p>
           </div>
           <div className="stat-item">
             <h2>Upcoming Bookings</h2>
-            <p>20</p>
+            <p>{bookingCounts.upcomingBookings}</p>
           </div>
         </div>
         <ProfileManagement/>
