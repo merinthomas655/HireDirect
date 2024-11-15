@@ -15,6 +15,18 @@ const UserDashboard = () => {
   const { loading: countsLoading, error: countsError, data: countsData } = useQuery(GET_BOOKING_COUNTS, {
     variables: { userId },
   });
+  useEffect(() => {
+    if (profileData && profileData.fetchUserProfile) {
+      setProfile(profileData.fetchUserProfile);
+    }
+    if (countsData && countsData.getBookingCounts) {
+      setBookingCounts(countsData.getBookingCounts);
+    }
+  }, [profileData, countsData]);
+  
+  if (profileLoading || countsLoading) return <p>Loading...</p>;
+  if (profileError) return <p>Error: {profileError.message}</p>;
+  if (countsError) return <p>Error: {countsError.message}</p>;
   return (
     <Layout>
       <div className="dashboard-container">
