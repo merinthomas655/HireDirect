@@ -4,6 +4,10 @@ import { FETCH_USER_BOOKING_HISTORY } from '../graphql/queries';
 import "../css/userdashboard.css";
 
 const BookingTable = () => {
+    const userId = JSON.parse(sessionStorage.getItem('usersession'))._id;
+    const { loading, error, data } = useQuery(FETCH_USER_BOOKING_HISTORY, {
+        variables: { userId },
+      });
     const [bookings, setBookings] = useState([]);
     useEffect(() => {
         if (data && data.fetchUserBookingHistory) {
