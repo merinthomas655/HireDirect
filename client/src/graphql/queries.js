@@ -87,3 +87,17 @@ export const MODIFY_USER_PROFILE = gql`
     }
   }
 `;
+export const FETCH_USER_BOOKING_HISTORY = gql`
+  query FetchUserBookingHistory($userId: ID!) {
+    fetchUserBookingHistory(userId: $userId) {
+      _id
+      booking_services {
+        service_id {
+          service_name
+        }
+      }
+      status
+      created_at
+    }
+  }
+`;
