@@ -9,8 +9,10 @@ const BookingTable = () => {
         if (data && data.fetchUserBookingHistory) {
           setBookings(data.fetchUserBookingHistory);
         }
-      }, [data]);
-  return (
+    }, [data]);
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
+    return (
     <div className="history-section">
       <h2>Booking History</h2>
       <div className="table-responsive">
