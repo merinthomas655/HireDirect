@@ -6,6 +6,7 @@ import ProfileManagement from '../components/ProfileManagement';
 import BookingTable from '../components/BookingTable';
 import "../css/userdashboard.css";
 const UserDashboard = () => {
+  const userId = JSON.parse(sessionStorage.getItem('usersession'))._id;
   const [profile, setProfile] = useState(null);
   const [bookingCounts, setBookingCounts] = useState({ totalBookings: 0, upcomingBookings: 0 });
 
@@ -30,6 +31,7 @@ const UserDashboard = () => {
   return (
     <Layout>
       <div className="dashboard-container">
+      <h1>{profile?.username}'s Dashboard</h1>
         <div className="dashboard-stats">
           <div className="stat-item">
             <h2>Total Bookings</h2>
