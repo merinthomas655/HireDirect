@@ -86,6 +86,9 @@ const ProfileManagement = ({profile}) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <button type="submit" disabled={loading} className="profile-save-button">
+          Save Changes
+        </button>
       </form>
       {error && <p className="error-message">{error.message}</p>}
     </div>
