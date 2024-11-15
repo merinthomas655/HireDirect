@@ -32,6 +32,9 @@ const ProfileManagement = ({profile}) => {
   return (
     <div className="profile-section">
       <h2>Profile Management</h2>
+      <div className="profile-avatar">
+        <img src="../assets/img/user.png" alt="Profile Avatar" />
+      </div>
       <form onSubmit={handleSubmit} className="profile-form">
         <input
           type="text"
@@ -84,6 +87,7 @@ const ProfileManagement = ({profile}) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </form>
+      {error && <p className="error-message">{error.message}</p>}
     </div>
   );
 };
