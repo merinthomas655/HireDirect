@@ -16,6 +16,19 @@ const ProfileManagement = ({profile}) => {
     onCompleted: () => alert('Profile updated successfully!'),
     onError: (err) => alert(`Error updating profile: ${err.message}`),
   });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    modifyUserProfile({
+      variables: {
+        id: profile._id,
+        username,
+        email,
+        phone_number: phoneNumber,
+        address: { street, city, state, zip_code: zipCode },
+        password,
+      },
+    });
+  };
   return (
     <div className="profile-section">
       <h2>Profile Management</h2>
