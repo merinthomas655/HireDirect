@@ -5,6 +5,11 @@ import "../css/userdashboard.css";
 
 const BookingTable = () => {
     const [bookings, setBookings] = useState([]);
+    useEffect(() => {
+        if (data && data.fetchUserBookingHistory) {
+          setBookings(data.fetchUserBookingHistory);
+        }
+      }, [data]);
   return (
     <div className="history-section">
       <h2>Booking History</h2>
