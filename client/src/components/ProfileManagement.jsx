@@ -1,7 +1,15 @@
 import React from 'react';
 import "../css/userdashboard.css"; 
 
-const ProfileManagement = () => {
+const ProfileManagement = ({profile}) => {
+  const [username, setUsername] = useState(profile.username);
+  const [email, setEmail] = useState(profile.email);
+  const [phoneNumber, setPhoneNumber] = useState(profile.phone_number);
+  const [street, setStreet] = useState(profile.address?.street || '');
+  const [city, setCity] = useState(profile.address?.city || '');
+  const [state, setState] = useState(profile.address?.state || '');
+  const [zipCode, setZipCode] = useState(profile.address?.zip_code || '');
+  const [password, setPassword] = useState('');
   return (
     <div className="profile-section">
       <h2>Profile Management</h2>
