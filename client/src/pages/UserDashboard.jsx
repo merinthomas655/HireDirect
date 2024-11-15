@@ -40,7 +40,10 @@ const UserDashboard = () => {
             <p>{bookingCounts.upcomingBookings}</p>
           </div>
         </div>
-        <ProfileManagement/>
+
+        <div>
+          {profile && <ProfileManagement profile={profile} />}
+        </div>
         <BookingTable/>
       </div>
     </Layout>
