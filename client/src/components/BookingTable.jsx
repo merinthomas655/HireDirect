@@ -27,34 +27,21 @@ const BookingTable = () => {
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>#B10000</td>
-                <td>Pipe Repair</td>
-                <td>Sep 14, 2024 01:40 pm</td>
-                <td>Pending</td>
-                <td><button className="details-button">View Details</button></td>
-            </tr>
-            <tr>
-                <td>#B10001</td>
-                <td>Drain Cleaning</td>
-                <td>Sep 14, 2024 01:40 pm</td>
-                <td>Completed</td>
-                <td><button className="details-button">View Details</button></td>
-            </tr>
-            <tr>
-                <td>#B10002</td>
-                <td>Toilet Installation</td>
-                <td>Sep 14, 2024 01:40 pm</td>
-                <td>Pending</td>
-                <td><button className="details-button">View Details</button></td>
-            </tr>
-            <tr>
-                <td>#B10003</td>
-                <td>Leak Detection</td>
-                <td>Sep 14, 2024 01:40 pm</td>
-                <td>Completed</td>
-                <td><button className="details-button">View Details</button></td>
-            </tr>
+                {bookings.length > 0 ? (
+                bookings.map((booking) => (
+                    <tr key={booking._id}>
+                    <td>{booking._id}</td>
+                    <td>{booking.booking_services[0]?.service_id?.service_name || 'N/A'}</td>
+                    <td>{new Date(parseInt(booking.created_at)).toLocaleString()}</td>
+                    <td>{booking.status}</td>
+                    <td><button className="details-button">View Details</button></td>
+                    </tr>
+                ))
+                ) : (
+                <tr>
+                    <td colSpan="5">No booking history available</td>
+                </tr>
+                )}
             </tbody>
         </table>
         </div>
