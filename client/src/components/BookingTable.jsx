@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { FETCH_USER_BOOKING_HISTORY } from '../graphql/queries';
 import "../css/userdashboard.css";
 
 const BookingTable = () => {
