@@ -1,6 +1,8 @@
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
+  scalar Date
+
   type User {
     _id: ID!
     username: String!
@@ -94,6 +96,16 @@ const typeDefs = gql`
     totalBookings: Int
     upcomingBookings: Int
   }
+
+ type AvailableSlot {
+    _id: ID!
+    provider_id: ID!
+    date: Date
+    start_time: Date
+    end_time: Date
+    created_at: Date
+    updated_at: Date
+  } 
 
   type Query {
     users: [User]
@@ -196,6 +208,8 @@ const typeDefs = gql`
   ): User
     login(email: String!, password: String!): LoginSingupResponse
     signup(username: String!, email: String!, password: String!, role: String!): LoginSingupResponse
+    availableslot(provider_id: ID!): AvailableSlotResponse
+
   }
 
   input AddressInput {
@@ -216,6 +230,13 @@ const typeDefs = gql`
     message: String
     success: Boolean!
   }
+
+  type AvailableSlotResponse {
+    availableSlot: AvailableSlot
+    message: String
+    success: Boolean!
+  }
+    
 `;
 
 module.exports = typeDefs;
