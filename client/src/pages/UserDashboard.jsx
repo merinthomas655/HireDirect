@@ -7,6 +7,7 @@ import BookingTable from '../components/BookingTable';
 import "../css/userdashboard.css";
 const UserDashboard = () => {
   const userId = JSON.parse(sessionStorage.getItem('usersession'))._id;
+  
   const [profile, setProfile] = useState(null);
   const [bookingCounts, setBookingCounts] = useState({ totalBookings: 0, upcomingBookings: 0 });
 
@@ -17,6 +18,7 @@ const UserDashboard = () => {
     variables: { userId },
   });
   useEffect(() => {
+    console.log(sessionStorage.getItem('usersession'));
     if (profileData && profileData.fetchUserProfile) {
       setProfile(profileData.fetchUserProfile);
     }

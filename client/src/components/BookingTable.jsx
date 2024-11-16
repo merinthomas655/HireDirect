@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { FETCH_USER_BOOKING_HISTORY } from '../graphql/queries';
-import "../css/userdashboard.css";
+import "../css/bookingtable.css";
 
 const BookingTable = () => {
     const userId = JSON.parse(sessionStorage.getItem('usersession'))._id;
