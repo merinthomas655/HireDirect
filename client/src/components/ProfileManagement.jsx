@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { MODIFY_USER_PROFILE } from '../graphql/queries';
-import "../css/userdashboard.css"; 
+import "../css/profilemanagement.css";
 
 const ProfileManagement = ({profile}) => {
   const [username, setUsername] = useState(profile.username);
