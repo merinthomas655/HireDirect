@@ -146,8 +146,8 @@ function Signup() {
             <select name="" id="" placeholder="Select user"
               value={usertype}
               onChange={(e) => setUsertype(e.target.value)}>
-              <option value="v1">user</option>
-              <option value="v2">provider</option>
+              <option value="user">user</option>
+              <option value="provider">provider</option>
             </select>
             <span className="icon">
               <img
