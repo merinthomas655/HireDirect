@@ -7,7 +7,10 @@ const ProviderDashboard = () => {
     const [isSlotFormVisible, setSlotFormVisible] = useState(false);
     const [slots, setSlots] = useState([]); // State to store available slots
     const [loading, setLoading] = useState(true);
-
+    const [services, setServices] = useState([]);      
+    const [loadingServices, setLoadingServices] = useState(true);
+    const [error, setError] = useState(null);
+    
     const handleAddSlotClick = () => {
         setSlotFormVisible(!isSlotFormVisible);
     };
@@ -17,7 +20,6 @@ const ProviderDashboard = () => {
         const fetchSlots = async () => {
             try {
                 const response = await fetch('http://localhost:8000/api/slots');
-                console.log("response", response);
                 const data = await response.json();
                 setSlots(data);
                 setLoading(false);
@@ -27,6 +29,22 @@ const ProviderDashboard = () => {
             }
         };
         fetchSlots();
+    }, []);
+    useEffect(() => {
+        const fetchServices = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/api/services');
+                console.log("response", response);
+                if (!response.ok) throw new Error('Failed to fetch services');
+                const data = await response.json();
+                setServices(data);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoadingServices(false);
+            }
+        };
+        fetchServices();
     }, []);
 
     return (
@@ -134,9 +152,6 @@ const ProviderDashboard = () => {
             <div className="services-management">
                 <div className="services-button">
                     <h2>Services Management</h2>
-                    <button className="add-service-button">
-                        Add New Service
-                    </button>
                 </div>
                 <table>
                     <thead>
@@ -148,17 +163,31 @@ const ProviderDashboard = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Pipe Repair</td>
-                            <td>Fix damaged or leaking pipes</td>
-                            <td>$100</td>
-                            <td>
-                                <button className="edit-button">Edit</button>
-                                <button className="delete-button">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
+                        {loadingServices ? (
+                            <tr>
+                                <td colSpan="4">Loading...</td>
+                            </tr>
+                        ) : error ? (
+                            <tr>
+                                <td colSpan="4">{error}</td>
+                            </tr>
+                        ) : services.length > 0 ? (
+                            services.map((service) => (
+                                <tr key={service._id}>
+                                    <td>{service.service_name}</td>
+                                    <td>{service.description}</td>
+                                    <td>${service.pricing}</td>
+                                    <td>
+                                        <button className="edit-button">Edit</button>
+                                        <button className="delete-button">Delete</button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4">No services available</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
