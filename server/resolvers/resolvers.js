@@ -8,6 +8,7 @@ const Review = require('../models/Review');
 const Service = require('../models/Service');
 const Booking = require('../models/Booking');
 const bcrypt = require('bcrypt');
+const stripe = require('stripe')('sk_test_51QL7z8Kj9iJCHOweCCx4FVhQ70ZxP8qF6pz8qp1dktHVl9YIHnDmD7NCTNuoTnEWuhhNUL6A3V27aDL9wYGhVEIV007KkN3vOA'); 
 
 const resolvers = {
   Query: {
@@ -328,7 +329,35 @@ const resolvers = {
       } catch (error) {
         throw new Error('Error updating user profile: ' + error.message);
       }
-    }
+    },
+
+    createPaymentIntent: async (_, { amount }) => {
+      try {
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount,
+          currency: 'usd',
+          automatic_payment_methods: { enabled: true },
+        });
+        
+        return {
+          payment: {
+            clientSecret: paymentIntent.client_secret,
+          },
+          message: "Payment processing initiated",
+          success: true
+        };
+      } catch (error) {
+        return {
+          payment: {
+            clientSecret: null,
+            message: error.message,
+            success: false
+          },
+          message: "Failed to create payment intent",
+          success: false
+        };
+      }
+    },    
   },
 };
 
