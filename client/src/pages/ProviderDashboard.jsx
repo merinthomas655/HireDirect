@@ -10,6 +10,8 @@ const ProviderDashboard = () => {
     const [services, setServices] = useState([]);      
     const [loadingServices, setLoadingServices] = useState(true);
     const [error, setError] = useState(null);
+    const [bookings, setBookings] = useState([]);
+    const [loadingBookings, setLoadingBookings] = useState(true); 
     
     const handleAddSlotClick = () => {
         setSlotFormVisible(!isSlotFormVisible);
@@ -46,6 +48,21 @@ const ProviderDashboard = () => {
         };
         fetchServices();
     }, []);
+    useEffect(() => {
+        const fetchBookings = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/api/bookings');
+                if (!response.ok) throw new Error('Failed to fetch bookings');
+                const data = await response.json();
+                setBookings(data);
+            } catch (error) {
+                console.error('Error fetching bookings:', error);
+            } finally {
+                setLoadingBookings(false);
+            }
+        };
+        fetchBookings();
+    }, []);
 
     return (
         <div className="provider-dashboard">
@@ -75,7 +92,9 @@ const ProviderDashboard = () => {
             <div className="profile-management">
                 <h2>Profile Management</h2>
                 <div className="profile-form">
-                    <div className="profile-picture"></div>
+                    <div className="profile-picture">
+                            <img src="/assets/img/person-profile-icon.png" alt="Profile" />
+                    </div>
                     <div className="profile-inputs">
                         <input type="text" placeholder="Name" />
                         <input type="email" placeholder="Email" />
@@ -194,32 +213,56 @@ const ProviderDashboard = () => {
 
             {/* Booking History Section */}
             <div className="booking-history">
-                <h2>Booking History</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Booking ID</th>
-                            <th>Service</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>#B0310</td>
-                            <td>Pipe Repair</td>
-                            <td>Sep 14, 2024 01:40 pm</td>
-                            <td>Pending</td>
-                            <td>
-                                <button className="view-details-button">
-                                    View Details
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <h2>Booking History</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Service</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+    {loadingBookings ? (
+        <tr>
+            <td colSpan="5">Loading...</td>
+        </tr>
+    ) : bookings.length > 0 ? (
+        bookings.map((booking, index) => (
+            <tr key={booking._id}>
+                <td>{index + 1}</td>
+                {/* Iterate over the booking_services array to display service names */}
+                <td>
+                    {booking.booking_services.length > 0 ? (
+                        booking.booking_services.map((service, idx) => (
+                            <div key={service.service_id._id || idx}>
+                                {service.service_id?.service_name || 'Service Not Available'}
+                            </div>
+                        ))
+                    ) : (
+                        'No Services Available'
+                    )}
+                </td>
+                <td>${booking.total_price}</td>
+                <td>{booking.status}</td>
+                <td>
+                    <button className="view-button">View</button>
+                </td>
+            </tr>
+        ))
+    ) : (
+        <tr>
+            <td colSpan="5">No bookings available</td>
+        </tr>
+    )}
+</tbody>
+
+
+    </table>
+</div>
+
 
             <Footer />
         </div>

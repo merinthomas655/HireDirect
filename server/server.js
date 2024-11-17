@@ -5,6 +5,7 @@ const resolvers = require('./resolvers/resolvers');
 const typeDefs = require('./schema/schema');
 const availableSlotRoutes = require('./routes/availableSlotRoutes');
 const serviceRoutes = require('./routes/serviceRoutes')
+const bookingRoutes = require('./routes/bookingRoutes');
 
 const PORT = process.env.PORT || 8000; // Use 8000 or another safe port
 
@@ -40,6 +41,8 @@ const startServer = async () => {
     // Available slots API route
   app.use('/api/slots', availableSlotRoutes);
   app.use('/api/services', serviceRoutes);
+  app.use('/api/bookings', bookingRoutes); 
+  
 
 
     // Start the Express server
