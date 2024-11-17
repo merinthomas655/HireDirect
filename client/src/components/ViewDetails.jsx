@@ -29,9 +29,31 @@ const ViewDetails = ({ onClose }) => {
                 <p><strong>Comment:</strong> Great service! The provider was very professional.</p>
             </div>
         </div>
-
-
-
+        <div className="review-form">
+            <label>
+                Rating:
+                <input
+                type="number"
+                min="1"
+                max="5"
+                value={rating}
+                onChange={(e) => setRating(e.target.value)}
+                />
+            </label>
+            <label>
+                Comment:
+                <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                ></textarea>
+            </label>
+            <button
+                onClick={handleReviewSubmit}
+                className="submit-review-button"
+            >
+                Submit Review
+            </button>
+        </div>
     </div>
   );
 };
