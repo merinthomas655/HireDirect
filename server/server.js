@@ -1,40 +1,48 @@
-require('dotenv').config(); // Load environment variables first
-
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const connectDB = require('./config/db');
 const resolvers = require('./resolvers/resolvers');
 const typeDefs = require('./schema/schema');
-const availableSlotRoutes = require('./routes/availableSlotRoutes'); // Import the routes
+const availableSlotRoutes = require('./routes/availableSlotRoutes');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000; // Use 8000 or another safe port
 
 const startServer = async () => {
-  const app = express();
+    const app = express();
 
-  // Middleware to parse JSON
-  app.use(express.json());
+    // Custom CORS Middleware
+    app.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // Allow React frontend
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Specify allowed HTTP methods
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization'); // Specify allowed headers
+      if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }  
+      next();
+    });
 
-  // Connect to MongoDB
-  connectDB();
+    // Middleware to parse JSON
+    app.use(express.json());
 
-  // Initialize Apollo Server with GraphQL schema and resolvers
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-  });
+    // Connect to MongoDB
+    connectDB();
 
-  await server.start();
-  server.applyMiddleware({ app });
+    // Initialize Apollo Server with GraphQL schema and resolvers
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+    });
 
-  // Define REST API routes
-  app.use('/api/available-slots', availableSlotRoutes); // Use the route file for slot routes
+    await server.start();
+    server.applyMiddleware({ app });
 
-  // Start the Express server
-  app.listen({ port: PORT }, () => {
-    console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
-    console.log(`🌐 REST API available at http://localhost:${PORT}/api/available-slots`);
-  });
+    // Available slots API route
+    app.use('/api/slots', availableSlotRoutes);
+
+    // Start the Express server
+    app.listen({ port: PORT }, () => {
+        console.log(`Server ready at http://localhost:${PORT}`);
+    });
 };
 
 startServer();

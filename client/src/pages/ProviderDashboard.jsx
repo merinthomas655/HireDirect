@@ -1,47 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import axios from "axios";
 import "../css/providerdashboard.css";
 
 const ProviderDashboard = () => {
     const [isSlotFormVisible, setSlotFormVisible] = useState(false);
-    const [slotData, setSlotData] = useState({
-        date: "",
-        startTime: "",
-        endTime: "",
-    });
+    const [slots, setSlots] = useState([]); // State to store available slots
+    const [loading, setLoading] = useState(true);
 
     const handleAddSlotClick = () => {
         setSlotFormVisible(!isSlotFormVisible);
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setSlotData({ ...slotData, [name]: value });
-    };
-    const handleSlotSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            const response = await axios.post("/api/add-slot", {
-                //provider_id: 'YOUR_PROVIDER_ID', //
-                date: slotData.date,
-                startTime: slotData.startTime,
-                endTime: slotData.endTime,
-            });
-            console.log("Response:", response.data);
-
-            setSlotData({ date: "", startTime: "", endTime: "" });
-            setSlotFormVisible(false);
-        } catch (error) {
-            console.error("Error saving slot:", error);
-        }
-    };
+    // Fetch slots data from the backend
+    useEffect(() => {
+        const fetchSlots = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/api/slots');
+                console.log("response", response);
+                const data = await response.json();
+                setSlots(data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching slots:', error);
+                setLoading(false);
+            }
+        };
+        fetchSlots();
+    }, []);
 
     return (
         <div className="provider-dashboard">
             <Header />
+
+            {/* Stats Section */}
             <div className="stats-container">
                 <div className="stat-box">
                     <h2>Total Bookings</h2>
@@ -53,14 +45,15 @@ const ProviderDashboard = () => {
                 </div>
                 <div className="stat-box">
                     <h2>Earnings This Month</h2>
-                    <p>20</p>
+                    <p>$200</p>
                 </div>
                 <div className="stat-box">
                     <h2>Total Earnings</h2>
-                    <p>2035</p>
+                    <p>$2035</p>
                 </div>
             </div>
 
+            {/* Profile Management Section */}
             <div className="profile-management">
                 <h2>Profile Management</h2>
                 <div className="profile-form">
@@ -75,6 +68,9 @@ const ProviderDashboard = () => {
                 </div>
             </div>
 
+
+
+            {/* Availability Management Section */}
             <div className="availability-management">
                 <div className="availability-button">
                     <h2>Availability Management</h2>
@@ -87,28 +83,10 @@ const ProviderDashboard = () => {
                 </div>
 
                 {isSlotFormVisible && (
-                    <form className="slot-form" onSubmit={handleSlotSubmit}>
-                        <input
-                            type="date"
-                            name="date"
-                            value={slotData.date}
-                            onChange={handleInputChange}
-                            required
-                        />
-                        <input
-                            type="time"
-                            name="startTime"
-                            value={slotData.startTime}
-                            onChange={handleInputChange}
-                            required
-                        />
-                        <input
-                            type="time"
-                            name="endTime"
-                            value={slotData.endTime}
-                            onChange={handleInputChange}
-                            required
-                        />
+                    <form className="slot-form">
+                        <input type="date" name="date" />
+                        <input type="time" name="startTime" />
+                        <input type="time" name="endTime" />
                         <button type="submit" className="submit-slot-button">
                             Save Slot
                         </button>
@@ -125,20 +103,34 @@ const ProviderDashboard = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Sep 14, 2024</td>
-                            <td>09:00 am</td>
-                            <td>10:00 am</td>
-                            <td>
-                                <button className="delete-button">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
+                        {loading ? (
+                            <tr>
+                                <td colSpan="4">Loading...</td>
+                            </tr>
+                        ) : slots.length > 0 ? (
+                            slots.map((slot) => (
+                                <tr key={slot._id}>
+                                    <td>{new Date(slot.date).toLocaleDateString()}</td>
+                                    <td>{new Date(slot.start_time).toLocaleTimeString()}</td>
+                                    <td>{new Date(slot.end_time).toLocaleTimeString()}</td>
+                                    <td>
+                                        <button className="delete-button">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4">No slots available</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
 
+     
+            {/* Services Management Section */}
             <div className="services-management">
                 <div className="services-button">
                     <h2>Services Management</h2>
@@ -171,6 +163,7 @@ const ProviderDashboard = () => {
                 </table>
             </div>
 
+            {/* Booking History Section */}
             <div className="booking-history">
                 <h2>Booking History</h2>
                 <table>
@@ -205,3 +198,4 @@ const ProviderDashboard = () => {
 };
 
 export default ProviderDashboard;
+
