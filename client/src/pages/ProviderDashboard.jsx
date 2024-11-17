@@ -12,6 +12,13 @@ const ProviderDashboard = () => {
     const [error, setError] = useState(null);
     const [bookings, setBookings] = useState([]);
     const [loadingBookings, setLoadingBookings] = useState(true); 
+    const [editingServiceId, setEditingServiceId] = useState(null);
+    const [editedService, setEditedService] = useState({
+        service_name: '',
+        description: '',
+        pricing: ''
+    });
+
     
     const handleAddSlotClick = () => {
         setSlotFormVisible(!isSlotFormVisible);
@@ -63,6 +70,47 @@ const ProviderDashboard = () => {
         };
         fetchBookings();
     }, []);
+    const handleEditService = (serviceId) => {
+        const serviceToEdit = services.find(service => service._id === serviceId);
+        setEditedService({
+            service_name: serviceToEdit.service_name,
+            description: serviceToEdit.description,
+            pricing: serviceToEdit.pricing
+        });
+        setEditingServiceId(serviceId); // Set the service ID to indicate it's being edited
+    };
+
+    const handleCancelEdit = () => {
+        setEditingServiceId(null); // Close the edit mode
+    };
+
+    const handleSaveEdit = async (serviceId) => {
+        try {
+            const updatedService = {
+                service_name: editedService.service_name,
+                description: editedService.description,
+                pricing: editedService.pricing,
+            };
+
+            // Send the updated service to the backend
+            const response = await fetch(`http://localhost:8000/api/services/${serviceId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedService),
+            });
+            console.log("serviceID", serviceId);
+
+            if (!response.ok) throw new Error('Failed to update service');
+
+            // Update the service list locally after successful update
+            setServices(services.map(service =>
+                service._id === serviceId ? { ...service, ...updatedService } : service
+            ));
+            setEditingServiceId(null); // Exit edit mode after saving
+        } catch (error) {
+            console.error('Error saving service:', error);
+        }
+    };
 
     return (
         <div className="provider-dashboard">
@@ -193,13 +241,53 @@ const ProviderDashboard = () => {
                         ) : services.length > 0 ? (
                             services.map((service) => (
                                 <tr key={service._id}>
-                                    <td>{service.service_name}</td>
-                                    <td>{service.description}</td>
-                                    <td>${service.pricing}</td>
-                                    <td>
-                                        <button className="edit-button">Edit</button>
-                                        <button className="delete-button">Delete</button>
-                                    </td>
+                                    {editingServiceId === service._id ? (
+                                        <>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    value={editedService.service_name}
+                                                    onChange={(e) => setEditedService({ ...editedService, service_name: e.target.value })}
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    value={editedService.description}
+                                                    onChange={(e) => setEditedService({ ...editedService, description: e.target.value })}
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    value={editedService.pricing}
+                                                    onChange={(e) => setEditedService({ ...editedService, pricing: e.target.value })}
+                                                />
+                                            </td>
+                                            <td>
+                                                <button onClick={() => handleSaveEdit(service._id)} className="save-button">
+                                                    Save
+                                                </button>
+                                                <button onClick={handleCancelEdit} className="cancel-button">
+                                                    Cancel
+                                                </button>
+                                            </td>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <td>{service.service_name}</td>
+                                            <td>{service.description}</td>
+                                            <td>${service.pricing}</td>
+                                            <td>
+                                                <button onClick={() => handleEditService(service._id)} className="edit-button">
+                                                    Edit
+                                                </button>
+                                                <button className="delete-button">
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </>
+                                    )}
                                 </tr>
                             ))
                         ) : (

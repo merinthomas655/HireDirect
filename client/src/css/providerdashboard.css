@@ -94,7 +94,8 @@ h2 {
     border-radius: 8px;
 }
 
-.save-button {
+.save-button,
+.cancel-button {
     padding: 10px 20px;
     background-color: var(--primary);
     color: white;
