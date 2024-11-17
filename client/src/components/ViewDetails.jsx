@@ -1,6 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const ViewDetails = ({ onClose }) => {
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+
+  const handleReviewSubmit = () => {
+    alert(`Review Submitted: Rating - ${rating}, Comment - ${comment}`);
+    setRating(0);
+    setComment('');
+  };
+
   return (
     <div className="modal">
         <div className="modal-content">
