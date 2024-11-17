@@ -1,4 +1,5 @@
 const User = require('../models/User');
+
 const AvailableSlot = require('../models/AvailableSlot');
 
 const Provider = require('../models/Provider');
@@ -243,6 +244,12 @@ const resolvers = {
         const password_hash = await bcrypt.hash(password, 10);
         const signupUser = new User({ username, email, password: password_hash, role });
         await signupUser.save();
+
+        if (role.toLowerCase() === 'provider') {
+          const user_id = signupUser._id;
+          const providerUser = new Provider({ user_id});
+          await providerUser.save();
+        }
 
         return {
           user: signupUser,
