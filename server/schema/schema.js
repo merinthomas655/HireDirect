@@ -126,8 +126,6 @@ const typeDefs = gql`
 
 type Payment {
   clientSecret: String
-  message: String
-  success: Boolean
 }
 
   type Mutation {

@@ -257,8 +257,6 @@ const resolvers = {
         return {
           payment: {
             clientSecret: paymentIntent.client_secret,
-            message: "Payment intent created successfully",
-            success: true
           },
           message: "Payment processing initiated",
           success: true
