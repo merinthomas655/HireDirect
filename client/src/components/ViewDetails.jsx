@@ -13,6 +13,14 @@ const ViewDetails = ({ onClose }) => {
         <p><strong>Status:</strong> Completed</p>
         <p><strong>Total Price:</strong> $50.00</p>
       </div>
+      {booking.status === 'completed' && (
+        <div className="review-section">
+            <h3>Review</h3>
+            <p><strong>Rating:</strong> 5/5</p>
+            <p><strong>Comment:</strong> Excellent service!</p>
+        </div>
+      )}
+
     </div>
   );
 };
