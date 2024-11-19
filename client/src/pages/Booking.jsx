@@ -34,70 +34,75 @@ function Booking() {
   const services = handleState.state?.services || []; // Retrieve services from state
   const providername = handleState.state?.providername;
   const providerId = handleState.state?.providerId;
+  let slot_id = null;
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]); // Store selected services as objects
   const [location, setLocation] = useState(null);
   const [searchInput, setSearchInput] = useState('');
-  //const [availableSlot, setAvailableSlot] = useState('');
+  const [availableSlot, setAvailableSlot] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [totalAmount, setTotalAmount] = useState(0);
   const [message, setMessage] = useState('');
+  const [bookingServices, setBookingServices] = useState([]); // Make bookingServices stateful
+
 
 
   const dropdownRef = useRef(null);
 
-  const bookingServices = [
-    {
-      service_id: "66fc9e6cfb1f4513f03b13e0",
-      slot_id: "66fc9e6cfb1f4513f03b13e0",
-      price: 200,
-    },
-    {
-      service_id: "66fc9e6cfb1f4513f03b13e0",
-      slot_id: "66fc9e6cfb1f4513f03b13e0",
-      price: 300,
-    },
-  ];
+  // const bookingServices = [
+  //   {
+  //     service_id: "66fc9e6cfb1f4513f03b13e0",
+  //     slot_id: slot_id,
+  //     price: 200,
+  //   },
+  //   {
+  //     service_id: "66fc9e6cfb1f4513f03b13e0",
+  //     slot_id: "66fc9e6cfb1f4513f03b13e0",
+  //     price: 300,
+  //   },
+  // ];
 
-  // // Fetch available slots in useEffect
-  // useEffect(() => {
-  //   const fetchAvailableSlots = async () => {
-  //     const query = `
-  //         mutation {
-  //           availableslot(provider_id: "${provider_id}") {
-  //             availableSlot {
-  //               _id
-  //               start_time
-  //               end_time
-  //             }
-  //             message
-  //             success
-  //           }
-  //         }
-  //       `;
+  // Fetch available slots in useEffect
+  useEffect(() => {
+    const fetchAvailableSlots = async () => {
+      const query = `
+          mutation {
+            availableslot(provider_id: "${providerId}") {
+              availableSlot {
+                _id
+                start_time
+                end_time
+              }
+              message
+              success
+            }
+          }
+        `;
 
-  //     try {
-  //       const response = await fetch('http://localhost:5000/graphql', {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({ query }),
-  //       });
-  //       const result = await response.json();
-  //       if (result.data.availableslot.success) {
-  //         setAvailableSlot(result.data.availableslot.availableSlot);
-  //       } else {
-  //         console.log(result.data.login.message || "Not found provider ID")
-  //       }
-  //     } catch (error) {
-  //       console.log("Not found provider ID");
-  //     }
-  //   };
+      try {
+        const response = await fetch('http://localhost:5000/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query }),
+        });
+        const result = await response.json();
+        if (result.data.availableslot.success) {
+          const availableSlot = result.data.availableslot.availableSlot;
+          slot_id = availableSlot._id;
+          setAvailableSlot(availableSlot);
+        } else {
+          console.log(result.data.login.message || "Not found provider ID")
+        }
+      } catch (error) {
+        console.log("Not found provider ID");
+      }
+    };
 
-  //   fetchAvailableSlots();
-  // }, [provider_id]);
+    fetchAvailableSlots();
+  }, [providerId]);
 
   // Create options from services data
   const options = services.map((service, index) => ({
@@ -115,7 +120,7 @@ function Booking() {
     const finalAmount = totalAmount + gstAmount;
 
     if (totalAmount<= 0) {
-      setMessage(finalAmount);
+      setMessage("Please select provider from list");
       return
     }
 
@@ -133,11 +138,11 @@ function Booking() {
  const query = `
   mutation {
     createPaymentIntent(
-      amount: ${finalAmount},
+      amount: ${99},
       booking: {
         user_id: "${userID}",
         provider_id: "${providerId}",
-        total_price: ${totalAmount},
+        total_price: ${finalAmount},
         status: "pending",
         booking_services: [
           ${bookingServices.map(service => `{
@@ -185,15 +190,53 @@ function Booking() {
 
   // Update selected options by adding/removing the full service object
   const handleOptionChange = (service) => {
-    setSelectedOptions((prev) => {
-      const updatedSelection = prev.some((s) => s.service_name === service.service_name)
-        ? prev.filter((s) => s.service_name !== service.service_name)
-        : [...prev, service];
+  setSelectedOptions((prev) => {
+    // Check if the service is already selected
+    const isSelected = prev.some((s) => s.service_name === service.service_name);
 
-      updateTotalAmount(updatedSelection);
-      return updatedSelection;
+    // Update the bookingServices array
+    setBookingServices((prevBookingServices) => {
+      if (isSelected) {
+        // Remove the service from bookingServices
+        return prevBookingServices.filter((s) => s.service_id !== service._id);
+      } else {
+        // Add the service to bookingServices only if it doesn't already exist
+        const isAlreadyAdded = prevBookingServices.some((s) => s.service_id === service._id);
+        if (!isAlreadyAdded) {
+          return [
+            ...prevBookingServices,
+            {
+              service_id: service._id,
+              slot_id: availableSlot?._id || null, // Use available slot ID if available
+              price: service.pricing || 0, // Add price of the service
+            },
+          ];
+        }
+        return prevBookingServices; // Return unchanged if already exists
+      }
     });
-  };
+
+    // Update selected options
+    const updatedSelection = isSelected
+      ? prev.filter((s) => s.service_name !== service.service_name) // Remove if selected
+      : [...prev, service]; // Add if not selected
+
+    updateTotalAmount(updatedSelection); // Update the total amount
+    return updatedSelection;
+  });
+};
+
+  
+  // const handleOptionChange = (service) => {
+  //   setSelectedOptions((prev) => {
+  //     const updatedSelection = prev.some((s) => s.service_name === service.service_name)
+  //       ? prev.filter((s) => s.service_name !== service.service_name)
+  //       : [...prev, service];
+
+  //     updateTotalAmount(updatedSelection);
+  //     return updatedSelection;
+  //   });
+  // };
 
   const handleOutsideClick = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {

@@ -68,8 +68,8 @@ function BookingConfirmation() {
           </div>
         </div>
         <div className="booking-confirmation-bottom-btn">
-          <button>View Dashboard</button>
-          <button>Continue Browsing</button>
+        <button onClick={() => navigate("/userdashboard")}>View Dashboard</button>
+        <button onClick={() => navigate("/HomePage")}>Continue Browsing</button>
         </div>
       </div>
     </Layout>
