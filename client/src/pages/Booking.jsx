@@ -30,15 +30,16 @@ function LocationSearch({ location }) {
 function Booking() {
   const navigate = useNavigate(); // Initialize navigate
 
-  const provider_id = useLocation();
-  const services = provider_id.state?.services || []; // Retrieve services from state
-  const providername = provider_id.state?.providername;
+  const handleState = useLocation();
+  const services = handleState.state?.services || []; // Retrieve services from state
+  const providername = handleState.state?.providername;
+  const providerId = handleState.state?.providerId;
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]); // Store selected services as objects
   const [location, setLocation] = useState(null);
   const [searchInput, setSearchInput] = useState('');
-  const [availableSlot, setAvailableSlot] = useState('');
+  //const [availableSlot, setAvailableSlot] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [totalAmount, setTotalAmount] = useState(0);
   const [message, setMessage] = useState('');
@@ -59,44 +60,45 @@ function Booking() {
     },
   ];
 
-  // Fetch available slots in useEffect
-  useEffect(() => {
-    const fetchAvailableSlots = async () => {
-      const query = `
-          mutation {
-            availableslot(provider_id: "${provider_id}") {
-              availableSlot {
-                _id
-                start_time
-                end_time
-              }
-              message
-              success
-            }
-          }
-        `;
+  // // Fetch available slots in useEffect
+  // useEffect(() => {
+  //   const fetchAvailableSlots = async () => {
+  //     const query = `
+  //         mutation {
+  //           availableslot(provider_id: "${provider_id}") {
+  //             availableSlot {
+  //               _id
+  //               start_time
+  //               end_time
+  //             }
+  //             message
+  //             success
+  //           }
+  //         }
+  //       `;
 
-      try {
-        const response = await fetch('http://localhost:5000/graphql', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ query }),
-        });
-        const result = await response.json();
-        if (result.data.availableslot.success) {
-          setAvailableSlot(result.data.availableslot.availableSlot);
-        } else {
-          console.log(result.data.login.message || "Not found provider ID")
-        }
-      } catch (error) {
-        console.log("Not found provider ID");
-      }
-    };
+  //     try {
+  //       const response = await fetch('http://localhost:5000/graphql', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({ query }),
+  //       });
+  //       const result = await response.json();
+  //       if (result.data.availableslot.success) {
+  //         setAvailableSlot(result.data.availableslot.availableSlot);
+  //       } else {
+  //         console.log(result.data.login.message || "Not found provider ID")
+  //       }
+  //     } catch (error) {
+  //       console.log("Not found provider ID");
+  //     }
+  //   };
 
-    fetchAvailableSlots();
-  }, [provider_id]);
+  //   fetchAvailableSlots();
+  // }, [provider_id]);
+
   // Create options from services data
   const options = services.map((service, index) => ({
     id: index + 1,
@@ -112,8 +114,8 @@ function Booking() {
     const gstAmount = totalAmount * gstRate;
     const finalAmount = totalAmount + gstAmount;
 
-    if (totalAmount <= 0) {
-      setMessage("Please select any service.");
+    if (totalAmount<= 0) {
+      setMessage(finalAmount);
       return
     }
 
@@ -134,7 +136,7 @@ function Booking() {
       amount: ${finalAmount},
       booking: {
         user_id: "${userID}",
-        provider_id: "${provider_id}",
+        provider_id: "${providerId}",
         total_price: ${totalAmount},
         status: "pending",
         booking_services: [
@@ -166,7 +168,7 @@ function Booking() {
       });
       const result = await response.json();
       if (result.data.createPaymentIntent.success) {
-        navigate(`/bookingconfirmation`, { state: { totalAmount: totalAmount, profilename: providername, gstAmount: gstAmount } });
+        navigate(`/bookingconfirmation`, { state: { totalAmount: totalAmount, profilename: providername, gstAmount: gstAmount,finalAmount: finalAmount } });
 
       } else {
         setMessage(result.data.createPaymentIntent.message);

@@ -11,6 +11,7 @@ function BookingConfirmation() {
   const providername = provider_id.state?.profilename;
   const amount = provider_id.state?.totalAmount;
   const gstAmount = provider_id.state?.gstAmount;
+  const totalAmount = provider_id.state?.finalAmount;
 
   return (
     <Layout>
@@ -48,7 +49,7 @@ function BookingConfirmation() {
 
               <div className="payment-details-single-date">
                 <div className="title">GST (10%)</div>
-                <div className="cad-amount">CAD 90</div>
+                <div className="cad-amount">CAD {gstAmount}</div>
               </div>
 
               {/* <div className="payment-details-single-date">
@@ -61,7 +62,7 @@ function BookingConfirmation() {
 
               <div className="payment-details-single-date">
                 <div className="title">Total Amount</div>
-                <div className="cad-amount total">CAD {gstAmount}</div>
+                <div className="cad-amount total">CAD {totalAmount}</div>
               </div>
             </div>
           </div>
