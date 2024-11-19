@@ -21,7 +21,7 @@ function ProfessionalProfile() {
   const { provider } = data;
 
   const handleBookNow = () => {
-    navigate(`/booking?providerId=${providerId}`, { state: { services: provider.services } });
+    navigate(`/booking?providerId=${providerId}`, { state: { services: provider.services, providername: provider.user.username } });
   };
   return (
     <Layout>
