@@ -46,6 +46,18 @@ function Booking() {
 
   const dropdownRef = useRef(null);
 
+  const bookingServices = [
+    {
+      service_id: "66fc9e6cfb1f4513f03b13e0",
+      slot_id: "66fc9e6cfb1f4513f03b13e0",
+      price: 200,
+    },
+    {
+      service_id: "66fc9e6cfb1f4513f03b13e0",
+      slot_id: "66fc9e6cfb1f4513f03b13e0",
+      price: 300,
+    },
+  ];
 
   // Fetch available slots in useEffect
   useEffect(() => {
@@ -97,25 +109,52 @@ function Booking() {
   const handleConfirmBooking = async () => {
 
     const gstRate = 0.10; // 10% GST
-    const gstAmount = amount * gstRate;
-    gstAmount = amount + gstAmount;
+    const gstAmount = totalAmount * gstRate;
+    const finalAmount = totalAmount + gstAmount;
 
     if (totalAmount <= 0) {
       setMessage("Please select any service.");
       return
     }
 
-    const query = `
-      mutation {
-        createPaymentIntent(amount: ${gstAmount}) {
-          payment {
-            clientSecret
-          }
-          message
-          success
-        }
+    const userSession = sessionStorage.getItem('usersession');
+    let userID = null;
+
+    if (userSession) {
+      const userData = JSON.parse(userSession);
+      userID = userData._id;
+    } else {
+      setMessage("No user session found.");
+      return
+    }
+
+ const query = `
+  mutation {
+    createPaymentIntent(
+      amount: ${finalAmount},
+      booking: {
+        user_id: "${userID}",
+        provider_id: "${provider_id}",
+        total_price: ${totalAmount},
+        status: "pending",
+        booking_services: [
+          ${bookingServices.map(service => `{
+            service_id: "${service.service_id}",
+            slot_id: "${service.slot_id}",
+            price: ${service.price}
+          }`).join(",")}
+        ]
       }
-    `;
+    ) {
+      payment {
+        clientSecret
+      }
+      message
+      success
+    }
+  }
+`;
+
 
     try {
       const response = await fetch('http://localhost:5000/graphql', {
@@ -127,13 +166,13 @@ function Booking() {
       });
       const result = await response.json();
       if (result.data.createPaymentIntent.success) {
-        navigate(`/bookingconfirmation`, { state: { totalAmount: totalAmount, profilename: providername,gstAmount : gstAmount } });
+        navigate(`/bookingconfirmation`, { state: { totalAmount: totalAmount, profilename: providername, gstAmount: gstAmount } });
 
       } else {
         setMessage(result.data.createPaymentIntent.message);
       }
     } catch (error) {
-      setMessage("Payment failed, please try again.");
+      setMessage("Payment failed, please try again."+error);
     }
   };
 

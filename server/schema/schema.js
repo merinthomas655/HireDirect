@@ -85,6 +85,20 @@ const typeDefs = gql`
     updated_at: String
   }
 
+  input BookingServiceInput {
+   service_id: ID!
+   slot_id: ID
+   price: Float!
+  }
+
+  input BookingInput {
+   user_id: ID!
+   provider_id: ID!
+   total_price: Float!
+   status: String!
+  booking_services: [BookingServiceInput!]!
+ }
+
   type Count {
     totalUsers: Int
     totalProviders: Int
@@ -213,7 +227,7 @@ type Payment {
     login(email: String!, password: String!): LoginSingupResponse
     signup(username: String!, email: String!, password: String!, role: String!): LoginSingupResponse
     availableslot(provider_id: ID!): AvailableSlotResponse
-    createPaymentIntent(amount: Int!): PaymentResponse
+    createPaymentIntent(amount: Int!, booking: BookingInput!): PaymentResponse
   }
 
   input AddressInput {

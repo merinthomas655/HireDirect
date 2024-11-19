@@ -331,14 +331,22 @@ const resolvers = {
       }
     },
 
-    createPaymentIntent: async (_, { amount }) => {
+    createPaymentIntent: async (_, {amount,booking}) => {
       try {
         const paymentIntent = await stripe.paymentIntents.create({
           amount,
           currency: 'usd',
           automatic_payment_methods: { enabled: true },
         });
-        
+
+        console.log('Booking input:', booking);
+
+
+        const newBooking = new Booking({
+          ...booking,
+        });
+        await newBooking.save();
+
         return {
           payment: {
             clientSecret: paymentIntent.client_secret,
@@ -353,7 +361,7 @@ const resolvers = {
             message: error.message,
             success: false
           },
-          message: "Failed to create payment intent",
+          message: "Failed to create payment intent"+error,
           success: false
         };
       }
