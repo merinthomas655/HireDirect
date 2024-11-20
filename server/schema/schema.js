@@ -63,6 +63,7 @@ const typeDefs = gql`
     _id: ID!
     user: User
     provider: Provider!
+    service_id: Service!
     rating: Int!
     comment: String!
     created_at: String
@@ -81,10 +82,14 @@ const typeDefs = gql`
     total_price: Float!
     status: String!
     booking_services: [BookingService]
+    review: Review
     created_at: String
     updated_at: String
   }
-
+  type BookingWithReview {
+    booking: Booking
+    review: Review  
+  }
   type Count {
     totalUsers: Int
     totalProviders: Int
@@ -123,6 +128,7 @@ const typeDefs = gql`
     fetchUserProfile(id: ID!): User
     fetchUserBookingHistory(userId: ID!): [Booking]
     getBookingCounts(userId: ID): BookingCounts
+    getBookingWithReview(bookingId: ID!): BookingWithReview 
   }
 
   type Mutation {
@@ -189,6 +195,7 @@ const typeDefs = gql`
     createReview(
       user: ID!
       provider: ID!
+      service_id: ID!
       rating: Int!
       comment: String
     ): Review
@@ -198,6 +205,11 @@ const typeDefs = gql`
       comment: String
     ): Review
     deleteReview(id: ID!): Review
+    addReview( 
+      bookingId: ID!
+      rating: Int!
+      comment: String
+    ): Review
     modifyUserProfile(
       id: ID!
       username: String
