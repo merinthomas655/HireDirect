@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_BOOKING_WITH_REVIEW, ADD_REVIEW } from '../graphql/queries';
 import "../css/viewdetails.css";
+
 const ViewDetails = ({ onClose }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
