@@ -156,7 +156,32 @@ const resolvers = {
       } catch (error) {
         throw new Error('Error fetching booking history: ' + error.message);
       }
-    }
+    },
+    getBookingWithReview: async (_, { bookingId }) => {
+      try {
+        const booking = await Booking.findById(bookingId)
+          .populate('user_id', 'username')
+          .populate('provider_id', 'bio')
+          .populate({
+            path: 'booking_services.service_id',
+            select: 'service_name description pricing',
+          });
+
+        if (!booking) {
+          throw new Error('Booking not found');
+        }
+
+        const review = await Review.findOne({
+          user_id: booking.user_id,
+          provider_id: booking.provider_id,
+          service_id: booking.booking_services[0]?.service_id,
+        });
+
+        return { booking, review };
+      } catch (error) {
+        throw new Error('Error fetching booking with review: ' + error.message);
+      }
+    },
   },
 
   Provider: {
@@ -321,7 +346,31 @@ const resolvers = {
       } catch (error) {
         throw new Error('Error updating user profile: ' + error.message);
       }
-    }
+    },
+    addReview: async (_, { bookingId, rating, comment }) => {
+      try {
+        const booking = await Booking.findById(bookingId);
+        if (!booking) {
+          throw new Error('Booking not found');
+        }
+        if (booking.status !== 'completed') {
+          throw new Error('Review can only be added for completed bookings');
+        }
+
+        const review = new Review({
+          user_id: booking.user_id,
+          provider_id: booking.provider_id,
+          service_id: booking.booking_services[0]?.service_id,
+          rating,
+          comment,
+        });
+
+        await review.save();
+        return review;
+      } catch (error) {
+        throw new Error('Error adding review: ' + error.message);
+      }
+    },
   },
 };
 
