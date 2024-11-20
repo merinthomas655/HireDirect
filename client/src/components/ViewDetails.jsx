@@ -34,61 +34,64 @@ const ViewDetails = ({ bookingId, onClose }) => {
     if (loading) return <div className="modal"><p>Loading booking details...</p></div>;
     if (error) return <div className="modal"><p>Error: {error.message}</p></div>;
 
-  return (
-    <div className="modal">
-        <div className="modal-content">
-            <button className="close-button" onClick={onClose}>
-            &times;
-            </button>
-            <h2>Booking Details</h2>
-            <p><strong>Service:</strong> Haircut</p>
-            <p><strong>Date:</strong> 2024-11-15</p>
-            <p><strong>Status:</strong> Completed</p>
-            <p><strong>Total Price:</strong> $50.00</p>
-        </div>
-        <h2 className="modal-header">Booking Details</h2>
-        <div className="modal-body">
-            <div className="details-section">
-                <p><strong>Service:</strong> Plumbing Service</p>
-                <p><strong>Date:</strong> November 5, 2024, 3:30 PM</p>
-                <p><strong>Status:</strong> completed</p>
-                <p><strong>Total Price:</strong> $150.50</p>
-            </div>
-        </div>
-        <div className="review-section">
-            <h3>Review</h3>
-            <div className="review-display">
-                <p><strong>Rating:</strong> 4/5</p>
-                <p><strong>Comment:</strong> Great service! The provider was very professional.</p>
-            </div>
-        </div>
-        <div className="review-form">
-            <label>
-                Rating:
-                <input
-                type="number"
-                min="1"
-                max="5"
-                value={rating}
-                onChange={(e) => setRating(e.target.value)}
-                />
-            </label>
-            <label>
-                Comment:
-                <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                ></textarea>
-            </label>
-            <button
-                onClick={handleReviewSubmit}
-                className="submit-review-button"
-            >
-                Submit Review
-            </button>
-        </div>
-    </div>
-  );
-};
+    const { booking, review } = data.getBookingWithReview;
 
+    return (
+      <div className="modal">
+        <div className="modal-content">
+          <button className="close-button" onClick={onClose}>&times;</button>
+          <h2 className="modal-title">Booking Details</h2>
+          <div className="modal-body">
+            <div className="booking-info">
+              <p><strong>Service:</strong> {booking.booking_services[0]?.service_id?.service_name || 'N/A'}</p>
+              <p><strong>Date:</strong> {new Date(parseInt(booking.created_at)).toLocaleString()}</p>
+              <p><strong>Status:</strong> {booking.status}</p>
+              <p><strong>Total Price:</strong> ${booking.total_price.toFixed(2)}</p>
+            </div>
+            {booking.status === 'completed' && (
+              <div className="review-section">
+                <h3>Review</h3>
+                {review ? (
+                  <div className="review-display">
+                    <p><strong>Rating:</strong> {review.rating}/5</p>
+                    <p><strong>Comment:</strong> {review.comment}</p>
+                  </div>
+                ) : (
+                  <div className="review-form">
+                    <label>
+                      Rating:
+                      <input
+                        type="number"
+                        min="1"
+                        max="5"
+                        value={rating}
+                        onChange={(e) => setRating(e.target.value)}
+                        className="review-input"
+                      />
+                    </label>
+                    <label>
+                      Comment:
+                      <textarea
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        className="review-textarea"
+                      ></textarea>
+                    </label>
+                    <button
+                      onClick={handleReviewSubmit}
+                      disabled={reviewLoading}
+                      className="submit-review-button"
+                    >
+                      {reviewLoading ? 'Submitting...' : 'Submit Review'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+  
 export default ViewDetails;
