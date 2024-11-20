@@ -101,3 +101,45 @@ export const FETCH_USER_BOOKING_HISTORY = gql`
     }
   }
 `;
+export const GET_BOOKING_WITH_REVIEW = gql`
+  query GetBookingWithReview($bookingId: ID!) {
+    getBookingWithReview(bookingId: $bookingId) {
+      booking {
+        _id
+        status
+        total_price
+        booking_services {
+          service_id {
+            service_name
+            description
+            pricing
+          }
+        }
+        provider_id {
+          bio
+        }
+        user_id {
+          username
+        }
+        created_at
+      }
+      review {
+        _id
+        rating
+        comment
+        created_at
+      }
+    }
+  }
+`;
+
+export const ADD_REVIEW = gql`
+  mutation AddReview($bookingId: ID!, $rating: Int!, $comment: String!) {
+    addReview(bookingId: $bookingId, rating: $rating, comment: $comment) {
+      _id
+      rating
+      comment
+      created_at
+    }
+  }
+`;

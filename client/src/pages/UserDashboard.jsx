@@ -4,6 +4,7 @@ import { FETCH_USER_PROFILE, GET_BOOKING_COUNTS } from '../graphql/queries';
 import Layout from '../components/Layout';
 import ProfileManagement from '../components/ProfileManagement';
 import BookingTable from '../components/BookingTable';
+import "../css/profilemanagement.css";
 import "../css/userdashboard.css";
 const UserDashboard = () => {
   const userId = JSON.parse(sessionStorage.getItem('usersession'))._id;

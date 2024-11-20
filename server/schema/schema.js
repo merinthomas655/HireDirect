@@ -63,6 +63,7 @@ const typeDefs = gql`
     _id: ID!
     user: User
     provider: Provider!
+    service_id: Service!
     rating: Int!
     comment: String!
     created_at: String
@@ -81,9 +82,16 @@ const typeDefs = gql`
     total_price: Float!
     status: String!
     booking_services: [BookingService]
+    review: Review
     created_at: String
     updated_at: String
   }
+
+  type BookingWithReview {
+    booking: Booking
+    review: Review  
+  }
+
 
   input BookingServiceInput {
    service_id: ID!
@@ -98,6 +106,7 @@ const typeDefs = gql`
    status: String!
   booking_services: [BookingServiceInput!]!
  }
+
 
   type Count {
     totalUsers: Int
@@ -137,6 +146,7 @@ const typeDefs = gql`
     fetchUserProfile(id: ID!): User
     fetchUserBookingHistory(userId: ID!): [Booking]
     getBookingCounts(userId: ID): BookingCounts
+    getBookingWithReview(bookingId: ID!): BookingWithReview 
   }
 
 type Payment {
@@ -207,6 +217,7 @@ type Payment {
     createReview(
       user: ID!
       provider: ID!
+      service_id: ID!
       rating: Int!
       comment: String
     ): Review
@@ -216,6 +227,11 @@ type Payment {
       comment: String
     ): Review
     deleteReview(id: ID!): Review
+    addReview( 
+      bookingId: ID!
+      rating: Int!
+      comment: String
+    ): Review
     modifyUserProfile(
       id: ID!
       username: String
