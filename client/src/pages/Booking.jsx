@@ -6,6 +6,8 @@ import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import L from 'leaflet';
 import { useLocation } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+
 
 // Highlight location icon
 const customIcon = new L.Icon({
@@ -26,8 +28,13 @@ function LocationSearch({ location }) {
 
 
 function Booking() {
-  const provider_id = useLocation();
-  const services = provider_id.state?.services || []; // Retrieve services from state
+  const navigate = useNavigate(); // Initialize navigate
+
+  const handleState = useLocation();
+  const services = handleState.state?.services || []; // Retrieve services from state
+  const providername = handleState.state?.providername;
+  const providerId = handleState.state?.providerId;
+  let slot_id = null;
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]); // Store selected services as objects
@@ -35,26 +42,43 @@ function Booking() {
   const [searchInput, setSearchInput] = useState('');
   const [availableSlot, setAvailableSlot] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [message, setMessage] = useState('');
+  const [bookingServices, setBookingServices] = useState([]); // Make bookingServices stateful
+
+
 
   const dropdownRef = useRef(null);
 
+  // const bookingServices = [
+  //   {
+  //     service_id: "66fc9e6cfb1f4513f03b13e0",
+  //     slot_id: slot_id,
+  //     price: 200,
+  //   },
+  //   {
+  //     service_id: "66fc9e6cfb1f4513f03b13e0",
+  //     slot_id: "66fc9e6cfb1f4513f03b13e0",
+  //     price: 300,
+  //   },
+  // ];
 
   // Fetch available slots in useEffect
   useEffect(() => {
     const fetchAvailableSlots = async () => {
       const query = `
-        mutation {
-          availableslot(provider_id: "${provider_id}") {
-            availableSlot {
-              _id
-              start_time
-              end_time
+          mutation {
+            availableslot(provider_id: "${providerId}") {
+              availableSlot {
+                _id
+                start_time
+                end_time
+              }
+              message
+              success
             }
-            message
-            success
           }
-        }
-      `;
+        `;
 
       try {
         const response = await fetch('http://localhost:5000/graphql', {
@@ -66,7 +90,9 @@ function Booking() {
         });
         const result = await response.json();
         if (result.data.availableslot.success) {
-          setAvailableSlot(result.data.availableslot.availableSlot);
+          const availableSlot = result.data.availableslot.availableSlot;
+          slot_id = availableSlot._id;
+          setAvailableSlot(availableSlot);
         } else {
           console.log(result.data.login.message || "Not found provider ID")
         }
@@ -76,7 +102,8 @@ function Booking() {
     };
 
     fetchAvailableSlots();
-  }, [provider_id]);
+  }, [providerId]);
+
   // Create options from services data
   const options = services.map((service, index) => ({
     id: index + 1,
@@ -86,14 +113,130 @@ function Booking() {
 
   const handleToggle = () => setIsOpen((prev) => !prev);
 
+  const handleConfirmBooking = async () => {
+
+    const gstRate = 0.10; // 10% GST
+    const gstAmount = totalAmount * gstRate;
+    const finalAmount = totalAmount + gstAmount;
+
+    if (totalAmount<= 0) {
+      setMessage("Please select provider from list");
+      return
+    }
+
+    const userSession = sessionStorage.getItem('usersession');
+    let userID = null;
+
+    if (userSession) {
+      const userData = JSON.parse(userSession);
+      userID = userData._id;
+    } else {
+      setMessage("No user session found.");
+      return
+    }
+
+ const query = `
+  mutation {
+    createPaymentIntent(
+      amount: ${99},
+      booking: {
+        user_id: "${userID}",
+        provider_id: "${providerId}",
+        total_price: ${finalAmount},
+        status: "pending",
+        booking_services: [
+          ${bookingServices.map(service => `{
+            service_id: "${service.service_id}",
+            slot_id: "${service.slot_id}",
+            price: ${service.price}
+          }`).join(",")}
+        ]
+      }
+    ) {
+      payment {
+        clientSecret
+      }
+      message
+      success
+    }
+  }
+`;
+
+
+    try {
+      const response = await fetch('http://localhost:5000/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+      const result = await response.json();
+      if (result.data.createPaymentIntent.success) {
+        navigate(`/bookingconfirmation`, { state: { totalAmount: totalAmount, profilename: providername, gstAmount: gstAmount,finalAmount: finalAmount } });
+
+      } else {
+        setMessage(result.data.createPaymentIntent.message);
+      }
+    } catch (error) {
+      setMessage("Payment failed, please try again."+error);
+    }
+  };
+
+  const updateTotalAmount = (selectedServices) => {
+    const amount = selectedServices.reduce((total, service) => total + (service.pricing || 0), 0);
+    setTotalAmount(amount);
+  };
+
   // Update selected options by adding/removing the full service object
   const handleOptionChange = (service) => {
-    setSelectedOptions((prev) =>
-      prev.some((s) => s.service_name === service.service_name)
-        ? prev.filter((s) => s.service_name !== service.service_name)
-        : [...prev, service]
-    );
-  };
+  setSelectedOptions((prev) => {
+    // Check if the service is already selected
+    const isSelected = prev.some((s) => s.service_name === service.service_name);
+
+    // Update the bookingServices array
+    setBookingServices((prevBookingServices) => {
+      if (isSelected) {
+        // Remove the service from bookingServices
+        return prevBookingServices.filter((s) => s.service_id !== service._id);
+      } else {
+        // Add the service to bookingServices only if it doesn't already exist
+        const isAlreadyAdded = prevBookingServices.some((s) => s.service_id === service._id);
+        if (!isAlreadyAdded) {
+          return [
+            ...prevBookingServices,
+            {
+              service_id: service._id,
+              slot_id: availableSlot?._id || null, // Use available slot ID if available
+              price: service.pricing || 0, // Add price of the service
+            },
+          ];
+        }
+        return prevBookingServices; // Return unchanged if already exists
+      }
+    });
+
+    // Update selected options
+    const updatedSelection = isSelected
+      ? prev.filter((s) => s.service_name !== service.service_name) // Remove if selected
+      : [...prev, service]; // Add if not selected
+
+    updateTotalAmount(updatedSelection); // Update the total amount
+    return updatedSelection;
+  });
+};
+
+  
+  // const handleOptionChange = (service) => {
+  //   setSelectedOptions((prev) => {
+  //     const updatedSelection = prev.some((s) => s.service_name === service.service_name)
+  //       ? prev.filter((s) => s.service_name !== service.service_name)
+  //       : [...prev, service];
+
+  //     updateTotalAmount(updatedSelection);
+  //     return updatedSelection;
+  //   });
+  // };
 
   const handleOutsideClick = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -242,8 +385,10 @@ function Booking() {
           </div>
         </div>
         <div className="confirm-booking-btn-wrapper">
-          <button className="confirm-booking-btn">Confirm Booking</button>
+          <button className="confirm-booking-btn" onClick={handleConfirmBooking}>Confirm Booking</button>
         </div>
+        {message && <p className="message-text" style={{ color: 'red' }}>{message}</p>}
+
       </div>
     </Layout>
   );
