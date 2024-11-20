@@ -3,15 +3,36 @@ import { useQuery, useMutation } from '@apollo/client';
 import { GET_BOOKING_WITH_REVIEW, ADD_REVIEW } from '../graphql/queries';
 import "../css/viewdetails.css";
 
-const ViewDetails = ({ onClose }) => {
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
-
-  const handleReviewSubmit = () => {
-    alert(`Review Submitted: Rating - ${rating}, Comment - ${comment}`);
-    setRating(0);
-    setComment('');
-  };
+const ViewDetails = ({ bookingId, onClose }) => {
+    const { loading, error, data } = useQuery(GET_BOOKING_WITH_REVIEW, {
+      variables: { bookingId },
+    });
+  
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
+    const [addReview, { loading: reviewLoading }] = useMutation(ADD_REVIEW, {
+      onCompleted: () => {
+        alert('Review submitted successfully!');
+        setRating(0);
+        setComment('');
+      },
+      onError: (err) => {
+        alert(`Error submitting review: ${err.message}`);
+      },
+    });
+  
+    const handleReviewSubmit = () => {
+      addReview({
+        variables: {
+          bookingId,
+          rating: parseInt(rating),
+          comment,
+        },
+      });
+    };
+  
+    if (loading) return <div className="modal"><p>Loading booking details...</p></div>;
+    if (error) return <div className="modal"><p>Error: {error.message}</p></div>;
 
   return (
     <div className="modal">
