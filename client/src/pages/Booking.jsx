@@ -357,7 +357,7 @@ function Booking() {
           </div>
         </div>
 
-        <div className="payment-box">
+        {/* <div className="payment-box">
           <h3 className="payment-title">Payment</h3>
           <div className="booking-form-field select-filed">
             <select name="payment-type" id="" defaultValue="Payment opt">
@@ -368,7 +368,7 @@ function Booking() {
               <option value="test">test</option>
             </select>
           </div>
-        </div>
+        </div> */}
         <div className="confirm-booking-btn-wrapper">
           <button className="confirm-booking-btn" onClick={handleConfirmBooking}>Confirm Booking</button>
         </div>
