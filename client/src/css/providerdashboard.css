@@ -224,14 +224,6 @@ tbody td {
 .view-details-button:hover {
     background-color: #555;
 }
-/* 
-.booking-details-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f4;
-} */
 
 .booking-details {
     background-color: #f9f9f9;
