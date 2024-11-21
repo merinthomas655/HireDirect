@@ -7,19 +7,19 @@ const ProviderDashboard = () => {
     const [isSlotFormVisible, setSlotFormVisible] = useState(false);
     const [slots, setSlots] = useState([]); // State to store available slots
     const [loading, setLoading] = useState(true);
-    const [services, setServices] = useState([]);      
+    const [services, setServices] = useState([]);
     const [loadingServices, setLoadingServices] = useState(true);
     const [error, setError] = useState(null);
     const [bookings, setBookings] = useState([]);
-    const [loadingBookings, setLoadingBookings] = useState(true); 
+    const [loadingBookings, setLoadingBookings] = useState(true);
     const [editingServiceId, setEditingServiceId] = useState(null);
+    const [selectedBooking, setSelectedBooking] = useState(null);
     const [editedService, setEditedService] = useState({
-        service_name: '',
-        description: '',
-        pricing: ''
+        service_name: "",
+        description: "",
+        pricing: "",
     });
 
-    
     const handleAddSlotClick = () => {
         setSlotFormVisible(!isSlotFormVisible);
     };
@@ -28,12 +28,12 @@ const ProviderDashboard = () => {
     useEffect(() => {
         const fetchSlots = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/slots');
+                const response = await fetch("http://localhost:8000/api/slots");
                 const data = await response.json();
                 setSlots(data);
                 setLoading(false);
             } catch (error) {
-                console.error('Error fetching slots:', error);
+                console.error("Error fetching slots:", error);
                 setLoading(false);
             }
         };
@@ -42,9 +42,11 @@ const ProviderDashboard = () => {
     useEffect(() => {
         const fetchServices = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/services');
+                const response = await fetch(
+                    "http://localhost:8000/api/services"
+                );
                 console.log("response", response);
-                if (!response.ok) throw new Error('Failed to fetch services');
+                if (!response.ok) throw new Error("Failed to fetch services");
                 const data = await response.json();
                 setServices(data);
             } catch (error) {
@@ -58,12 +60,14 @@ const ProviderDashboard = () => {
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/bookings');
-                if (!response.ok) throw new Error('Failed to fetch bookings');
+                const response = await fetch(
+                    "http://localhost:8000/api/bookings"
+                );
+                if (!response.ok) throw new Error("Failed to fetch bookings");
                 const data = await response.json();
                 setBookings(data);
             } catch (error) {
-                console.error('Error fetching bookings:', error);
+                console.error("Error fetching bookings:", error);
             } finally {
                 setLoadingBookings(false);
             }
@@ -71,11 +75,13 @@ const ProviderDashboard = () => {
         fetchBookings();
     }, []);
     const handleEditService = (serviceId) => {
-        const serviceToEdit = services.find(service => service._id === serviceId);
+        const serviceToEdit = services.find(
+            (service) => service._id === serviceId
+        );
         setEditedService({
             service_name: serviceToEdit.service_name,
             description: serviceToEdit.description,
-            pricing: serviceToEdit.pricing
+            pricing: serviceToEdit.pricing,
         });
         setEditingServiceId(serviceId); // Set the service ID to indicate it's being edited
     };
@@ -93,23 +99,34 @@ const ProviderDashboard = () => {
             };
 
             // Send the updated service to the backend
-            const response = await fetch(`http://localhost:8000/api/services/${serviceId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedService),
-            });
+            const response = await fetch(
+                `http://localhost:8000/api/services/${serviceId}`,
+                {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updatedService),
+                }
+            );
             console.log("serviceID", serviceId);
 
-            if (!response.ok) throw new Error('Failed to update service');
+            if (!response.ok) throw new Error("Failed to update service");
 
             // Update the service list locally after successful update
-            setServices(services.map(service =>
-                service._id === serviceId ? { ...service, ...updatedService } : service
-            ));
+            setServices(
+                services.map((service) =>
+                    service._id === serviceId
+                        ? { ...service, ...updatedService }
+                        : service
+                )
+            );
             setEditingServiceId(null); // Exit edit mode after saving
         } catch (error) {
-            console.error('Error saving service:', error);
+            console.error("Error saving service:", error);
         }
+    };
+    const handleViewBooking = (bookingId) => {
+    const bookingToView = bookings.find(booking => booking._id === bookingId);
+    setSelectedBooking(bookingToView);
     };
 
     return (
@@ -141,7 +158,10 @@ const ProviderDashboard = () => {
                 <h2>Profile Management</h2>
                 <div className="profile-form">
                     <div className="profile-picture">
-                            <img src="/assets/img/person-profile-icon.png" alt="Profile" />
+                        <img
+                            src="/assets/img/person-profile-icon.png"
+                            alt="Profile"
+                        />
                     </div>
                     <div className="profile-inputs">
                         <input type="text" placeholder="Name" />
@@ -152,8 +172,6 @@ const ProviderDashboard = () => {
                     <button className="save-button">Save Changes</button>
                 </div>
             </div>
-
-
 
             {/* Availability Management Section */}
             <div className="availability-management">
@@ -195,9 +213,21 @@ const ProviderDashboard = () => {
                         ) : slots.length > 0 ? (
                             slots.map((slot) => (
                                 <tr key={slot._id}>
-                                    <td>{new Date(slot.date).toLocaleDateString()}</td>
-                                    <td>{new Date(slot.start_time).toLocaleTimeString()}</td>
-                                    <td>{new Date(slot.end_time).toLocaleTimeString()}</td>
+                                    <td>
+                                        {new Date(
+                                            slot.date
+                                        ).toLocaleDateString()}
+                                    </td>
+                                    <td>
+                                        {new Date(
+                                            slot.start_time
+                                        ).toLocaleTimeString()}
+                                    </td>
+                                    <td>
+                                        {new Date(
+                                            slot.end_time
+                                        ).toLocaleTimeString()}
+                                    </td>
                                     <td>
                                         <button className="delete-button">
                                             Delete
@@ -214,7 +244,6 @@ const ProviderDashboard = () => {
                 </table>
             </div>
 
-     
             {/* Services Management Section */}
             <div className="services-management">
                 <div className="services-button">
@@ -246,29 +275,63 @@ const ProviderDashboard = () => {
                                             <td>
                                                 <input
                                                     type="text"
-                                                    value={editedService.service_name}
-                                                    onChange={(e) => setEditedService({ ...editedService, service_name: e.target.value })}
+                                                    value={
+                                                        editedService.service_name
+                                                    }
+                                                    onChange={(e) =>
+                                                        setEditedService({
+                                                            ...editedService,
+                                                            service_name:
+                                                                e.target.value,
+                                                        })
+                                                    }
                                                 />
                                             </td>
                                             <td>
                                                 <input
                                                     type="text"
-                                                    value={editedService.description}
-                                                    onChange={(e) => setEditedService({ ...editedService, description: e.target.value })}
+                                                    value={
+                                                        editedService.description
+                                                    }
+                                                    onChange={(e) =>
+                                                        setEditedService({
+                                                            ...editedService,
+                                                            description:
+                                                                e.target.value,
+                                                        })
+                                                    }
                                                 />
                                             </td>
                                             <td>
                                                 <input
                                                     type="number"
-                                                    value={editedService.pricing}
-                                                    onChange={(e) => setEditedService({ ...editedService, pricing: e.target.value })}
+                                                    value={
+                                                        editedService.pricing
+                                                    }
+                                                    onChange={(e) =>
+                                                        setEditedService({
+                                                            ...editedService,
+                                                            pricing:
+                                                                e.target.value,
+                                                        })
+                                                    }
                                                 />
                                             </td>
                                             <td>
-                                                <button onClick={() => handleSaveEdit(service._id)} className="save-button">
+                                                <button
+                                                    onClick={() =>
+                                                        handleSaveEdit(
+                                                            service._id
+                                                        )
+                                                    }
+                                                    className="save-button"
+                                                >
                                                     Save
                                                 </button>
-                                                <button onClick={handleCancelEdit} className="cancel-button">
+                                                <button
+                                                    onClick={handleCancelEdit}
+                                                    className="cancel-button"
+                                                >
                                                     Cancel
                                                 </button>
                                             </td>
@@ -279,7 +342,14 @@ const ProviderDashboard = () => {
                                             <td>{service.description}</td>
                                             <td>${service.pricing}</td>
                                             <td>
-                                                <button onClick={() => handleEditService(service._id)} className="edit-button">
+                                                <button
+                                                    onClick={() =>
+                                                        handleEditService(
+                                                            service._id
+                                                        )
+                                                    }
+                                                    className="edit-button"
+                                                >
                                                     Edit
                                                 </button>
                                                 <button className="delete-button">
@@ -301,18 +371,18 @@ const ProviderDashboard = () => {
 
             {/* Booking History Section */}
             <div className="booking-history">
-    <h2>Booking History</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Booking ID</th>
-                <th>Service</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+                <h2>Booking History</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Service</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+          <tbody>
     {loadingBookings ? (
         <tr>
             <td colSpan="5">Loading...</td>
@@ -323,20 +393,23 @@ const ProviderDashboard = () => {
                 <td>{index + 1}</td>
                 {/* Iterate over the booking_services array to display service names */}
                 <td>
-                    {booking.booking_services.length > 0 ? (
-                        booking.booking_services.map((service, idx) => (
-                            <div key={service.service_id._id || idx}>
-                                {service.service_id?.service_name || 'Service Not Available'}
-                            </div>
-                        ))
-                    ) : (
-                        'No Services Available'
-                    )}
+                    {booking.booking_services.length > 0
+                        ? booking.booking_services.map((service, idx) => (
+                              <div key={service.service_id?._id || idx}>
+                                  {service.service_id?.service_name || "Service Not Available"}
+                              </div>
+                          ))
+                        : "No Services Available"}
                 </td>
                 <td>${booking.total_price}</td>
                 <td>{booking.status}</td>
                 <td>
-                    <button className="view-button">View</button>
+                    <button
+                        className="view-button"
+                        onClick={() => handleViewBooking(booking._id)}
+                    >
+                        View
+                    </button>
                 </td>
             </tr>
         ))
@@ -346,11 +419,27 @@ const ProviderDashboard = () => {
         </tr>
     )}
 </tbody>
-
-
-    </table>
-</div>
-
+{/* Booking Details Section */}
+{selectedBooking && (
+    <div className="booking-details">
+        <h3>Booking Details</h3>
+        <p><strong>Booking ID:</strong> {selectedBooking._id}</p>
+        <p><strong>Status:</strong> {selectedBooking.status}</p>
+        <p><strong>Total Price:</strong> ${selectedBooking.total_price}</p>
+        <h2>Services</h2>
+        <ul>
+            {selectedBooking.booking_services.map((service, idx) => (
+                <li key={idx}>
+                    {service.service_id?.service_name || "Service Not Available"}
+                </li>
+            ))}
+                            </ul>
+                              <button className="close-button" onClick={() => setSelectedBooking(null)}>Close</button>
+        {/* You can add more details as per your requirements */}
+    </div>
+)}
+                </table>
+            </div>
 
             <Footer />
         </div>
@@ -358,4 +447,3 @@ const ProviderDashboard = () => {
 };
 
 export default ProviderDashboard;
-

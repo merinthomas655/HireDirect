@@ -224,6 +224,93 @@ tbody td {
 .view-details-button:hover {
     background-color: #555;
 }
+/* 
+.booking-details-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+} */
+
+.booking-details {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-left: 250px;
+}
+
+.booking-details h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.booking-details p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    margin: 5px 0;
+}
+
+.booking-details p strong {
+    font-weight: bold;
+    color: #333;
+}
+
+.booking-details ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 10px 0;
+}
+
+.booking-details ul li {
+    font-size: 16px;
+    color: #444;
+    margin: 5px 0;
+    padding-left: 20px;
+    position: relative;
+}
+
+.booking-details button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.booking-details button:hover {
+    background-color: #0056b3;
+}
+
+.booking-details p {
+    margin-bottom: 10px;
+}
+
+.booking-details button.close-button {
+    padding: 5px 10px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
 
 @media (max-width: 768px) {
     .stats-container {
