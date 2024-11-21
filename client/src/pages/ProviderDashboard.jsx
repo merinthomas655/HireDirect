@@ -5,7 +5,7 @@ import "../css/providerdashboard.css";
 
 const ProviderDashboard = () => {
     const [isSlotFormVisible, setSlotFormVisible] = useState(false);
-    const [slots, setSlots] = useState([]); // State to store available slots
+    const [slots, setSlots] = useState([]); 
     const [loading, setLoading] = useState(true);
     const [services, setServices] = useState([]);
     const [loadingServices, setLoadingServices] = useState(true);
@@ -24,7 +24,6 @@ const ProviderDashboard = () => {
         setSlotFormVisible(!isSlotFormVisible);
     };
 
-    // Fetch slots data from the backend
     useEffect(() => {
         const fetchSlots = async () => {
             try {
@@ -41,13 +40,11 @@ const ProviderDashboard = () => {
     }, []);
     const handleDeleteSlot = async (slotId) => {
         try {
-            // Assuming you have an API endpoint to delete the slot by ID
             const response = await fetch(`/api/slots/${slotId}`, {
                 method: "DELETE",
             });
 
             if (response.ok) {
-                // Remove the deleted slot from the local state
                 setSlots(slots.filter((slot) => slot._id !== slotId));
             } else {
                 console.error("Failed to delete the slot");
@@ -100,11 +97,11 @@ const ProviderDashboard = () => {
             description: serviceToEdit.description,
             pricing: serviceToEdit.pricing,
         });
-        setEditingServiceId(serviceId); // Set the service ID to indicate it's being edited
+        setEditingServiceId(serviceId); 
     };
 
     const handleCancelEdit = () => {
-        setEditingServiceId(null); // Close the edit mode
+        setEditingServiceId(null); 
     };
 
     const handleSaveEdit = async (serviceId) => {
@@ -115,7 +112,6 @@ const ProviderDashboard = () => {
                 pricing: editedService.pricing,
             };
 
-            // Send the updated service to the backend
             const response = await fetch(
                 `http://localhost:8000/api/services/${serviceId}`,
                 {
@@ -128,7 +124,6 @@ const ProviderDashboard = () => {
 
             if (!response.ok) throw new Error("Failed to update service");
 
-            // Update the service list locally after successful update
             setServices(
                 services.map((service) =>
                     service._id === serviceId
@@ -136,21 +131,19 @@ const ProviderDashboard = () => {
                         : service
                 )
             );
-            setEditingServiceId(null); // Exit edit mode after saving
+            setEditingServiceId(null); 
         } catch (error) {
             console.error("Error saving service:", error);
         }
     };
-    // Function to handle deleting a service
+
     const handleDeleteService = async (serviceId) => {
         try {
-            // Assuming you have an API endpoint to delete the service by ID
             const response = await fetch(`/api/services/${serviceId}`, {
                 method: "DELETE",
             });
 
             if (response.ok) {
-                // Remove the deleted service from the local state
                 setServices(
                     services.filter((service) => service._id !== serviceId)
                 );
@@ -173,7 +166,6 @@ const ProviderDashboard = () => {
         <div className="provider-dashboard">
             <Header />
 
-            {/* Stats Section */}
             <div className="stats-container">
                 <div className="stat-box">
                     <h2>Total Bookings</h2>
@@ -193,7 +185,6 @@ const ProviderDashboard = () => {
                 </div>
             </div>
 
-            {/* Profile Management Section */}
             <div className="profile-management">
                 <h2>Profile Management</h2>
                 <div className="profile-form">
@@ -213,7 +204,6 @@ const ProviderDashboard = () => {
                 </div>
             </div>
 
-            {/* Availability Management Section */}
             <div className="availability-management">
                 <div className="availability-button">
                     <h2>Availability Management</h2>
@@ -286,7 +276,6 @@ const ProviderDashboard = () => {
                 </table>
             </div>
 
-            {/* Services Management Section */}
             <div className="services-management">
                 <div className="services-button">
                     <h2>Services Management</h2>
@@ -439,7 +428,6 @@ const ProviderDashboard = () => {
                             bookings.map((booking, index) => (
                                 <tr key={booking._id}>
                                     <td>{index + 1}</td>
-                                    {/* Iterate over the booking_services array to display service names */}
                                     <td>
                                         {booking.booking_services.length > 0
                                             ? booking.booking_services.map(
@@ -511,7 +499,6 @@ const ProviderDashboard = () => {
                             >
                                 Close
                             </button>
-                            {/* You can add more details as per your requirements */}
                         </div>
                     )}
                 </table>
