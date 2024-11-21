@@ -124,9 +124,32 @@ const ProviderDashboard = () => {
             console.error("Error saving service:", error);
         }
     };
+    // Function to handle deleting a service
+    const handleDeleteService = async (serviceId) => {
+        try {
+            // Assuming you have an API endpoint to delete the service by ID
+            const response = await fetch(`/api/services/${serviceId}`, {
+                method: "DELETE",
+            });
+
+            if (response.ok) {
+                // Remove the deleted service from the local state
+                setServices(
+                    services.filter((service) => service._id !== serviceId)
+                );
+            } else {
+                console.error("Failed to delete the service");
+            }
+        } catch (error) {
+            console.error("Error deleting service:", error);
+        }
+    };
+
     const handleViewBooking = (bookingId) => {
-    const bookingToView = bookings.find(booking => booking._id === bookingId);
-    setSelectedBooking(bookingToView);
+        const bookingToView = bookings.find(
+            (booking) => booking._id === bookingId
+        );
+        setSelectedBooking(bookingToView);
     };
 
     return (
@@ -353,7 +376,13 @@ const ProviderDashboard = () => {
                                                     Edit
                                                 </button>
                                                 <button className="delete-button">
-                                                    Delete
+                                                    onClick=
+                                                    {() =>
+                                                        handleDeleteService(
+                                                            service._id
+                                                        )
+                                                    }
+                                                    > Delete
                                                 </button>
                                             </td>
                                         </>
@@ -382,62 +411,90 @@ const ProviderDashboard = () => {
                             <th>Actions</th>
                         </tr>
                     </thead>
-          <tbody>
-    {loadingBookings ? (
-        <tr>
-            <td colSpan="5">Loading...</td>
-        </tr>
-    ) : bookings.length > 0 ? (
-        bookings.map((booking, index) => (
-            <tr key={booking._id}>
-                <td>{index + 1}</td>
-                {/* Iterate over the booking_services array to display service names */}
-                <td>
-                    {booking.booking_services.length > 0
-                        ? booking.booking_services.map((service, idx) => (
-                              <div key={service.service_id?._id || idx}>
-                                  {service.service_id?.service_name || "Service Not Available"}
-                              </div>
-                          ))
-                        : "No Services Available"}
-                </td>
-                <td>${booking.total_price}</td>
-                <td>{booking.status}</td>
-                <td>
-                    <button
-                        className="view-button"
-                        onClick={() => handleViewBooking(booking._id)}
-                    >
-                        View
-                    </button>
-                </td>
-            </tr>
-        ))
-    ) : (
-        <tr>
-            <td colSpan="5">No bookings available</td>
-        </tr>
-    )}
-</tbody>
-{/* Booking Details Section */}
-{selectedBooking && (
-    <div className="booking-details">
-        <h3>Booking Details</h3>
-        <p><strong>Booking ID:</strong> {selectedBooking._id}</p>
-        <p><strong>Status:</strong> {selectedBooking.status}</p>
-        <p><strong>Total Price:</strong> ${selectedBooking.total_price}</p>
-        <h2>Services</h2>
-        <ul>
-            {selectedBooking.booking_services.map((service, idx) => (
-                <li key={idx}>
-                    {service.service_id?.service_name || "Service Not Available"}
-                </li>
-            ))}
+                    <tbody>
+                        {loadingBookings ? (
+                            <tr>
+                                <td colSpan="5">Loading...</td>
+                            </tr>
+                        ) : bookings.length > 0 ? (
+                            bookings.map((booking, index) => (
+                                <tr key={booking._id}>
+                                    <td>{index + 1}</td>
+                                    {/* Iterate over the booking_services array to display service names */}
+                                    <td>
+                                        {booking.booking_services.length > 0
+                                            ? booking.booking_services.map(
+                                                  (service, idx) => (
+                                                      <div
+                                                          key={
+                                                              service.service_id
+                                                                  ?._id || idx
+                                                          }
+                                                      >
+                                                          {service.service_id
+                                                              ?.service_name ||
+                                                              "Service Not Available"}
+                                                      </div>
+                                                  )
+                                              )
+                                            : "No Services Available"}
+                                    </td>
+                                    <td>${booking.total_price}</td>
+                                    <td>{booking.status}</td>
+                                    <td>
+                                        <button
+                                            className="view-button"
+                                            onClick={() =>
+                                                handleViewBooking(booking._id)
+                                            }
+                                        >
+                                            View
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="5">No bookings available</td>
+                            </tr>
+                        )}
+                    </tbody>
+                    {/* Booking Details Section */}
+                    {selectedBooking && (
+                        <div className="booking-details">
+                            <h3>Booking Details</h3>
+                            <p>
+                                <strong>Booking ID:</strong>{" "}
+                                {selectedBooking._id}
+                            </p>
+                            <p>
+                                <strong>Status:</strong>{" "}
+                                {selectedBooking.status}
+                            </p>
+                            <p>
+                                <strong>Total Price:</strong> $
+                                {selectedBooking.total_price}
+                            </p>
+                            <h2>Services</h2>
+                            <ul>
+                                {selectedBooking.booking_services.map(
+                                    (service, idx) => (
+                                        <li key={idx}>
+                                            {service.service_id?.service_name ||
+                                                "Service Not Available"}
+                                        </li>
+                                    )
+                                )}
                             </ul>
-                              <button className="close-button" onClick={() => setSelectedBooking(null)}>Close</button>
-        {/* You can add more details as per your requirements */}
-    </div>
-)}
+                            <button
+                                className="close-button"
+                                onClick={() => setSelectedBooking(null)}
+                            >
+                                Close
+                            </button>
+                            {/* You can add more details as per your requirements */}
+                        </div>
+                    )}
                 </table>
             </div>
 
