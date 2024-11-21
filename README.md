@@ -17,8 +17,7 @@ HireDirect is an on-demand professional services marketplace where users can bro
    - Manage users, services, categories, and reviews
    - Oversee bookings and payment systems
    - Admin side login credentials : 
-     Email id : admin@gmail.com
-     Password : HireDirect
+
 
 ## Installation
 

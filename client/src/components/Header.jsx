@@ -37,7 +37,7 @@ function Header() {
                 <div className="logo">
                     <img
                         className="img-fluid"
-                        src="./assets/img/logo.png"
+                        src="/assets/img/logo.png"
                         alt="logo.png"
                     />
                 </div>

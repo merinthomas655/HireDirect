@@ -1,47 +1,68 @@
-import React from "react";
-import { useQuery } from '@apollo/client';
-import { GET_PROVIDER_PROFILE } from '../graphql/queries';
-import { useParams } from 'react-router-dom';
-import ReviewsSection from '../components/ReviewsSection';
-import ServicesTable from '../components/ServicesTable';
-import Layout from '../components/Layout';
+import React, { useContext } from "react";
+import Layout from "../components/Layout.jsx";
+import { useQuery } from "@apollo/client";
+import { GET_PROVIDER_PROFILE } from "../graphql/queries";
+import { useNavigate, useParams } from "react-router-dom";
+import ReviewsSection from "../components/ReviewsSection";
+import ServicesTable from "../components/ServicesTable";
+import ThemeContext from "../context/ThemeContext";
+
 import "../css/professionalprofile.css";
-import "../css/servicestable.css";
-import "../css/reviewssection.css";
 
 function ProfessionalProfile() {
   const { providerId } = useParams();
-  const { loading, error, data } = useQuery(GET_PROVIDER_PROFILE, { variables: { id: providerId } });
+  const navigate = useNavigate();
+  const { theme, toggleTheme } = useContext(ThemeContext);
+
+  const { loading, error, data } = useQuery(GET_PROVIDER_PROFILE, {
+    variables: { id: providerId },
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   const { provider } = data;
+
+  const handleBookNow = () => {
+    navigate(`/booking?providerId=${providerId}`, {
+      state: {
+        services: provider.services,
+        providername: provider.user.username,
+        providerId: providerId,
+      },
+    });
+  };
+
   return (
     <Layout>
-      <div className="professional-profile">
+      <header className={`professional-header ${theme}`}>
         <h1>Professional Profile</h1>
-        <div className="profile-header">
-          <div className="profile-avatar">
+        <button className="theme-toggle-button" onClick={toggleTheme}>
+          Switch to {theme === "light" ? "Dark" : "Light"} Mode
+        </button>
+      </header>
+      <div className={`professional-profile-container ${theme}`}>
+        <div className="professional-profile-content">
+          <div className="professional-profile-avatar">
             <img src="../assets/img/user.png" alt="Profile Avatar" />
           </div>
-         
-          <div className="profile-info">
-            <h1>{provider.user.username}</h1>
-            <p className="bio">{provider.bio}</p>
-            <p className="rating">Rating: {provider.ratings}</p>
-            <p className="location">Location: {provider.location.address}</p>
-            <button className="book-now-button">Book Now</button>
+          <div className="professional-profile-info">
+            <h2>{provider.user.username}</h2>
+            <p className="professional-profile-bio">{provider.bio}</p>
+            <p className="professional-profile-rating">Rating: {provider.ratings}</p>
+            <p className="professional-profile-location">Location: {provider.location.address}</p>
+            <button className="professional-book-now-button" onClick={handleBookNow}>
+              Book Now
+            </button>
           </div>
         </div>
-        <div className="services-section">
-          <h3>Pricing and Available Services</h3>
+        <section className="professional-services-section">
           <ServicesTable services={provider.services} />
-        </div>
-        <div className="reviews-section">
+        </section>
+        <section className="professional-reviews-section">
           <h3>Customer Reviews</h3>
           <ReviewsSection reviews={provider.reviews} />
-        </div>
+        </section>
       </div>
     </Layout>
   );

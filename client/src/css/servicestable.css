@@ -1,39 +1,120 @@
-.services-section table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 30px;
-    font-family: 'Arial', sans-serif;
+/* Services Table Styles */
+.user-services-section {
+  margin-top: 30px;
+  border-radius: 12px;
+  padding: 20px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.user-services-section h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.services-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.services-controls button {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.user-table-responsive {
+  overflow-x: auto;
+}
+
+.user-services-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-services-table th,
+.user-services-table td {
+  padding: 12px;
+  border: 1px solid;
+  text-align: left;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.user-services-table th {
+  font-weight: bold;
+}
+
+body[data-theme="light"] .user-services-section {
+  background-color: #ffffff;
+  color: #333;
+}
+
+body[data-theme="light"] .user-services-table th {
+  background-color: #f3f3f3;
+  color: #333;
+}
+
+body[data-theme="light"] .user-services-table td {
+  background-color: #ffffff;
+  color: #333;
+}
+
+body[data-theme="dark"] .user-services-section {
+  background-color: black;
+  color: white;
+}
+
+body[data-theme="dark"] .user-services-table th {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+body[data-theme="dark"] .user-services-table td {
+  background-color: black;
+  color: white;
+}
+
+.start-voice-button {
+  background-color: var(--primary-color);
+  color: var(--button-text);
+}
+
+.stop-voice-button {
+  background-color: var(--warning-color);
+  color: var(--button-text);
+}
+
+.filter-price-button {
+  background-color: var(--success-color);
+  color: var(--button-text);
+}
+
+.reset-button {
+  background-color: var(--danger-color);
+  color: var(--button-text);
+}
+
+@media (max-width: 1024px) {
+  .user-services-table th,
+  .user-services-table td {
+    padding: 10px;
   }
-  
-  .services-section th,.services-section td {
-    padding: 15px;
-    text-align: left;
-    border: 1px solid #ddd;
+}
+
+@media (max-width: 768px) {
+  .user-services-table th,
+  .user-services-table td {
+    font-size: 12px;
+    padding: 8px;
   }
-  
-  .services-section th {
-    background-color: #52658F;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
+
+  .services-controls button {
+    font-size: 10px;
+    padding: 4px 8px;
   }
-  
-  .services-section td {
-    font-size: 15px;
-    color: #333;
-    background-color: #f9f9f9;
-  }
-  
-  .services-section tr:nth-child(even) td {
-    background-color: #f2f2f2;
-  }
-  
-  .services-section td:last-child {
-    text-align: right;
-  }
-  
-  .services-section th:last-child,.services-section td:last-child {
-    padding-right: 20px; 
-  }
-  
-  
+}

@@ -1,0 +1,105 @@
+.user-history-section {
+  margin-top: 30px;
+  border-radius: 12px;
+  padding: 20px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.user-history-section h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.user-table-responsive {
+  overflow-x: auto;
+}
+
+.user-history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-history-table th,
+.user-history-table td {
+  padding: 12px;
+  border: 1px solid;
+  text-align: left;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.user-history-table th {
+  font-weight: bold;
+}
+
+.user-details-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
+}
+
+body[data-theme="light"] .user-history-section {
+  background-color: #ffffff;
+  color: #333;
+}
+
+body[data-theme="light"] .user-history-table th {
+  background-color: #f3f3f3;
+  color: #333;
+}
+
+body[data-theme="light"] .user-history-table td {
+  background-color: #ffffff;
+  color: #333;
+}
+
+body[data-theme="light"] .user-details-button {
+  background-color: #333a56;
+  color: white;
+}
+
+body[data-theme="dark"] .user-history-section {
+  background-color: black;
+  color: white;
+}
+
+body[data-theme="dark"] .user-history-table th {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+body[data-theme="dark"] .user-history-table td {
+  background-color: black;
+  color: white;
+}
+
+body[data-theme="dark"] .user-details-button {
+  background-color: white;
+  color: black;
+}
+
+@media (max-width: 1024px) {
+  .user-history-table th,
+  .user-history-table td {
+    padding: 10px;
+  }
+
+  .user-details-button {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-history-table th,
+  .user-history-table td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .user-details-button {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+}

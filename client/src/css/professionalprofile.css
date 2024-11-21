@@ -1,72 +1,162 @@
+/* Header */
+.professional-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: var(--header-background);
+  color: var(--header-text);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.professional-header h1 {
+  font-size: 28px;
+  margin: 0;
+}
+
+.theme-toggle-button {
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Profile Container */
 .professional-profile-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .profile-header {
-    display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.professional-profile-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.professional-profile-avatar img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+.professional-profile-info h2 {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.professional-profile-bio,
+.professional-profile-rating,
+.professional-profile-location {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.professional-book-now-button {
+  padding: 10px 20px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Light Theme */
+body[data-theme="light"] {
+  --header-background: #333a56;
+  --header-text: #ffffff;
+}
+
+body[data-theme="light"] .professional-profile-container {
+  background-color: white;
+  color: #333;
+}
+
+body[data-theme="light"] .theme-toggle-button {
+  background-color: #ffffff;
+  color: #333a56;
+}
+
+body[data-theme="light"] .theme-toggle-button:hover {
+  background-color: #555;
+}
+
+body[data-theme="light"] .professional-book-now-button {
+  background-color: #333a56;
+  color: white;
+}
+
+body[data-theme="light"] .professional-book-now-button:hover {
+  background-color: #555;
+}
+
+/* Dark Theme */
+body[data-theme="dark"] {
+  --header-background: #121212;
+  --header-text: #f0f0f0;
+}
+
+body[data-theme="dark"] .professional-header {
+  background-color: var(--header-background);
+  color: var(--header-text);
+}
+
+body[data-theme="dark"] .professional-profile-container {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+body[data-theme="dark"] .theme-toggle-button {
+  background-color: #f0f0f0;
+  color: #121212;
+}
+
+body[data-theme="dark"] .theme-toggle-button:hover {
+  background-color: #ccc;
+}
+
+body[data-theme="dark"] .professional-book-now-button {
+  background-color: #f0f0f0;
+  color: #121212;
+}
+
+body[data-theme="dark"] .professional-book-now-button:hover {
+  background-color: #ccc;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .professional-header {
+    flex-direction: column;
     align-items: center;
-    gap: 20px; 
-    border-bottom: 1px solid #e3e3e3;
-    padding-bottom: 20px;
   }
-  
-  .profile-avatar img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-  }
-  
-  .profile-info {
-    flex: 1;
-  }
-  
-  .profile-info h1 {
-    font-size: 36px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .profile-info .bio {
-    font-size: 16px;
-    color: #555;
-    margin-top: 10px;
-  }
-  
-  .profile-info .rating,.profile-info .location {
-    font-size: 14px;
-    margin-top: 10px;
-    color: #777;
-  }
-  
-  .book-now-button {
-    background-color: #52658F;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 20px;
-  }
-  
-  .book-now-button:hover {
-    background-color: #4168b0;
-  }
-  
-  .services-section,.reviews-section {
-    margin-top: 40px;
-  }
-  
-  .services-section h3,.reviews-section h3 {
+
+  .professional-header h1 {
     font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
+    text-align: center;
   }
-  
-  .services-section table,.reviews-section {
-    width: 100%;
+
+  .theme-toggle-button {
+    margin-top: 10px;
   }
-  
+
+  .professional-profile-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .professional-profile-avatar img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .professional-profile-info h2 {
+    font-size: 24px;
+    text-align: center;
+  }
+}

@@ -22,42 +22,42 @@ function Footer() {
           <div className="social-wrapper">
             <Link to="https://www.youtube.com/">
               <img
-                src="./assets/img/youtube.png"
+                src="/assets/img/youtube.png"
                 alt="youtube"
                 className="img-fluid"
               />
             </Link>
             <Link to="https://x.com/?lang=en">
               <img
-                src="./assets/img/twitter.png"
+                src="/assets/img/twitter.png"
                 alt="twitter"
                 className="img-fluid"
               />
             </Link>
             <Link to="https://www.instagram.com/">
               <img
-                src="./assets/img/instagram.png"
+                src="/assets/img/instagram.png"
                 alt="instagram"
                 className="img-fluid"
               />
             </Link>
             <Link to="https://www.facebook.com/">
               <img
-                src="./assets/img/facebook.png"
+                src="/assets/img/facebook.png"
                 alt="facebook"
                 className="img-fluid"
               />
             </Link>
             <Link to="https://www.linkedin.com">
               <img
-                src="./assets/img/linkedin.png"
+                src="/assets/img/linkedin.png"
                 alt="linkedin"
                 className="img-fluid"
               />
             </Link>
           </div>
           <div className="footer-logo">
-            <img src="./assets/img/logo.png" alt="logo" className="img-fluid" />
+            <img src="/assets/img/logo.png" alt="logo" className="img-fluid" />
           </div>
           <div className="footer-navigation">
             {isLoggedIn ? ( 
