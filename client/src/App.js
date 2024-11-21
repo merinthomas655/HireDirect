@@ -1,4 +1,5 @@
 import './App.css';
+import { ThemeProvider } from "./context/ThemeContext";
 import router from './route';
 import {
   RouterProvider,
@@ -6,7 +7,10 @@ import {
 
 function App() {
   return (
-    <RouterProvider router={router} />
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+    
   );
 }
 

@@ -1,10 +1,11 @@
 .dashboard-container {
   padding: 20px;
-  color: #2f3a4f;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .dashboard-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -13,6 +14,7 @@
   font-size: 28px;
   font-weight: bold;
   margin-left: 10px;
+  transition: color 0.3s ease;
 }
 
 .dashboard-stats {
@@ -22,33 +24,94 @@
 }
 
 .stat-item {
-  background-color: #ffffff;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   text-align: center;
   padding: 20px;
   flex: 1;
   margin: 10px;
-  transition: transform 0.2s;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, background-color 0.3s ease, color 0.3s ease;
 }
 
 .stat-item:hover {
   transform: translateY(-5px);
-  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
 }
 
 .stat-item h2 {
   font-size: 16px;
-  color: #666;
   margin: 10px 0;
+  transition: color 0.3s ease;
 }
 
 .stat-item p {
   font-size: 24px;
   font-weight: bold;
-  color: #2f3a4f;
+  transition: color 0.3s ease;
 }
 
+body[data-theme="light"] .dashboard-container {
+  background-color: #ffffff;
+  color: #333;
+}
+
+body[data-theme="light"] .stat-item {
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+body[data-theme="light"] .stat-item h2 {
+  color: #666;
+}
+
+body[data-theme="light"] .theme-toggle-button {
+  background-color: #333a56;
+  color: #ffffff;
+}
+body[data-theme="light"] h1 {
+  color: #ffffff;
+}
+ 
+body[data-theme="light"] h2 {
+  color: #333;
+}
+
+body[data-theme="dark"] .dashboard-container {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+body[data-theme="dark"] .stat-item {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+body[data-theme="dark"] .stat-item h2 {
+  color: #ffffff;
+}
+
+body[data-theme="dark"] .theme-toggle-button {
+  background-color: #0066ff;
+  color: #ffffff;
+}
+
+body[data-theme="dark"] h1, 
+body[data-theme="dark"] h2 {
+  color: #ffffff;
+}
+
+.theme-toggle-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.theme-toggle-button:hover {
+  opacity: 0.9;
+}
 
 @media (max-width: 1024px) {
   .dashboard-stats {
@@ -60,7 +123,6 @@
     max-width: 45%;
   }
 }
-
 
 @media (max-width: 768px) {
   .dashboard-stats {
