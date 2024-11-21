@@ -39,6 +39,23 @@ const ProviderDashboard = () => {
         };
         fetchSlots();
     }, []);
+    const handleDeleteSlot = async (slotId) => {
+        try {
+            // Assuming you have an API endpoint to delete the slot by ID
+            const response = await fetch(`/api/slots/${slotId}`, {
+                method: "DELETE",
+            });
+
+            if (response.ok) {
+                // Remove the deleted slot from the local state
+                setSlots(slots.filter((slot) => slot._id !== slotId));
+            } else {
+                console.error("Failed to delete the slot");
+            }
+        } catch (error) {
+            console.error("Error deleting slot:", error);
+        }
+    };
     useEffect(() => {
         const fetchServices = async () => {
             try {
@@ -252,7 +269,9 @@ const ProviderDashboard = () => {
                                         ).toLocaleTimeString()}
                                     </td>
                                     <td>
-                                        <button className="delete-button">
+                                        <button className="delete-button"
+                                            onClick=
+                                            {() => handleDeleteSlot(slot._id)}>
                                             Delete
                                         </button>
                                     </td>
@@ -375,14 +394,14 @@ const ProviderDashboard = () => {
                                                 >
                                                     Edit
                                                 </button>
-                                                <button className="delete-button">
+                                                <button className="delete-button"
                                                     onClick=
                                                     {() =>
                                                         handleDeleteService(
                                                             service._id
                                                         )
-                                                    }
-                                                    > Delete
+                                                    }>
+                                                    Delete
                                                 </button>
                                             </td>
                                         </>
