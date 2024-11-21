@@ -46,22 +46,7 @@ function Booking() {
   const [message, setMessage] = useState('');
   const [bookingServices, setBookingServices] = useState([]); // Make bookingServices stateful
 
-
-
   const dropdownRef = useRef(null);
-
-  // const bookingServices = [
-  //   {
-  //     service_id: "66fc9e6cfb1f4513f03b13e0",
-  //     slot_id: slot_id,
-  //     price: 200,
-  //   },
-  //   {
-  //     service_id: "66fc9e6cfb1f4513f03b13e0",
-  //     slot_id: "66fc9e6cfb1f4513f03b13e0",
-  //     price: 300,
-  //   },
-  // ];
 
   // Fetch available slots in useEffect
   useEffect(() => {
@@ -138,7 +123,7 @@ function Booking() {
  const query = `
   mutation {
     createPaymentIntent(
-      amount: ${99},
+      amount: ${finalAmount},
       booking: {
         user_id: "${userID}",
         provider_id: "${providerId}",
