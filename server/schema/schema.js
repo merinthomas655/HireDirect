@@ -25,7 +25,7 @@ const typeDefs = gql`
     _id: ID!
     user: User # Keep this field for the user reference
     user_id: ID! # Add this field for user ID reference
-    bio: String!
+    bio: String
     location: Location!
     image: String
     ratings: Float

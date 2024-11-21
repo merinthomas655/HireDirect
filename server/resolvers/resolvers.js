@@ -36,6 +36,36 @@ const resolvers = {
         throw new Error('Failed to fetch providers: ' + error.message);
       }
     },
+
+    users: async () => {
+      try {
+        return await User.find(); // Ensure this matches your Mongoose model name
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        return null;
+      }
+    },
+    providers: async (_, { categoryId, location, minRating }) => {
+      try {
+        const filters = {};
+        if (categoryId) filters.services = categoryId;
+        if (minRating) filters.ratings = { $gte: minRating };
+        // Optionally add location-based filtering here
+        return await Provider.find(filters).populate('user_id');
+      } catch (error) {
+        console.error("Error fetching providers:", error);
+        throw new Error("Failed to fetch providers");
+      }
+    },
+    providers: async () => {
+      try {
+        return await Provider.find().populate('user_id'); // Populates the `user_id` field
+      } catch (error) {
+        console.error("Error fetching providers:", error);
+        throw new Error("Failed to fetch providers");
+      }
+    },
+
     provider: async (_, { id }) => {
       try {
         const provider = await Provider.findById(id)
@@ -419,7 +449,57 @@ const resolvers = {
       }
     },    
 
+    updateUser: async (_, { id, username, email, role, phone_number, address }) => {
+      try {
+        const updatedUser = await User.findByIdAndUpdate(
+          id,
+          { username, email, role, phone_number, address },
+          { new: true }
+        );
+        return updatedUser;
+      } catch (error) {
+        console.error("Error updating user:", error);
+        throw new Error("Update failed");
+      }
+    },
+
+    updateProvider: async (_, { id, bio, location, image, ratings }) => {
+      try {
+        const updatedProvider = await Provider.findByIdAndUpdate(
+          id,
+          { bio, location, image, ratings },
+          { new: true }
+        ).populate('user_id'); // Populates user details
+        return updatedProvider;
+      } catch (error) {
+        console.error("Error updating provider:", error);
+        throw new Error("Failed to update provider");
+      }
+    },
+    deleteProvider: async (_, { id }) => {
+      try {
+        const deletedProvider = await Provider.findByIdAndDelete(id);
+        if (!deletedProvider) {
+          throw new Error("Provider not found");
+        }
+        return deletedProvider;
+      } catch (error) {
+        console.error("Error deleting provider:", error);
+        throw new Error("Failed to delete provider");
+      }
+    },
+
+    deleteUser: async (_, { id }) => {
+      try {
+        const deletedUser = await User.findByIdAndDelete(id);
+        return deletedUser;
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        throw new Error("Delete failed");
+      }
+    },
   },
+  
 };
 
 module.exports = resolvers;

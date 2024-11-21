@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Layout from '../components/Layout.jsx';
 import "../css/adminDashboard.css";
 
@@ -40,6 +41,8 @@ export default function AdminDashboard() {
     bookings: []
   });
 
+  const navigate = useNavigate(); // Initialize navigate
+
   useEffect(() => {
     if (data) {
       setDashboardData({
@@ -68,11 +71,15 @@ export default function AdminDashboard() {
   ];
 
   const managementButtons = [
-    "Manage Users",
-    "Manage Providers",
-    "Manage Services",
-    "Manage Categories"
+    { title: "Manage Users", path: "/editusers" },
+    { title: "Manage Providers", path: "/manageproviders" },
+    { title: "Manage Services", path: "#" },
+    { title: "Manage Categories", path: "#" }
   ];
+
+  const handleButtonClick = (path) => {
+    navigate(path); // Navigate to the given path
+  };
 
   return (
     <Layout>
@@ -87,9 +94,13 @@ export default function AdminDashboard() {
         </div>
 
         <div className="ud-management-grid">
-          {managementButtons.map((title, index) => (
-            <button key={index} className="ud-management-button">
-              {title}
+          {managementButtons.map((button, index) => (
+            <button
+              key={index}
+              className="ud-management-button"
+              onClick={() => handleButtonClick(button.path)}
+            >
+              {button.title}
             </button>
           ))}
         </div>
