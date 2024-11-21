@@ -384,9 +384,10 @@ const resolvers = {
 
     createPaymentIntent: async (_, {amount,booking}) => {
       try {
+        amount = amount * 100;
         const paymentIntent = await stripe.paymentIntents.create({
           amount,
-          currency: 'usd',
+          currency: 'cad',
           automatic_payment_methods: { enabled: true },
         });
 
