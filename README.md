@@ -16,7 +16,10 @@ HireDirect is an on-demand professional services marketplace where users can bro
 3. **Admin Side:**
    - Manage users, services, categories, and reviews
    - Oversee bookings and payment systems
-   - Admin side login credentials : 
+   - Note: To access the provider dashboard, you need to log in as an admin.
+            Admin Login Credentials:
+            Username: **admin@gmail.com**
+            Password: **HireDirect**
 
 
 ## Installation
