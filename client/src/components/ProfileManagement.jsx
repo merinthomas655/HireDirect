@@ -1,21 +1,29 @@
-import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { MODIFY_USER_PROFILE } from '../graphql/queries';
+import React, { useContext, useState } from "react";
+import { useMutation } from "@apollo/client";
+import { MODIFY_USER_PROFILE } from "../graphql/queries";
+import ThemeContext from "../context/ThemeContext";
 import "../css/profilemanagement.css";
 
-const ProfileManagement = ({profile}) => {
+const ProfileManagement = ({ profile }) => {
   const [username, setUsername] = useState(profile.username);
   const [email, setEmail] = useState(profile.email);
   const [phoneNumber, setPhoneNumber] = useState(profile.phone_number);
-  const [street, setStreet] = useState(profile.address?.street || '');
-  const [city, setCity] = useState(profile.address?.city || '');
-  const [state, setState] = useState(profile.address?.state || '');
-  const [zipCode, setZipCode] = useState(profile.address?.zip_code || '');
-  const [password, setPassword] = useState('');
-  const [modifyUserProfile, { loading, error }] = useMutation(MODIFY_USER_PROFILE, {
-    onCompleted: () => alert('Profile updated successfully!'),
-    onError: (err) => alert(`Error updating profile: ${err.message}`),
-  });
+  const [street, setStreet] = useState(profile.address?.street || "");
+  const [city, setCity] = useState(profile.address?.city || "");
+  const [state, setState] = useState(profile.address?.state || "");
+  const [zipCode, setZipCode] = useState(profile.address?.zip_code || "");
+  const [password, setPassword] = useState("");
+
+  const { theme } = useContext(ThemeContext);
+
+  const [modifyUserProfile, { loading, error }] = useMutation(
+    MODIFY_USER_PROFILE,
+    {
+      onCompleted: () => alert("Profile updated successfully!"),
+      onError: (err) => alert(`Error updating profile: ${err.message}`),
+    }
+  );
+
   const handleSubmit = (e) => {
     e.preventDefault();
     modifyUserProfile({
@@ -29,13 +37,14 @@ const ProfileManagement = ({profile}) => {
       },
     });
   };
+
   return (
-    <div className="profile-section">
+    <div className={`user-profile-section ${theme}`}>
       <h2>Profile Management</h2>
-      <div className="profile-avatar">
+      <div className="user-profile-avatar">
         <img src="../assets/img/user.png" alt="Profile Avatar" />
       </div>
-      <form onSubmit={handleSubmit} className="profile-form">
+      <form onSubmit={handleSubmit} className="user-profile-form">
         <input
           type="text"
           placeholder="Username"
@@ -86,11 +95,11 @@ const ProfileManagement = ({profile}) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit" disabled={loading} className="profile-save-button">
+        <button type="submit" disabled={loading} className="user-save-button">
           Save Changes
         </button>
       </form>
-      {error && <p className="error-message">{error.message}</p>}
+      {error && <p className="user-error-message">{error.message}</p>}
     </div>
   );
 };

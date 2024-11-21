@@ -1,100 +1,124 @@
-.profile-section {
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    margin: 20px auto;
+.user-profile-section {
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.user-profile-section h2 {
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.user-profile-avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+}
+
+.user-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.user-profile-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.user-profile-form input {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid;
+  border-radius: 6px;
+  background-color: transparent;
+  color: inherit;
+}
+
+.user-save-button {
+  grid-column: span 2;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 15px;
+}
+
+body[data-theme="light"] .user-profile-section {
+  background-color: white;
+  color: #333;
+}
+
+body[data-theme="light"] .user-profile-form input {
+  border-color: #ddd;
+}
+
+body[data-theme="light"] .user-save-button {
+  background-color: #333a56;
+  color: white;
+}
+
+body[data-theme="dark"] .user-profile-section {
+  background-color: black;
+  color: white;
+}
+
+body[data-theme="dark"] .user-profile-form input {
+  border-color: white;
+}
+
+body[data-theme="dark"] .user-save-button {
+  background-color: white;
+  color: black;
+}
+
+.user-error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+@media (max-width: 1024px) {
+  .user-profile-form {
+    grid-template-columns: 1fr;
+  }
+
+  .user-profile-avatar {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-profile-form {
     display: flex;
     flex-direction: column;
+    gap: 15px;
     align-items: center;
   }
-  
-  .profile-section h2 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .profile-avatar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 120px;
-    height: 120px;
-    margin-bottom: 20px;
-  }
-  
-  .profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  
-  .profile-form {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    width: 100%;
-    max-width: 800px;
-  }
-  
-  .profile-form input {
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-  }
-  
-  .profile-save-button {
-    grid-column: span 2;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #ffffff;
-    background-color: #333a56;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 15px;
-  }
-  
-  .profile-save-button:hover {
-    background-color: #0056b3;
-  }
-  
 
-  @media (max-width: 1024px) {
-    .profile-form {
-      grid-template-columns: 1fr;
-    }
-  
-    .profile-avatar {
-      width: 100px;
-      height: 100px;
-    }
+  .user-profile-form input {
+    width: 100%;
+    max-width: 300px;
   }
-  
 
-  @media (max-width: 768px) {
-    .profile-form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      align-items: center;
-    }
-  
-    .profile-form input {
-      width: 100%;
-      max-width: 300px;
-    }
-  
-    .profile-save-button {
-      width: 100%;
-      max-width: 300px;
-    }
+  .user-save-button {
+    width: 100%;
+    max-width: 300px;
   }
-  
+}
