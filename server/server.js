@@ -1,30 +1,54 @@
-require('dotenv').config(); // Load environment variables first
-
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const connectDB = require('./config/db');
 const resolvers = require('./resolvers/resolvers');
 const typeDefs = require('./schema/schema');
+const availableSlotRoutes = require('./routes/availableSlotRoutes');
+const serviceRoutes = require('./routes/serviceRoutes')
+const bookingRoutes = require('./routes/bookingRoutes');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000; // Use 8000 or another safe port
 
 const startServer = async () => {
-  const app = express();
+    const app = express();
 
-  // Connect to MongoDB
-  connectDB();
+    // Custom CORS Middleware
+    app.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // Allow React frontend
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Specify allowed HTTP methods
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization'); // Specify allowed headers
+      if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }  
+      next();
+    });
 
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-  });
+    // Middleware to parse JSON
+    app.use(express.json());
 
-  await server.start();
-  server.applyMiddleware({ app });
+    // Connect to MongoDB
+    connectDB();
 
-  app.listen({ port: PORT }, () =>
-    console.log(`Server ready at http://localhost:${PORT}${server.graphqlPath}`)
-  );
+    // Initialize Apollo Server with GraphQL schema and resolvers
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+    });
+
+    await server.start();
+    server.applyMiddleware({ app });
+
+    // Available slots API route
+  app.use('/api/slots', availableSlotRoutes);
+  app.use('/api/services', serviceRoutes);
+  app.use('/api/bookings', bookingRoutes); 
+  
+
+
+    // Start the Express server
+    app.listen({ port: PORT }, () => {
+        console.log(`Server ready at http://localhost:${PORT}`);
+    });
 };
 
 startServer();

@@ -1,121 +1,512 @@
-import React from 'react'; 
+import React, { useState, useEffect } from "react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import "../css/providerdashboard.css";
 
-
 const ProviderDashboard = () => {
-  return (
-    <div className="provider-dashboard">
-      <div className="stats-container">
-        <div className="stat-box">
-          <h2>Total Bookings</h2>
-          <p>35</p>
-        </div>
-        <div className="stat-box">
-          <h2>Upcoming Bookings</h2>
-          <p>20</p>
-        </div>
-        <div className="stat-box">
-          <h2>Earnings This Month</h2>
-          <p>20</p>
-        </div>
-        <div className="stat-box">
-          <h2>Total Earnings</h2>
-          <p>2035</p>
-        </div>
-      </div>
+    const [isSlotFormVisible, setSlotFormVisible] = useState(false);
+    const [slots, setSlots] = useState([]); 
+    const [loading, setLoading] = useState(true);
+    const [services, setServices] = useState([]);
+    const [loadingServices, setLoadingServices] = useState(true);
+    const [error, setError] = useState(null);
+    const [bookings, setBookings] = useState([]);
+    const [loadingBookings, setLoadingBookings] = useState(true);
+    const [editingServiceId, setEditingServiceId] = useState(null);
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [editedService, setEditedService] = useState({
+        service_name: "",
+        description: "",
+        pricing: "",
+    });
 
-      <div className="profile-management">
-        <h2>Profile Management</h2>
-        <div className="profile-form">
-          <div className="profile-picture"></div>
-          <div className="profile-inputs">
-            <input type="text" placeholder="Name" />
-            <input type="email" placeholder="Email" />
-            <input type="tel" placeholder="Phone" />
-            <input type="text" placeholder="Address" />
-          </div>
-          <button className="save-button">Save Changes</button>
+    const handleAddSlotClick = () => {
+        setSlotFormVisible(!isSlotFormVisible);
+    };
+
+    useEffect(() => {
+        const fetchSlots = async () => {
+            try {
+                const response = await fetch("http://localhost:8000/api/slots");
+                const data = await response.json();
+                setSlots(data);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching slots:", error);
+                setLoading(false);
+            }
+        };
+        fetchSlots();
+    }, []);
+    const handleDeleteSlot = async (slotId) => {
+        try {
+            const response = await fetch(`/api/slots/${slotId}`, {
+                method: "DELETE",
+            });
+
+            if (response.ok) {
+                setSlots(slots.filter((slot) => slot._id !== slotId));
+            } else {
+                console.error("Failed to delete the slot");
+            }
+        } catch (error) {
+            console.error("Error deleting slot:", error);
+        }
+    };
+    useEffect(() => {
+        const fetchServices = async () => {
+            try {
+                const response = await fetch(
+                    "http://localhost:8000/api/services"
+                );
+                console.log("response", response);
+                if (!response.ok) throw new Error("Failed to fetch services");
+                const data = await response.json();
+                setServices(data);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoadingServices(false);
+            }
+        };
+        fetchServices();
+    }, []);
+    useEffect(() => {
+        const fetchBookings = async () => {
+            try {
+                const response = await fetch(
+                    "http://localhost:8000/api/bookings"
+                );
+                if (!response.ok) throw new Error("Failed to fetch bookings");
+                const data = await response.json();
+                setBookings(data);
+            } catch (error) {
+                console.error("Error fetching bookings:", error);
+            } finally {
+                setLoadingBookings(false);
+            }
+        };
+        fetchBookings();
+    }, []);
+    const handleEditService = (serviceId) => {
+        const serviceToEdit = services.find(
+            (service) => service._id === serviceId
+        );
+        setEditedService({
+            service_name: serviceToEdit.service_name,
+            description: serviceToEdit.description,
+            pricing: serviceToEdit.pricing,
+        });
+        setEditingServiceId(serviceId); 
+    };
+
+    const handleCancelEdit = () => {
+        setEditingServiceId(null); 
+    };
+
+    const handleSaveEdit = async (serviceId) => {
+        try {
+            const updatedService = {
+                service_name: editedService.service_name,
+                description: editedService.description,
+                pricing: editedService.pricing,
+            };
+
+            const response = await fetch(
+                `http://localhost:8000/api/services/${serviceId}`,
+                {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updatedService),
+                }
+            );
+            console.log("serviceID", serviceId);
+
+            if (!response.ok) throw new Error("Failed to update service");
+
+            setServices(
+                services.map((service) =>
+                    service._id === serviceId
+                        ? { ...service, ...updatedService }
+                        : service
+                )
+            );
+            setEditingServiceId(null); 
+        } catch (error) {
+            console.error("Error saving service:", error);
+        }
+    };
+
+    const handleDeleteService = async (serviceId) => {
+        try {
+            const response = await fetch(`/api/services/${serviceId}`, {
+                method: "DELETE",
+            });
+
+            if (response.ok) {
+                setServices(
+                    services.filter((service) => service._id !== serviceId)
+                );
+            } else {
+                console.error("Failed to delete the service");
+            }
+        } catch (error) {
+            console.error("Error deleting service:", error);
+        }
+    };
+
+    const handleViewBooking = (bookingId) => {
+        const bookingToView = bookings.find(
+            (booking) => booking._id === bookingId
+        );
+        setSelectedBooking(bookingToView);
+    };
+
+    return (
+        <div className="provider-dashboard">
+            <Header />
+
+            <div className="stats-container">
+                <div className="stat-box">
+                    <h2>Total Bookings</h2>
+                    <p>35</p>
+                </div>
+                <div className="stat-box">
+                    <h2>Upcoming Bookings</h2>
+                    <p>20</p>
+                </div>
+                <div className="stat-box">
+                    <h2>Earnings This Month</h2>
+                    <p>$200</p>
+                </div>
+                <div className="stat-box">
+                    <h2>Total Earnings</h2>
+                    <p>$2035</p>
+                </div>
+            </div>
+
+            <div className="profile-management">
+                <h2>Profile Management</h2>
+                <div className="profile-form">
+                    <div className="profile-picture">
+                        <img
+                            src="/assets/img/person-profile-icon.png"
+                            alt="Profile"
+                        />
+                    </div>
+                    <div className="profile-inputs">
+                        <input type="text" placeholder="Name" />
+                        <input type="email" placeholder="Email" />
+                        <input type="tel" placeholder="Phone" />
+                        <input type="text" placeholder="Address" />
+                    </div>
+                    <button className="save-button">Save Changes</button>
+                </div>
+            </div>
+
+            <div className="availability-management">
+                <div className="availability-button">
+                    <h2>Availability Management</h2>
+                    <button
+                        className="add-slot-button"
+                        onClick={handleAddSlotClick}
+                    >
+                        Add New Slot
+                    </button>
+                </div>
+
+                {isSlotFormVisible && (
+                    <form className="slot-form">
+                        <input type="date" name="date" />
+                        <input type="time" name="startTime" />
+                        <input type="time" name="endTime" />
+                        <button type="submit" className="submit-slot-button">
+                            Save Slot
+                        </button>
+                    </form>
+                )}
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loading ? (
+                            <tr>
+                                <td colSpan="4">Loading...</td>
+                            </tr>
+                        ) : slots.length > 0 ? (
+                            slots.map((slot) => (
+                                <tr key={slot._id}>
+                                    <td>
+                                        {new Date(
+                                            slot.date
+                                        ).toLocaleDateString()}
+                                    </td>
+                                    <td>
+                                        {new Date(
+                                            slot.start_time
+                                        ).toLocaleTimeString()}
+                                    </td>
+                                    <td>
+                                        {new Date(
+                                            slot.end_time
+                                        ).toLocaleTimeString()}
+                                    </td>
+                                    <td>
+                                        <button className="delete-button"
+                                            onClick=
+                                            {() => handleDeleteSlot(slot._id)}>
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4">No slots available</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            <div className="services-management">
+                <div className="services-button">
+                    <h2>Services Management</h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loadingServices ? (
+                            <tr>
+                                <td colSpan="4">Loading...</td>
+                            </tr>
+                        ) : error ? (
+                            <tr>
+                                <td colSpan="4">{error}</td>
+                            </tr>
+                        ) : services.length > 0 ? (
+                            services.map((service) => (
+                                <tr key={service._id}>
+                                    {editingServiceId === service._id ? (
+                                        <>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    value={
+                                                        editedService.service_name
+                                                    }
+                                                    onChange={(e) =>
+                                                        setEditedService({
+                                                            ...editedService,
+                                                            service_name:
+                                                                e.target.value,
+                                                        })
+                                                    }
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    value={
+                                                        editedService.description
+                                                    }
+                                                    onChange={(e) =>
+                                                        setEditedService({
+                                                            ...editedService,
+                                                            description:
+                                                                e.target.value,
+                                                        })
+                                                    }
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    value={
+                                                        editedService.pricing
+                                                    }
+                                                    onChange={(e) =>
+                                                        setEditedService({
+                                                            ...editedService,
+                                                            pricing:
+                                                                e.target.value,
+                                                        })
+                                                    }
+                                                />
+                                            </td>
+                                            <td>
+                                                <button
+                                                    onClick={() =>
+                                                        handleSaveEdit(
+                                                            service._id
+                                                        )
+                                                    }
+                                                    className="save-button"
+                                                >
+                                                    Save
+                                                </button>
+                                                <button
+                                                    onClick={handleCancelEdit}
+                                                    className="cancel-button"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </td>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <td>{service.service_name}</td>
+                                            <td>{service.description}</td>
+                                            <td>${service.pricing}</td>
+                                            <td>
+                                                <button
+                                                    onClick={() =>
+                                                        handleEditService(
+                                                            service._id
+                                                        )
+                                                    }
+                                                    className="edit-button"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button className="delete-button"
+                                                    onClick=
+                                                    {() =>
+                                                        handleDeleteService(
+                                                            service._id
+                                                        )
+                                                    }>
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </>
+                                    )}
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4">No services available</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Booking History Section */}
+            <div className="booking-history">
+                <h2>Booking History</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Service</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loadingBookings ? (
+                            <tr>
+                                <td colSpan="5">Loading...</td>
+                            </tr>
+                        ) : bookings.length > 0 ? (
+                            bookings.map((booking, index) => (
+                                <tr key={booking._id}>
+                                    <td>{index + 1}</td>
+                                    <td>
+                                        {booking.booking_services.length > 0
+                                            ? booking.booking_services.map(
+                                                  (service, idx) => (
+                                                      <div
+                                                          key={
+                                                              service.service_id
+                                                                  ?._id || idx
+                                                          }
+                                                      >
+                                                          {service.service_id
+                                                              ?.service_name ||
+                                                              "Service Not Available"}
+                                                      </div>
+                                                  )
+                                              )
+                                            : "No Services Available"}
+                                    </td>
+                                    <td>${booking.total_price}</td>
+                                    <td>{booking.status}</td>
+                                    <td>
+                                        <button
+                                            className="view-button"
+                                            onClick={() =>
+                                                handleViewBooking(booking._id)
+                                            }
+                                        >
+                                            View
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="5">No bookings available</td>
+                            </tr>
+                        )}
+                    </tbody>
+                    {/* Booking Details Section */}
+                    {selectedBooking && (
+                        <div className="booking-details">
+                            <h3>Booking Details</h3>
+                            <p>
+                                <strong>Booking ID:</strong>{" "}
+                                {selectedBooking._id}
+                            </p>
+                            <p>
+                                <strong>Status:</strong>{" "}
+                                {selectedBooking.status}
+                            </p>
+                            <p>
+                                <strong>Total Price:</strong> $
+                                {selectedBooking.total_price}
+                            </p>
+                            <h2>Services</h2>
+                            <ul>
+                                {selectedBooking.booking_services.map(
+                                    (service, idx) => (
+                                        <li key={idx}>
+                                            {service.service_id?.service_name ||
+                                                "Service Not Available"}
+                                        </li>
+                                    )
+                                )}
+                            </ul>
+                            <button
+                                className="close-button"
+                                onClick={() => setSelectedBooking(null)}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    )}
+                </table>
+            </div>
+
+            <Footer />
         </div>
-      </div>
-
-          <div className="availability-management">
-              <div className='availability-button'>
-        <h2>Availability Management</h2>
-                  <button className="add-slot-button">Add New Slot</button>
-                  </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Start Time</th>
-              <th>End Time</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Sep 14, 2024</td>
-              <td>09:00 am</td>
-              <td>10:00 am</td>
-              <td><button className="delete-button">Delete</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-          <div className="services-management">
-              <div className="services-button">
-        <h2>Services Management</h2>
-                  <button className="add-service-button">Add New Service</button>
-              </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Service Name</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Pipe Repair</td>
-              <td>Fix damaged or leaking pipes</td>
-              <td>$100</td>
-              <td>
-                <button className="edit-button">Edit</button>
-                <button className="delete-button">Delete</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div className="booking-history">
-        <h2>Booking History</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Booking ID</th>
-              <th>Service</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>#B0310</td>
-              <td>Pipe Repair</td>
-              <td>Sep 14, 2024 01:40 pm</td>
-              <td>Pending</td>
-              <td><button className="view-details-button">View Details</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default ProviderDashboard;
