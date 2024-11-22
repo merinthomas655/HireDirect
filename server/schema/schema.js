@@ -244,6 +244,7 @@ type Payment {
     signup(username: String!, email: String!, password: String!, role: String!): LoginSingupResponse
     availableslot(provider_id: ID!): AvailableSlotResponse
     createPaymentIntent(amount: Int!, booking: BookingInput!): PaymentResponse
+    checkEmailID(email: String!): CheckEmailIdResponse
   }
 
   input AddressInput {
@@ -257,6 +258,11 @@ type Payment {
     latitude: Float
     longitude: Float
     address: String
+  }
+
+  type CheckEmailIdResponse {
+    message: String
+    success: Boolean!
   }
 
   type LoginSingupResponse {

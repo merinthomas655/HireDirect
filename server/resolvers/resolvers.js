@@ -498,6 +498,33 @@ const resolvers = {
         throw new Error("Delete failed");
       }
     },
+
+     // This is Check Email ID Mutation
+     checkEmailID: async (_, { email }) => {
+      try {
+        if (!email || email.trim() === "") {
+          return {
+            message: 'Please ente email ID',
+            success: false,
+          };
+        }
+
+        const user = await User.findOne({ email });
+        if (user) {
+          return {
+            message: "This email ID exist",
+            success: true,
+          };
+        }
+    
+        return {
+          message: 'This email ID does not exit',
+          success: false,
+        };
+      } catch (error) {
+        throw new Error('Internal server error' + error);
+      }
+    },
   },
   
 };
