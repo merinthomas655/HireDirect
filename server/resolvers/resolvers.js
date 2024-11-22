@@ -8,7 +8,7 @@ const Review = require('../models/Review');
 const Service = require('../models/Service');
 const Booking = require('../models/Booking');
 const bcrypt = require('bcrypt');
-const stripe = require('stripe')('sk_test_51QL7z8Kj9iJCHOweCCx4FVhQ70ZxP8qF6pz8qp1dktHVl9YIHnDmD7NCTNuoTnEWuhhNUL6A3V27aDL9wYGhVEIV007KkN3vOA'); 
+const stripe = require('stripe')('sk_test_51QL7z8Kj9iJCHOweCCx4FVhQ70ZxP8qF6pz8qp1dktHVl9YIHnDmD7NCTNuoTnEWuhhNUL6A3V27aDL9wYGhVEIV007KkN3vOA');
 
 const resolvers = {
   Query: {
@@ -153,12 +153,12 @@ const resolvers = {
     getBookingCounts: async (_, { userId }) => {
       try {
 
-        const totalBookings = await Booking.countDocuments({ user_id: userId });  
+        const totalBookings = await Booking.countDocuments({ user_id: userId });
         const upcomingBookings = await Booking.countDocuments({
           user_id: userId,
-          status: 'pending' 
+          status: 'pending'
         });
-        
+
         return {
           totalBookings,
           upcomingBookings
@@ -176,14 +176,14 @@ const resolvers = {
             match: { service_name: { $ne: null } },
           })
           .exec();
-    
-    
+
+
         bookings.forEach((booking) => {
           booking.booking_services = booking.booking_services.filter(
             (service) => service.service_id
           );
         });
-    
+
         return bookings;
       } catch (error) {
         throw new Error('Error fetching booking history: ' + error.message);
@@ -247,11 +247,13 @@ const resolvers = {
           };
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
+        const fixedSalt = '$2b$10$abcdefghijklmnopqrstuv'; 
+        const password_hash = await bcrypt.hash(password, fixedSalt);
+
+        if(password_hash != user.password){
           return {
             user: null,
-            message: 'Invalid Password',
+            message: 'Invalid Password ',
             success: false,
           };
         }
@@ -297,13 +299,15 @@ const resolvers = {
           };
         }
 
-        const password_hash = await bcrypt.hash(password, 10);
+        const fixedSalt = '$2b$10$abcdefghijklmnopqrstuv'; 
+        const password_hash = await bcrypt.hash(password, fixedSalt);
+
         const signupUser = new User({ username, email, password: password_hash, role });
         await signupUser.save();
 
         if (role.toLowerCase() === 'provider') {
           const user_id = signupUser._id;
-          const providerUser = new Provider({ user_id});
+          const providerUser = new Provider({ user_id });
           await providerUser.save();
         }
 
@@ -316,7 +320,6 @@ const resolvers = {
         throw new Error('Internal server error' + error);
       }
     },
-
 
     // This is available slot mutation
     availableslot: async (_, { provider_id }) => {
@@ -369,16 +372,16 @@ const resolvers = {
         if (!user) {
           throw new Error('User not found');
         }
-    
+
         user.username = username || user.username;
         user.email = email || user.email;
         user.phone_number = phone_number || user.phone_number;
         user.address = address || user.address;
-    
+
         if (password) {
           user.password = await bcrypt.hash(password, 10); // Hash the password
         }
-    
+
         const updatedUser = await user.save();
         return updatedUser;
       } catch (error) {
@@ -412,7 +415,7 @@ const resolvers = {
     },
 
 
-    createPaymentIntent: async (_, {amount,booking}) => {
+    createPaymentIntent: async (_, { amount, booking }) => {
       try {
         amount = amount * 100;
         const paymentIntent = await stripe.paymentIntents.create({
@@ -443,11 +446,11 @@ const resolvers = {
             message: error.message,
             success: false
           },
-          message: "Failed to create payment intent"+error,
+          message: "Failed to create payment intent" + error,
           success: false
         };
       }
-    },    
+    },
 
     updateUser: async (_, { id, username, email, role, phone_number, address }) => {
       try {
@@ -476,6 +479,7 @@ const resolvers = {
         throw new Error("Failed to update provider");
       }
     },
+
     deleteProvider: async (_, { id }) => {
       try {
         const deletedProvider = await Provider.findByIdAndDelete(id);
@@ -498,8 +502,84 @@ const resolvers = {
         throw new Error("Delete failed");
       }
     },
+
+    // This is Check Email ID Mutation
+    checkEmailID: async (_, { email }) => {
+      try {
+        if (!email || email.trim() === "") {
+          return {
+            message: 'Please ente email ID',
+            success: false,
+          };
+        }
+
+        const user = await User.findOne({ email });
+        if (user) {
+          return {
+            message: "This email ID exist",
+            success: true,
+          };
+        }
+
+        return {
+          message: 'This email ID does not exit',
+          success: false,
+        };
+      } catch (error) {
+        throw new Error('Internal server error' + error);
+      }
+    },
+
+    // This is forgot password
+    forgotPassword: async (_, { userId, newPassword }) => {
+      try {
+        if (!userId || userId.trim() === "") {
+          return {
+            message: 'Please ente user ID',
+            success: false,
+          };
+        }
+
+        if (!newPassword || newPassword.trim() === "") {
+          return {
+            message: 'Please ente password',
+            success: false,
+          };
+        }
+
+        if (newPassword.length < 7) {
+          return {
+            message: 'Password length shoude be more then 6 digit.',
+            success: false,
+          };
+        }
+
+        // Hash the new password
+        const fixedSalt = '$2b$10$abcdefghijklmnopqrstuv';
+        const password = await bcrypt.hash(newPassword, fixedSalt);
+
+        const updatedUser = await User.findByIdAndUpdate(
+          userId,
+          { password },
+          { new: true }
+        );
+
+        if (!updatedUser) {
+          return {
+            message: "User not found",
+            success: false,
+          };
+        }
+
+        return {
+          message: "Password updated successfully",
+          success: true,
+        };
+      } catch (error) {
+        throw new Error('Internal server error' + error);
+      }
+    },
   },
-  
 };
 
 module.exports = resolvers;
