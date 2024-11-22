@@ -291,6 +291,13 @@ const resolvers = {
           };
         }
 
+        if (password.length < 7) {
+          return {
+            message: 'Password length shoude be more then 6 digit.',
+            success: false,
+          };
+        }
+
         if (!['user', 'provider'].includes(role.toLowerCase())) {
           return {
             user: null,
