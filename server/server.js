@@ -47,7 +47,7 @@ const startServer = async () => {
 
     // Start the Express server
     app.listen({ port: PORT }, () => {
-        console.log(`Server ready at http://localhost:${PORT}`);
+        console.log(`Server ready at http://localhost:${PORT}/graphql`);
     });
 };
 
