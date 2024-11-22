@@ -245,6 +245,7 @@ type Payment {
     availableslot(provider_id: ID!): AvailableSlotResponse
     createPaymentIntent(amount: Int!, booking: BookingInput!): PaymentResponse
     checkEmailID(email: String!): CheckEmailIdResponse
+    forgotPassword(userId: ID!,newPassword: String!): forgotPasswordResponse
   }
 
   input AddressInput {
@@ -261,6 +262,11 @@ type Payment {
   }
 
   type CheckEmailIdResponse {
+    message: String
+    success: Boolean!
+  }
+
+  type forgotPasswordResponse {
     message: String
     success: Boolean!
   }
