@@ -12,19 +12,19 @@ const PORT = process.env.PORT || 8000; // Use 8000 or another safe port
 const startServer = async () => {
     const app = express();
 
-    // // Custom CORS Middleware
-    // app.use((req, res, next) => {
-    //     res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // Allow React frontend
-    //     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Specify allowed HTTP methods
-    //     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization'); // Specify allowed headers
-    //   if (req.method === 'OPTIONS') {
-    //     return res.status(200).end();
-    // }  
-    //   next();
-    // });
+    // Custom CORS Middleware
+    app.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // Allow React frontend
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Specify allowed HTTP methods
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization'); // Specify allowed headers
+      if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }  
+      next();
+    });
 
-    // // Middleware to parse JSON
-    // app.use(express.json());
+    // Middleware to parse JSON
+    app.use(express.json());
 
     // Connect to MongoDB
     connectDB();
