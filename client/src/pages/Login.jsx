@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from '../components/Layout.jsx';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 
 function Login() {
   const navigate = useNavigate();
@@ -12,6 +13,28 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState(''); 
   const [showPassword, setShowPassword] = useState(false);
+  const { transcript,listening, resetTranscript } = useSpeechRecognition();
+  const [isListening, setIsListening] = useState(false);
+
+  function startTextToSpeech() {
+    if(isListening){
+      setIsListening(false);
+      SpeechRecognition.stopListening();
+      setEmail(transcript);
+    }else{
+      setIsListening(true);
+      setEmail("");
+      resetTranscript();
+      SpeechRecognition.startListening({ continuous: true });
+     
+    }
+  }
+
+  useEffect(() => {
+    if (listening) {
+      setEmail(transcript.trim().replace(/\.com\.$/, ".com")); // Automatically update searchInput as the user speaks
+    }
+  }, [transcript, listening]);
 
   const showPasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -97,11 +120,14 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
             />
             <span className="icon">
-              <img
+              {/* <img
                 src="./assets/img/email.png"
                 alt="email"
                 className="img-fluid"
-              />
+              /> */}
+              <button onClick={() => startTextToSpeech()}>
+                {isListening ? "🛑" : "🎤"}
+                </button>
             </span>
           </div>
           <div className="input-group-box password-box">

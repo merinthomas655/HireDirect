@@ -239,7 +239,7 @@ const resolvers = {
           };
         }
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } });
         if (!user) {
           return {
             user: null,
