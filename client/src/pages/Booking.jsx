@@ -53,19 +53,25 @@ function Booking() {
   const [isDialogOpen, setIsDialogOpen] = useState(false); // State to control dialog visibility
 
   const { transcript,listening, resetTranscript } = useSpeechRecognition();
+  const [isListening, setIsListening] = useState(false);
 
   function startTextToSpeech() {
-    setSearchInput("");
-    resetTranscript();
-    SpeechRecognition.startListening({ continuous: true });
-  }
-
-  function stopTextToSpeech() {
-    SpeechRecognition.stopListening();
-    setSearchInput(transcript);
-    if (transcript && transcript.trim() !== "") {
-      handleSearch();
+    if(isListening){
+      
+      setIsListening(false);
+      SpeechRecognition.stopListening();
+      setSearchInput(transcript);
+      if (transcript && transcript.trim() !== "") {
+        handleSearch();
+      }
+    }else{
+      setIsListening(true);
+      setSearchInput("");
+      resetTranscript();
+      SpeechRecognition.startListening({ continuous: true });
+     
     }
+    
   }
 
   useEffect(() => {
@@ -409,10 +415,7 @@ function Booking() {
                 </button>
 
                 <button className="start-voice-button" onClick={() => startTextToSpeech()}>
-                  🎤
-                </button>
-                <button className="stop-voice-button" onClick={()=>stopTextToSpeech()}>
-                  🛑
+                {isListening ? "🛑 Stop Voice Input" : "🎤 Start Voice Input"}
                 </button>
               </div>
 
