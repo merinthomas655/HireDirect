@@ -15,31 +15,33 @@ const resolvers = {
     providers: async (_, { categoryId, location, minRating }) => {
       try {
         const filters = {};
-
+    
         if (categoryId) {
-          filters.category = categoryId; // Adjust based on your schema
+          filters.category = categoryId;
         }
         if (location) {
-          filters['location.address'] = { $regex: location, $options: 'i' }; // Case-insensitive search
+          filters['location.address'] = { $regex: location, $options: 'i' };
         }
         if (minRating) {
           filters.ratings = { $gte: minRating };
         }
-
-        // Populate user and reviews when fetching providers
+    
         const providers = await Provider.find(filters)
-          .populate('user_id') // Ensure user_id is populated
-          .populate('reviews'); // Populate reviews if needed
-
+          .populate('user_id') 
+          .populate('category')
+          .populate('reviews'); 
+    
         return providers;
       } catch (error) {
+        console.error('Error fetching providers:', error);
         throw new Error('Failed to fetch providers: ' + error.message);
       }
     },
+    
 
     users: async () => {
       try {
-        return await User.find(); // Ensure this matches your Mongoose model name
+        return await User.find(); 
       } catch (error) {
         console.error("Error fetching users:", error);
         return null;
@@ -479,14 +481,14 @@ const resolvers = {
           id,
           { bio, location, image, ratings },
           { new: true }
-        ).populate('user_id'); // Populates user details
+        ).populate('user_id'); // Ensure population if required
         return updatedProvider;
       } catch (error) {
         console.error("Error updating provider:", error);
         throw new Error("Failed to update provider");
       }
     },
-
+    
     deleteProvider: async (_, { id }) => {
       try {
         const deletedProvider = await Provider.findByIdAndDelete(id);

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const ProviderSchema = new mongoose.Schema({
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Changed from user to user_id
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' }, 
   bio: { type: String },
   location: { latitude: Number, longitude: Number, address: String },
   ratings: { type: Number, default: 0 },

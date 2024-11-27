@@ -33,6 +33,7 @@ const typeDefs = gql`
     reviews: [Review]
     created_at: String
     updated_at: String
+    category: Category
   }
 
   type Location {

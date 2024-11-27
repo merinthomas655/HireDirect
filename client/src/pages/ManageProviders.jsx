@@ -27,7 +27,7 @@ const ManageProviders = () => {
 
   const handleUpdate = async () => {
     setIsUpdating(true);
-
+  
     // Validate required fields
     if (
       !editProvider.bio ||
@@ -39,19 +39,23 @@ const ManageProviders = () => {
       setIsUpdating(false);
       return;
     }
-
+  
+    // Remove __typename from location
+    const sanitizedLocation = { ...editProvider.location };
+    delete sanitizedLocation.__typename;
+  
     try {
-      await updateProvider({
+      const response = await updateProvider({
         variables: {
           id: editProvider._id,
           bio: editProvider.bio,
-          location: editProvider.location,
+          location: sanitizedLocation, // Use sanitized location
           image: editProvider.image,
           ratings: editProvider.ratings,
         },
       });
-
-      // Update the state
+  
+      console.log("Update response:", response);
       setProviders(providers.map((p) => (p._id === editProvider._id ? editProvider : p)));
       setEditProvider(null);
     } catch (err) {
@@ -60,6 +64,7 @@ const ManageProviders = () => {
       setIsUpdating(false);
     }
   };
+  
 
   const handleDelete = async (id) => {
     setIsDeleting(true);

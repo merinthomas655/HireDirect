@@ -6,20 +6,24 @@ import Layout from '../components/Layout';
 
 // GraphQL queries
 const GET_PROVIDERS = gql`
-  query GetProviders($categoryId: ID, $location: String, $minRating: Float) {
-    providers(categoryId: $categoryId, location: $location, minRating: $minRating) {
+query GetProviders($categoryId: ID, $location: String, $minRating: Float) {
+  providers(categoryId: $categoryId, location: $location, minRating: $minRating) {
+    _id
+    user {
+      username
+    }
+    bio
+    ratings
+    location {
+      address
+    }
+    image
+    category {
       _id
-      user {
-        username
-      }
-      bio
-      ratings
-      location {
-        address
-      }
-      image
+      category_name
     }
   }
+}
 `;
 
 const GET_CATEGORIES = gql`
