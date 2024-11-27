@@ -55,6 +55,7 @@ function Booking() {
   const { transcript,listening, resetTranscript } = useSpeechRecognition();
 
   function startTextToSpeech() {
+    setSearchInput("");
     resetTranscript();
     SpeechRecognition.startListening({ continuous: true });
   }
