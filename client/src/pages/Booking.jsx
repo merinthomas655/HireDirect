@@ -8,6 +8,7 @@ import axios from 'axios';
 import L from 'leaflet';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 
 
 // Highlight location icon
@@ -51,6 +52,27 @@ function Booking() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false); // State to control dialog visibility
 
+  const { transcript,listening, resetTranscript } = useSpeechRecognition();
+
+  function startTextToSpeech() {
+    resetTranscript();
+    SpeechRecognition.startListening({ continuous: true });
+  }
+
+  function stopTextToSpeech() {
+    SpeechRecognition.stopListening();
+    setSearchInput(transcript);
+    if (transcript && transcript.trim() !== "") {
+      handleSearch();
+    }
+  }
+
+  useEffect(() => {
+    if (listening) {
+      setSearchInput(transcript); // Automatically update searchInput as the user speaks
+    }
+  }, [transcript, listening]);
+
   const [formData, setFormData] = useState({
     cardHolderName: '',
     email: '',
@@ -67,7 +89,7 @@ function Booking() {
       setIsDialogOpen(true);
     }
   };
-    const closeDialog = () => setIsDialogOpen(false); // Close dialog
+  const closeDialog = () => setIsDialogOpen(false); // Close dialog
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -106,7 +128,7 @@ function Booking() {
 
     closeDialog();
 
-    handleConfirmBooking();    
+    handleConfirmBooking();
   };
 
   // Fetch available slots in useEffect
@@ -383,6 +405,13 @@ function Booking() {
                 />
                 <button onClick={handleSearch} style={{ padding: '10px 20px' }}>
                   Search
+                </button>
+
+                <button className="start-voice-button" onClick={() => startTextToSpeech()}>
+                  🎤
+                </button>
+                <button className="stop-voice-button" onClick={()=>stopTextToSpeech()}>
+                  🛑
                 </button>
               </div>
 
