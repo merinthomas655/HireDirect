@@ -9,6 +9,7 @@ const Service = require('../models/Service');
 const Booking = require('../models/Booking');
 const bcrypt = require('bcrypt');
 const stripe = require('stripe')('sk_test_51QL7z8Kj9iJCHOweCCx4FVhQ70ZxP8qF6pz8qp1dktHVl9YIHnDmD7NCTNuoTnEWuhhNUL6A3V27aDL9wYGhVEIV007KkN3vOA');
+const Payment = require('../models/Payment');
 
 const resolvers = {
   Query: {
@@ -424,6 +425,8 @@ const resolvers = {
 
     createPaymentIntent: async (_, { amount, booking }) => {
       try {
+        const originalAmount = amount;
+        //Here 100 convert cad amount 
         amount = amount * 100;
         const paymentIntent = await stripe.paymentIntents.create({
           amount,
@@ -431,13 +434,19 @@ const resolvers = {
           automatic_payment_methods: { enabled: true },
         });
 
-        console.log('Booking input:', booking);
-
-
         const newBooking = new Booking({
           ...booking,
         });
-        await newBooking.save();
+        const savedBooking = await newBooking.save();
+
+
+        const newPayment = new Payment({
+          booking_id: savedBooking._id, 
+          amount: originalAmount,
+          payment_method: "Credit Card",
+          payment_status: "paid"
+        });
+        await newPayment.save();
 
         return {
           payment: {
