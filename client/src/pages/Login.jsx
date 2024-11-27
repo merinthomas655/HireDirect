@@ -3,8 +3,6 @@ import Layout from '../components/Layout.jsx';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 
 function Login() {
@@ -107,7 +105,6 @@ function Login() {
 
   return (
     <Layout>
-      <ToastContainer position="top-right" autoClose={2000} />
       <div className="login-signup-container">
         <h2 className="login-text">Login</h2>
         <form onSubmit={handleSubmit}>

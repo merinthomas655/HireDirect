@@ -14,16 +14,14 @@ import EditUsers from "./pages/EditUsers";
 import ManageProviders from "./pages/ManageProviders";
 
 
-
-
 const router = createBrowserRouter([
     {
-        path: "/HomePage",
-        element: <SessionRoute element={<Home />} />, 
+        path:'/',
+        element: <Home />,
     },
     {
-        path:'/',
-        element: <Login />,
+        path:'/HomePage',
+        element: <Home />,
     },
     {
         path:'/login',

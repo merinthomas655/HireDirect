@@ -1,16 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer"; 
 import { useNavigate } from "react-router-dom";
 import ReviewsSection from "../components/ReviewsSection";
 import "../css/home.css";
+import { toast } from 'react-toastify';
 
 const Home = () => {
     const navigate = useNavigate();
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); 
+
 
     const handleSearch = () => {
-        navigate('/services');
+        if(isUserLoggedIn){
+            navigate('/services');
+        }else{
+            toast.error("Please first login")
+        }
     };
+
+    useEffect(() => {
+        const userSession = sessionStorage.getItem("usersession");
+        if (userSession) {
+            setIsUserLoggedIn(true);
+        }   
+    }, []);
 
     const reviews = [
         {
