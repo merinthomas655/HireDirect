@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_PROVIDERS, UPDATE_PROVIDER, DELETE_PROVIDER } from '../graphql/providers';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate
+import { useNavigate } from 'react-router-dom';
+import "../css/adminDashboard.css";
+
 
 const ManageProviders = () => {
   const { loading, error, data } = useQuery(GET_PROVIDERS);
@@ -13,7 +15,7 @@ const ManageProviders = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const navigate = useNavigate();  // Initialize navigate
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     if (data) {

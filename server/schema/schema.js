@@ -44,8 +44,10 @@ const typeDefs = gql`
 
   type Category {
     _id: ID!
-    category_name: String
+    category_name: String!
     description: String
+    created_at: Date
+    updated_at: Date
   }
 
   type Service {
@@ -56,8 +58,12 @@ const typeDefs = gql`
     pricing: Float!
     provider: Provider
     category: Category
+    category_id: ID
     created_at: String
     updated_at: String
+  }
+  type Query {
+    services: [Service]
   }
 
   type Review {
@@ -135,6 +141,7 @@ const typeDefs = gql`
     users: [User]
     user(id: ID!): User
     provider(id: ID!): Provider
+    categories: [Category]
     category(id: ID!): Category
     reviews: [Review]
     review(id: ID!): Review
@@ -288,6 +295,18 @@ type Payment {
    payment: Payment
    message: String
    success: Boolean!
+  }
+
+    type Mutation {
+    updateService(
+      id: ID!
+      service_name: String!
+      description: String!
+      pricing: Float!
+      category_id: ID
+    ): Service
+
+    deleteService(id: ID!): Service
   }
     
 `;

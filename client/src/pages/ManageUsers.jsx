@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { gql, useQuery, useMutation } from '@apollo/client';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
+import "../css/adminDashboard.css";
 
 // GraphQL Queries and Mutations
 const GET_USERS = gql`
@@ -61,7 +62,7 @@ const DELETE_USER = gql`
   }
 `;
 
-const EditUsers = () => {
+const ManageUsers = () => {
   const { loading, error, data } = useQuery(GET_USERS);
   const [updateUser] = useMutation(UPDATE_USER);
   const [deleteUser] = useMutation(DELETE_USER);
@@ -69,7 +70,7 @@ const EditUsers = () => {
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(null);
 
-  const navigate = useNavigate();  // Initialize navigate
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     if (data) {
@@ -272,4 +273,4 @@ const EditUsers = () => {
   );
 };
 
-export default EditUsers;
+export default ManageUsers;

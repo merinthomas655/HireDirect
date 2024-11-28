@@ -10,8 +10,10 @@ import ServicePage from "./pages/ServicePage";
 import BookingConfirmation from "./pages/BookingConfirmation";
 import ProfessionalProfile from "./pages/ProfessionalProfile";
 import AdminDashboard from "./pages/AdminDashboard";
-import EditUsers from "./pages/EditUsers";
+import ManageUsers from "./pages/ManageUsers";
 import ManageProviders from "./pages/ManageProviders";
+import ManageServices from "./pages/ManageServices";
+import ManageCategories from "./pages/ManageCategories";
 
 
 
@@ -63,12 +65,20 @@ const router = createBrowserRouter([
         element: <ProfessionalProfile />,
       },
       {
-        path: '/editusers',
-        element: <EditUsers />,
+        path: '/ManageUsers',
+        element: <ManageUsers />,
       },
       {
-        path: '/manageproviders',
+        path: '/ManageProviders',
         element: <ManageProviders />,
+      },
+      {
+        path: '/ManageServices',
+        element: <ManageServices />,
+      },
+      {
+        path: '/ManageCategories',
+        element: <ManageCategories />,
       }
 ])
 

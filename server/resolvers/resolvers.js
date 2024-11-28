@@ -216,6 +216,16 @@ const resolvers = {
         throw new Error('Error fetching booking with review: ' + error.message);
       }
     },
+    services: async () => {
+      // Populate category details
+      return await Service.find().populate('category_id');
+    },
+    categories: async () => {
+      return await Category.find();
+    },
+    category: async (_, { id }) => {
+      return await Category.findById(id);
+    },
   },
 
   Provider: {
@@ -587,6 +597,62 @@ const resolvers = {
       } catch (error) {
         throw new Error('Internal server error' + error);
       }
+    },
+    updateService: async (_, { id, service_name, description, pricing, category_id }) => {
+      const updatedService = await Service.findByIdAndUpdate(
+        id,
+        { service_name, description, pricing, category_id, updated_at: Date.now() },
+        { new: true }
+      ).populate('category_id');
+      return updatedService;
+    },
+
+    deleteService: async (_, { id }) => {
+      const deletedService = await Service.findByIdAndDelete(id);
+      return deletedService;
+    },
+
+    createCategory: async (_, { category_name, description }) => {
+      const newCategory = new Category({ category_name, description });
+      return await newCategory.save();
+    },
+
+    updateCategory: async (_, { id, category_name, description }) => {
+      const updatedCategory = await Category.findByIdAndUpdate(
+        id,
+        { category_name, description, updated_at: Date.now() },
+        { new: true }
+      );
+      return updatedCategory;
+    },
+
+    deleteCategory: async (_, { id }) => {
+      const deletedCategory = await Category.findByIdAndDelete(id);
+      return deletedCategory;
+    },
+    createCategory: async (_, { category_name, description }) => {
+      const newCategory = new Category({
+        category_name,
+        description,
+      });
+      return await newCategory.save();
+    },
+
+    updateCategory: async (_, { id, category_name, description }) => {
+      return await Category.findByIdAndUpdate(
+        id,
+        { category_name, description, updated_at: Date.now() },
+        { new: true }
+      );
+    },
+
+    deleteCategory: async (_, { id }) => {
+      return await Category.findByIdAndDelete(id);
+    },
+  },
+  Service: {
+    category: async (parent) => {
+      return await Category.findById(parent.category_id);
     },
   },
 };

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_SERVICES, UPDATE_SERVICE, DELETE_SERVICE } from '../graphql/services'; // Assume services GraphQL queries/mutations are defined
+import { GET_SERVICES, UPDATE_SERVICE, DELETE_SERVICE } from '../graphql/services';
 import { useNavigate } from 'react-router-dom';
+import "../css/adminDashboard.css";
+
 
 const ManageServices = () => {
   const { loading, error, data } = useQuery(GET_SERVICES);
@@ -12,9 +14,11 @@ const ManageServices = () => {
   const [editService, setEditService] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
 
+  // Populate services when data is loaded
   useEffect(() => {
     if (data) {
       setServices(data.services);
@@ -27,8 +31,8 @@ const ManageServices = () => {
 
   const handleUpdate = async () => {
     setIsUpdating(true);
+    setErrorMessage('');
 
-    // Validate required fields
     if (!editService.service_name || !editService.description || editService.pricing < 0) {
       alert('Please fill in all required fields with valid data.');
       setIsUpdating(false);
@@ -42,15 +46,14 @@ const ManageServices = () => {
           service_name: editService.service_name,
           description: editService.description,
           pricing: editService.pricing,
-          category_id: editService.category_id,
+          category_id: editService.category._id,
         },
       });
 
-      // Update the state
       setServices(services.map((s) => (s._id === editService._id ? editService : s)));
       setEditService(null);
     } catch (err) {
-      console.error('Update failed:', err);
+      setErrorMessage('Failed to update service. Please try again.');
     } finally {
       setIsUpdating(false);
     }
@@ -58,14 +61,13 @@ const ManageServices = () => {
 
   const handleDelete = async (id) => {
     setIsDeleting(true);
+    setErrorMessage('');
 
     try {
       await deleteService({ variables: { id } });
-
-      // Update the state
       setServices(services.filter((s) => s._id !== id));
     } catch (err) {
-      console.error('Delete failed:', err);
+      setErrorMessage('Failed to delete service. Please try again.');
     } finally {
       setIsDeleting(false);
     }
@@ -82,6 +84,7 @@ const ManageServices = () => {
     <div className="popup-overlay">
       <div className="popup-content">
         <h2>Manage Services</h2>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button onClick={handleClose} className="popup-close-btn">
           Close
         </button>
@@ -146,17 +149,7 @@ const ManageServices = () => {
 
                 {/* Category */}
                 <td>
-                  {editService && editService._id === service._id ? (
-                    <input
-                      type="text"
-                      value={editService.category_id}
-                      onChange={(e) =>
-                        setEditService({ ...editService, category_id: e.target.value })
-                      }
-                    />
-                  ) : (
-                    service.category_id || 'No category assigned'
-                  )}
+                  {service.category ? service.category.category_name : 'No category assigned'}
                 </td>
 
                 {/* Actions */}

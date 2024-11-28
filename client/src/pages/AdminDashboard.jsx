@@ -71,10 +71,10 @@ export default function AdminDashboard() {
   ];
 
   const managementButtons = [
-    { title: "Manage Users", path: "/editusers" },
-    { title: "Manage Providers", path: "/manageproviders" },
-    { title: "Manage Services", path: "#" },
-    { title: "Manage Categories", path: "#" }
+    { title: "Manage Users", path: "/ManageUsers" },
+    { title: "Manage Providers", path: "/ManageProviders" },
+    { title: "Manage Services", path: "/ManageServices" },
+    { title: "Manage Categories", path: "/ManageCategories" }
   ];
 
   const handleButtonClick = (path) => {
