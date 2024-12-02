@@ -39,7 +39,7 @@ function Signup() {
     }
 
     if (password.length < 7) {
-      return setMessage('Password length shoude be more then 6 digit.');
+      return setMessage('Password length should be more then 6 digit.');
     }
 
     if (password !== confirmPassword) {

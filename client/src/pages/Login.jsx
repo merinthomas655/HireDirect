@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from '../components/Layout.jsx';
 import { Link } from "react-router-dom";
 import '../css/loginsignup.css';
@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Loader from '../components/Loader';
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 
 function Login() {
   const navigate = useNavigate(); // Initialize navigate
@@ -19,7 +20,7 @@ function Login() {
 
   const [newPassword, setnewPassword] = useState('');
   const [confirmaPassword, setconfirmaPassword] = useState('');
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -27,14 +28,35 @@ function Login() {
   const [isVerifyOtpDialogOpen, setIsVerifyOtpDialogOpen] = useState(false);
   const [isChangesPasswordDialogOpen, setIsChangesPasswordDialogOpen] = useState(false);
 
+  const [isListening, setIsListening] = useState(false);
+  const { transcript, listening, resetTranscript } = useSpeechRecognition();
+
   const [formData, setFormData] = useState({
     to_name: '',
     to_email: '',
     otp: '',
   });
 
+  function startTextToSpeech() {
+    if (isListening) {
+      setIsListening(false);
+      SpeechRecognition.stopListening();
+      setEmail(transcript);
+    } else {
+      setIsListening(true);
+      setEmail("");
+      resetTranscript();
+      SpeechRecognition.startListening({ continuous: true });
+    }
+  }
+
+  useEffect(() => {
+    if (listening) {
+      setEmail(transcript.trim().replace(/\.com\.$/, ".com")); // Automatically update searchInput as the user speaks
+    }
+  }, [transcript, listening]);
+
   const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
-  let otp;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,7 +86,7 @@ function Login() {
     checkEmailIdExitOrNotForForgotpassword(formData.to_email);
   };
 
-  const checkEmailIdExitOrNotForForgotpassword = async (email) =>{
+  const checkEmailIdExitOrNotForForgotpassword = async (email) => {
     setLoading(true);
 
     try {
@@ -76,7 +98,7 @@ function Login() {
         }
       }
     `;
-    
+
       const response = await fetch('http://localhost:5000/graphql', {
         method: 'POST',
         headers: {
@@ -98,12 +120,12 @@ function Login() {
   }
 
   const sendOTP = () => {
-    otp = generateOtp();
+    const otp = generateOtp();
     const updatedFormData = { ...formData, otp };
 
     try {
       setOtpGenerate(otp);
-      toast.success("OTP sent successfully in your email ID "+otp);
+      toast.success("OTP sent successfully in your email ID " + otp);
       setIsOtpDialogOpen(false);
       setIsVerifyOtpDialogOpen(true)
     } catch (error) {
@@ -113,7 +135,7 @@ function Login() {
 
 
   const UserEnterOPTCheck = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     if (String(otpGenerate) !== String(otptextview)) {
       toast.error("Invalid OTP. Please try again");
@@ -125,8 +147,19 @@ function Login() {
   }
 
   const changesPassword = async (e) => {
-    setIsChangesPasswordDialogOpen(false)
-    toast.success("Password changed successfully");
+    e.preventDefault();
+
+    if (String(newPassword) !== String(confirmaPassword)) {
+      toast.error("Please check your password not match");
+    } else if (newPassword.length < 7) {
+      toast.error('Password length should be more then 6 digit.');
+    }
+    else {
+      setIsChangesPasswordDialogOpen(false)
+      //Here call password changes API
+
+      
+    }
   }
 
   const showPasswordVisibility = () => {
@@ -135,6 +168,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    SpeechRecognition.stopListening();
 
     const validateEmail = (email) => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -214,11 +248,14 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
             />
             <span className="icon">
-              <img
+              {/* <img
                 src="./assets/img/email.png"
                 alt="email"
                 className="img-fluid"
-              />
+              /> */}
+              <button onClick={() => startTextToSpeech()}>
+                {isListening ? "🛑" : "🎤"}
+              </button>
             </span>
           </div>
           <div className="input-group-box password-box">
@@ -361,7 +398,7 @@ function Login() {
           </div>
         )}
 
-<Loader isOpen={loading} />
+        <Loader isOpen={loading} />
 
       </div>
     </Layout>
