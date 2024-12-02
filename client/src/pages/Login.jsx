@@ -15,6 +15,8 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otptextview, setOtpTextView] = useState('');
+  const [otpGenerate, setOtpGenerate] = useState('');
+
   const [newPassword, setnewPassword] = useState('');
   const [confirmaPassword, setconfirmaPassword] = useState('');
   const [loading, setLoading] = useState(false); 
@@ -100,7 +102,8 @@ function Login() {
     const updatedFormData = { ...formData, otp };
 
     try {
-      toast.success("OTP sent successfully in your email ID ");
+      setOtpGenerate(otp);
+      toast.success("OTP sent successfully in your email ID "+otp);
       setIsOtpDialogOpen(false);
       setIsVerifyOtpDialogOpen(true)
     } catch (error) {
@@ -109,13 +112,15 @@ function Login() {
   }
 
 
-  const verifyOtp = async (e) => {
-    if (String(otp) !== String(otptextview)) {
+  const UserEnterOPTCheck = (e) => {
+    e.preventDefault(); 
+
+    if (String(otpGenerate) !== String(otptextview)) {
       toast.error("Invalid OTP. Please try again");
     } else {
       toast.success("OTP verify successfully");
-      // setIsVerifyOtpDialogOpen(false)
-      // setIsChangesPasswordDialogOpen(true)
+      setIsVerifyOtpDialogOpen(false)
+      setIsChangesPasswordDialogOpen(true)
     }
   }
 
@@ -302,7 +307,7 @@ function Login() {
                 &times;
               </button>
               <h2 className="title">Verify OTP</h2>
-              <form onSubmit={verifyOtp}>
+              <form onSubmit={UserEnterOPTCheck}>
                 <input
                   type="text"
                   name="to_name"
