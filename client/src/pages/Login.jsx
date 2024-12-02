@@ -256,6 +256,33 @@ function Login() {
           </div>
         )}
 
+        {isVerifyOtpDialogOpen && (
+          <div className="overlay">
+            <div className="dialog">
+              <button
+                onClick={() => setIsVerifyOtpDialogOpen(false)}
+                className="close-button"
+              >
+                &times;
+              </button>
+              <h2 className="title">Verify OTP</h2>
+              <form onSubmit={verifyOtp}>
+                <input
+                  type="text"
+                  name="to_name"
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter OTP"
+                  required
+                  className="input"
+                />
+                <button type="submit" className="submit-button">
+                  Verify OTP
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
       </div>
     </Layout>
   );
