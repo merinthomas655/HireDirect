@@ -283,6 +283,43 @@ function Login() {
           </div>
         )}
 
+        {isChangesPasswordDialogOpen && (
+          <div className="overlay">
+            <div className="dialog">
+              <button
+                onClick={() => setIsChangesPasswordDialogOpen(false)}
+                className="close-button"
+              >
+                &times;
+              </button>
+              <h2 className="title">Create New Password</h2>
+              <form onSubmit={changesPassword}>
+                <label className="label">Name</label>
+                <input
+                  type="text"
+                  onChange={(e) => setnewPassword(e.target.value)}
+                  placeholder="new password"
+                  required
+                  className="input"
+                />
+
+                <label className="label">Confirm Password</label>
+                <input
+                  type="text"
+                  onChange={(e) => setconfirmaPassword(e.target.value)}
+                  placeholder="Confirm Password"
+                  required
+                  className="input"
+                />
+
+                <button type="submit" className="submit-button">
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
       </div>
     </Layout>
   );
