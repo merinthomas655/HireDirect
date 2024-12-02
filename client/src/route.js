@@ -16,16 +16,14 @@ import ManageServices from "./pages/ManageServices";
 import ManageCategories from "./pages/ManageCategories";
 
 
-
-
 const router = createBrowserRouter([
     {
-        path: "/HomePage",
-        element: <SessionRoute element={<Home />} />, 
+        path:'/',
+        element: <Home />,
     },
     {
-        path:'/',
-        element: <Login />,
+        path:'/HomePage',
+        element: <Home />,
     },
     {
         path:'/login',

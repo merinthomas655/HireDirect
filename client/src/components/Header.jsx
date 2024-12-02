@@ -45,9 +45,11 @@ function Header() {
                     <Link to="/HomePage" onClick={() => setShowSidebar(false)}>
                         Home
                     </Link>
-                    <Link to="/services" onClick={() => setShowSidebar(false)}>
+                    {isLoggedIn &&  (
+                        <Link to="/services" onClick={() => setShowSidebar(false)}>
                         Services
                     </Link>
+                    )}
                     <Link to="/contact" onClick={() => setShowSidebar(false)}>
                         Contact Us
                     </Link>

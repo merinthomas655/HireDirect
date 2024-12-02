@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import Layout from "../components/Layout";
 import "../css/booking.css";
+import "../css/paymentDialog.css";
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import L from 'leaflet';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 
 
 // Highlight location icon
@@ -47,6 +49,94 @@ function Booking() {
   const [bookingServices, setBookingServices] = useState([]); // Make bookingServices stateful
 
   const dropdownRef = useRef(null);
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // State to control dialog visibility
+
+  const { transcript,listening, resetTranscript } = useSpeechRecognition();
+  const [isListening, setIsListening] = useState(false);
+
+  function startTextToSpeech() {
+    if(isListening){
+      
+      setIsListening(false);
+      SpeechRecognition.stopListening();
+      setSearchInput(transcript);
+      if (transcript && transcript.trim() !== "") {
+        handleSearch();
+      }
+    }else{
+      setIsListening(true);
+      setSearchInput("");
+      resetTranscript();
+      SpeechRecognition.startListening({ continuous: true });
+     
+    }
+    
+  }
+
+  useEffect(() => {
+    if (listening) {
+      setSearchInput(transcript); // Automatically update searchInput as the user speaks
+    }
+  }, [transcript, listening]);
+
+  const [formData, setFormData] = useState({
+    cardHolderName: '',
+    email: '',
+    phoneNumber: '',
+    cardNumber: '',
+    cvv: '',
+    expiryDate: '',
+  });
+
+  const openDialog = () => {
+    if (totalAmount <= 0) {
+      alert('Please select provider from list');
+    } else {
+      setIsDialogOpen(true);
+    }
+  };
+  const closeDialog = () => setIsDialogOpen(false); // Close dialog
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const processPayment = (event) => {
+    event.preventDefault();
+    const { cardHolderName, email, phoneNumber, cardNumber, cvv, expiryDate } = formData;
+
+    if (!cardHolderName || !email || !phoneNumber || !cardNumber || !cvv || !expiryDate) {
+      alert('Please fill in all the fields');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      return alert('Please enter a valid email address.');
+    }
+
+    if (phoneNumber.length < 10) {
+      return alert('Please enter a valid phone numebr.');
+    }
+
+    if (cardNumber.length < 16) {
+      return alert('Please enter 16 digit card numebr.');
+    }
+
+    if (cvv.length < 3) {
+      return alert('Please enter 3 digit card CVV numebr.');
+    }
+
+    closeDialog();
+
+    handleConfirmBooking();
+  };
 
   // Fetch available slots in useEffect
   useEffect(() => {
@@ -104,7 +194,7 @@ function Booking() {
     const gstAmount = totalAmount * gstRate;
     const finalAmount = totalAmount + gstAmount;
 
-    if (totalAmount<= 0) {
+    if (totalAmount <= 0) {
       setMessage("Please select provider from list");
       return
     }
@@ -120,7 +210,7 @@ function Booking() {
       return
     }
 
- const query = `
+    const query = `
   mutation {
     createPaymentIntent(
       amount: ${finalAmount},
@@ -158,13 +248,13 @@ function Booking() {
       });
       const result = await response.json();
       if (result.data.createPaymentIntent.success) {
-        navigate(`/bookingconfirmation`, { state: { totalAmount: totalAmount, profilename: providername, gstAmount: gstAmount,finalAmount: finalAmount } });
+        navigate(`/bookingconfirmation`, { state: { totalAmount: totalAmount, profilename: providername, gstAmount: gstAmount, finalAmount: finalAmount } });
 
       } else {
         setMessage(result.data.createPaymentIntent.message);
       }
     } catch (error) {
-      setMessage("Payment failed, please try again."+error);
+      setMessage("Payment failed, please try again." + error);
     }
   };
 
@@ -175,43 +265,43 @@ function Booking() {
 
   // Update selected options by adding/removing the full service object
   const handleOptionChange = (service) => {
-  setSelectedOptions((prev) => {
-    // Check if the service is already selected
-    const isSelected = prev.some((s) => s.service_name === service.service_name);
+    setSelectedOptions((prev) => {
+      // Check if the service is already selected
+      const isSelected = prev.some((s) => s.service_name === service.service_name);
 
-    // Update the bookingServices array
-    setBookingServices((prevBookingServices) => {
-      if (isSelected) {
-        // Remove the service from bookingServices
-        return prevBookingServices.filter((s) => s.service_id !== service._id);
-      } else {
-        // Add the service to bookingServices only if it doesn't already exist
-        const isAlreadyAdded = prevBookingServices.some((s) => s.service_id === service._id);
-        if (!isAlreadyAdded) {
-          return [
-            ...prevBookingServices,
-            {
-              service_id: service._id,
-              slot_id: availableSlot?._id || null, // Use available slot ID if available
-              price: service.pricing || 0, // Add price of the service
-            },
-          ];
+      // Update the bookingServices array
+      setBookingServices((prevBookingServices) => {
+        if (isSelected) {
+          // Remove the service from bookingServices
+          return prevBookingServices.filter((s) => s.service_id !== service._id);
+        } else {
+          // Add the service to bookingServices only if it doesn't already exist
+          const isAlreadyAdded = prevBookingServices.some((s) => s.service_id === service._id);
+          if (!isAlreadyAdded) {
+            return [
+              ...prevBookingServices,
+              {
+                service_id: service._id,
+                slot_id: availableSlot?._id || null, // Use available slot ID if available
+                price: service.pricing || 0, // Add price of the service
+              },
+            ];
+          }
+          return prevBookingServices; // Return unchanged if already exists
         }
-        return prevBookingServices; // Return unchanged if already exists
-      }
+      });
+
+      // Update selected options
+      const updatedSelection = isSelected
+        ? prev.filter((s) => s.service_name !== service.service_name) // Remove if selected
+        : [...prev, service]; // Add if not selected
+
+      updateTotalAmount(updatedSelection); // Update the total amount
+      return updatedSelection;
     });
+  };
 
-    // Update selected options
-    const updatedSelection = isSelected
-      ? prev.filter((s) => s.service_name !== service.service_name) // Remove if selected
-      : [...prev, service]; // Add if not selected
 
-    updateTotalAmount(updatedSelection); // Update the total amount
-    return updatedSelection;
-  });
-};
-
-  
   // const handleOptionChange = (service) => {
   //   setSelectedOptions((prev) => {
   //     const updatedSelection = prev.some((s) => s.service_name === service.service_name)
@@ -323,6 +413,10 @@ function Booking() {
                 <button onClick={handleSearch} style={{ padding: '10px 20px' }}>
                   Search
                 </button>
+
+                <button className="start-voice-button" onClick={() => startTextToSpeech()}>
+                {isListening ? "🛑 Stop Voice Input" : "🎤 Start Voice Input"}
+                </button>
               </div>
 
               {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
@@ -370,9 +464,95 @@ function Booking() {
           </div>
         </div> */}
         <div className="confirm-booking-btn-wrapper">
-          <button className="confirm-booking-btn" onClick={handleConfirmBooking}>Confirm Booking</button>
+          <button className="confirm-booking-btn" onClick={openDialog}>Confirm Booking</button>
         </div>
         {message && <p className="message-text" style={{ color: 'red' }}>{message}</p>}
+
+        {isDialogOpen && (
+          <div className="dialog-overlay">
+            <div className="dialog">
+              <h2>Payment Details</h2>
+              <form onSubmit={processPayment}>
+                <div>
+                  <label htmlFor="cardHolderName">Card Holder Name:</label>
+                  <input
+                    type="text"
+                    id="cardHolderName"
+                    name="cardHolderName"
+                    value={formData.cardHolderName}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email">Email ID:</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phoneNumber">Phone Number:</label>
+                  <input
+                    type="text"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    inputMode="numeric"
+                    maxLength="10"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="cardNumber">Card Number:</label>
+                  <input
+                    type="text"
+                    id="cardNumber"
+                    name="cardNumber"
+                    value={formData.cardNumber}
+                    onChange={handleInputChange}
+                    inputMode="numeric"
+                    maxLength="16"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="cvv">CVV:</label>
+                  <input
+                    type="text"
+                    id="cvv"
+                    name="cvv"
+                    value={formData.cvv}
+                    onChange={handleInputChange}
+                    inputMode="numeric"
+                    maxLength="3"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="expiryDate">Card Expiry Date:</label>
+                  <input
+                    type="month"
+                    id="expiryDate"
+                    name="expiryDate"
+                    value={formData.expiryDate}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <button type="submit">Submit Payment</button>
+                <button type="button" onClick={closeDialog}>Cancel</button>
+              </form>
+
+            </div>
+          </div>
+        )}
+
 
       </div>
     </Layout>

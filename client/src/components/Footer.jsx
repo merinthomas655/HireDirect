@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react"; // Make sure to import useState and useEffect
 import { Link } from "react-router-dom";
-import '../css/footer.css'; 
+import '../css/footer.css';
 import { useNavigate } from 'react-router-dom';
 
 function Footer() {
   const navigate = useNavigate(); // Initialize navigate
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const user = sessionStorage.getItem('usersession');
     if (user) {
-        setIsLoggedIn(true);  // User is already logged in
+      setIsLoggedIn(true);  // User is already logged in
     }
   }, []);
 
@@ -60,13 +60,14 @@ function Footer() {
             <img src="/assets/img/logo.png" alt="logo" className="img-fluid" />
           </div>
           <div className="footer-navigation">
-            {isLoggedIn ? ( 
-              <Link to="/HomePage">Home</Link>
-            ) : (
-              <div> </div> 
-            )}
+            <Link to="/HomePage">Home</Link>
+
             <Link to="/contact">Contact Us</Link>
-            <Link to="/services">Services</Link>
+            {isLoggedIn ? (
+              <Link to="/services">Services</Link>
+            ) : (
+              <div> </div>
+            )}
           </div>
           <p className="fall-text">© Fall 2024 HireDirect</p>
         </section>
