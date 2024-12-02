@@ -7,17 +7,17 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-
+import Loader from '../components/Loader';
 
 function Login() {
   const navigate = useNavigate(); // Initialize navigate
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [otptext, setOtp] = useState('');
+  const [otptextview, setOtpTextView] = useState('');
   const [newPassword, setnewPassword] = useState('');
   const [confirmaPassword, setconfirmaPassword] = useState('');
+  const [loading, setLoading] = useState(false); 
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -59,8 +59,41 @@ function Login() {
       return toast.error('Please enter a valid email address.');
     }
 
-    sendOTP();
+    checkEmailIdExitOrNotForForgotpassword(formData.to_email);
   };
+
+  const checkEmailIdExitOrNotForForgotpassword = async (email) =>{
+    setLoading(true);
+
+    try {
+      const query = `
+      mutation {
+        checkEmailID(email: "${email}") {
+          message
+          success
+        }
+      }
+    `;
+    
+      const response = await fetch('http://localhost:5000/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+      const result = await response.json();
+      if (result.data.checkEmailID.success) {
+        sendOTP();
+      } else {
+        toast.error(result.data.login.message || "Failed!");
+      }
+      setLoading(false);
+    } catch (error) {
+      toast.error("Failed. Please try again.");
+      setLoading(false);
+    }
+  }
 
   const sendOTP = () => {
     otp = generateOtp();
@@ -75,13 +108,14 @@ function Login() {
     }
   }
 
+
   const verifyOtp = async (e) => {
-    if (otp !== otptext) {
+    if (String(otp) !== String(otptextview)) {
       toast.error("Invalid OTP. Please try again");
     } else {
       toast.success("OTP verify successfully");
-      setIsVerifyOtpDialogOpen(false)
-      setIsChangesPasswordDialogOpen(true)
+      // setIsVerifyOtpDialogOpen(false)
+      // setIsChangesPasswordDialogOpen(true)
     }
   }
 
@@ -103,7 +137,7 @@ function Login() {
     };
 
     if (!validateEmail(email)) {
-      setMessage('Please enter a valid email address.');
+      toast.error('Please enter a valid email address.');
       return;
     }
 
@@ -111,6 +145,8 @@ function Login() {
       navigate('/ProviderDashboard');
       return;
     }
+
+    setLoading(true);
 
     const query = `
       mutation {
@@ -136,6 +172,7 @@ function Login() {
         body: JSON.stringify({ query }),
       });
       const result = await response.json();
+      setLoading(false);
       if (result.data.login.success) {
         const userData = {
           _id: result.data.login.user._id,
@@ -146,13 +183,14 @@ function Login() {
 
         sessionStorage.setItem('usersession', JSON.stringify(userData));
 
-        setMessage(result.data.login.message || "Login successful!");
+        toast.success(result.data.login.message || "Login successful!");
         navigate('/HomePage');
       } else {
-        setMessage(result.data.login.message || "Login failed!");
+        toast.error(result.data.login.message || "Login failed!");
       }
     } catch (error) {
-      setMessage("Login failed. Please try again.");
+      setLoading(false);
+      toast.error("Login failed. Please try again.");
     }
   };
 
@@ -208,8 +246,6 @@ function Login() {
             Login
           </button>
         </form>
-
-        {message && <p className="message-text" style={{ color: 'red' }}>{message}</p>}
 
         <Link to="/signup" className="signup-text">
           Don't have an account? Sign Up
@@ -270,7 +306,7 @@ function Login() {
                 <input
                   type="text"
                   name="to_name"
-                  onChange={(e) => setOtp(e.target.value)}
+                  onChange={(e) => setOtpTextView(e.target.value)}
                   placeholder="Enter OTP"
                   required
                   className="input"
@@ -319,6 +355,8 @@ function Login() {
             </div>
           </div>
         )}
+
+<Loader isOpen={loading} />
 
       </div>
     </Layout>
