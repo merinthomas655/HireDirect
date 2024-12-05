@@ -544,6 +544,7 @@ const resolvers = {
         const user = await User.findOne({ email });
         if (user) {
           return {
+            user_id : user._id,
             message: "This email ID exist",
             success: true,
           };

@@ -270,6 +270,7 @@ type Payment {
   }
 
   type CheckEmailIdResponse {
+    user_id: String
     message: String
     success: Boolean!
   }

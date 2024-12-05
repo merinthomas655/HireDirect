@@ -37,6 +37,8 @@ function Login() {
     otp: '',
   });
 
+  let user_id;
+
   function startTextToSpeech() {
     if (isListening) {
       setIsListening(false);
@@ -93,6 +95,7 @@ function Login() {
       const query = `
       mutation {
         checkEmailID(email: "${email}") {
+          user_id
           message
           success
         }
@@ -108,13 +111,14 @@ function Login() {
       });
       const result = await response.json();
       if (result.data.checkEmailID.success) {
+        user_id = result.data.checkEmailID.user_id;
         sendOTP();
       } else {
-        toast.error(result.data.login.message || "Failed!");
+        toast.error(result.data.checkEmailID.message || "Failed!");
       }
       setLoading(false);
     } catch (error) {
-      toast.error("Failed. Please try again.");
+      toast.error("Failed. Please try again."+error);
       setLoading(false);
     }
   }
@@ -156,9 +160,41 @@ function Login() {
     }
     else {
       setIsChangesPasswordDialogOpen(false)
-      //Here call password changes API
+      forgotpasswordAPI();      
+    }
+  }
 
-      
+  
+  const forgotpasswordAPI = async () => {
+    setLoading(true);
+
+    try {
+      const query = `
+      mutation {
+        forgotPassword(userId: "${user_id}",newPassword: "${newPassword}") {
+          message
+          success
+        }
+      }
+    `;
+
+      const response = await fetch('http://localhost:5000/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+      const result = await response.json();
+      if (result.data.forgotPassword.success) {
+        toast.success(result.data.forgotPassword.message || "");
+      } else {
+        toast.error(result.data.forgotPassword.message || "Failed!");
+      }
+      setLoading(false);
+    } catch (error) {
+      toast.error("Failed. Please try again."+error);
+      setLoading(false);
     }
   }
 
