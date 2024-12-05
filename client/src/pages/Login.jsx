@@ -13,6 +13,7 @@ import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognitio
 function Login() {
   const navigate = useNavigate(); // Initialize navigate
 
+  const [userId, setuserId] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otptextview, setOtpTextView] = useState('');
@@ -37,7 +38,6 @@ function Login() {
     otp: '',
   });
 
-  let user_id;
 
   function startTextToSpeech() {
     if (isListening) {
@@ -111,7 +111,7 @@ function Login() {
       });
       const result = await response.json();
       if (result.data.checkEmailID.success) {
-        user_id = result.data.checkEmailID.user_id;
+        setuserId(result.data.checkEmailID.user_id);
         sendOTP();
       } else {
         toast.error(result.data.checkEmailID.message || "Failed!");
@@ -170,12 +170,12 @@ function Login() {
 
     try {
       const query = `
-      mutation {
-        forgotPassword(userId: "${user_id}",newPassword: "${newPassword}") {
-          message
-          success
-        }
-      }
+   mutation {
+    forgotPassword(userId: "${userId}", newPassword: "${newPassword}") {
+      success
+      message
+    }
+  }
     `;
 
       const response = await fetch('http://localhost:5000/graphql', {
@@ -186,11 +186,13 @@ function Login() {
         body: JSON.stringify({ query }),
       });
       const result = await response.json();
-      if (result.data.forgotPassword.success) {
-        toast.success(result.data.forgotPassword.message || "");
-      } else {
-        toast.error(result.data.forgotPassword.message || "Failed!");
-      }
+      console.log(result); // Debug response
+
+    if (result.data && result.data.forgotPassword && result.data.forgotPassword.success) {
+      toast.success(result.data.forgotPassword.message);
+    } else {
+      toast.error(result.data.forgotPassword?.message || "Failed!");
+    }
       setLoading(false);
     } catch (error) {
       toast.error("Failed. Please try again."+error);
