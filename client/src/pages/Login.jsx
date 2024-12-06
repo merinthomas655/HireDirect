@@ -9,6 +9,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Loader from '../components/Loader';
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
+import { callGraphQL, CheckEmailID, UserLogin } from '../graphql/login';
+
 
 function Login() {
   const navigate = useNavigate(); // Initialize navigate
@@ -92,33 +94,17 @@ function Login() {
     setLoading(true);
 
     try {
-      const query = `
-      mutation {
-        checkEmailID(email: "${email}") {
-          user_id
-          message
-          success
-        }
-      }
-    `;
-
-      const response = await fetch('http://localhost:5000/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query }),
-      });
-      const result = await response.json();
-      if (result.data.checkEmailID.success) {
-        setuserId(result.data.checkEmailID.user_id);
+      const variables = { email };
+      const result = await callGraphQL(CheckEmailID, variables);
+      if (result.checkEmailID.success) {
+        setuserId(result.checkEmailID.user_id);
         sendOTP();
       } else {
-        toast.error(result.data.checkEmailID.message || "Failed!");
+        toast.error(result.checkEmailID.message || "Failed!");
       }
       setLoading(false);
     } catch (error) {
-      toast.error("Failed. Please try again."+error);
+      toast.error("Failed. Please try again." + error);
       setLoading(false);
     }
   }
@@ -160,11 +146,11 @@ function Login() {
     }
     else {
       setIsChangesPasswordDialogOpen(false)
-      forgotpasswordAPI();      
+      forgotpasswordAPI();
     }
   }
 
-  
+
   const forgotpasswordAPI = async () => {
     setLoading(true);
 
@@ -176,7 +162,7 @@ function Login() {
       message
     }
   }
-    `;
+  `;
 
       const response = await fetch('http://localhost:5000/graphql', {
         method: 'POST',
@@ -186,16 +172,15 @@ function Login() {
         body: JSON.stringify({ query }),
       });
       const result = await response.json();
-      console.log(result); // Debug response
 
-    if (result.data && result.data.forgotPassword && result.data.forgotPassword.success) {
-      toast.success(result.data.forgotPassword.message);
-    } else {
-      toast.error(result.data.forgotPassword?.message || "Failed!");
-    }
+      if (result.data.forgotPassword.success) {
+        toast.success(result.data.forgotPassword.message);
+      } else {
+        toast.error(result.data.forgotPassword?.message || "Failed!");
+      }
       setLoading(false);
     } catch (error) {
-      toast.error("Failed. Please try again."+error);
+      toast.error("Failed. Please try again." + error);
       setLoading(false);
     }
   }
@@ -225,45 +210,25 @@ function Login() {
 
     setLoading(true);
 
-    const query = `
-      mutation {
-        login(email: "${email}", password: "${password}") {
-          user {
-            _id
-            username
-            email
-            role
-          }
-          message
-          success
-        }
-      }
-    `;
-
     try {
-      const response = await fetch('http://localhost:5000/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query }),
-      });
-      const result = await response.json();
+      const variables = { email, password };
+      const result = await callGraphQL(UserLogin, variables);
+
       setLoading(false);
-      if (result.data.login.success) {
+      if (result.login.success) {
         const userData = {
-          _id: result.data.login.user._id,
-          username: result.data.login.user.username,
-          email: result.data.login.user.email,
-          role: result.data.login.user.role,
+          _id: result.login.user._id,
+          username: result.login.user.username,
+          email: result.login.user.email,
+          role: result.login.user.role,
         };
 
         sessionStorage.setItem('usersession', JSON.stringify(userData));
 
-        toast.success(result.data.login.message || "Login successful!");
+        toast.success(result.login.message || "Login successful!");
         navigate('/HomePage');
       } else {
-        toast.error(result.data.login.message || "Login failed!");
+        toast.error(result.login.message || "Login failed!");
       }
     } catch (error) {
       setLoading(false);
