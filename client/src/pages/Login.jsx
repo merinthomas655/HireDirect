@@ -9,8 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Loader from '../components/Loader';
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
-import { callGraphQL, CheckEmailID, UserLogin } from '../graphql/login';
-
+import emailjs from '@emailjs/browser';
 
 function Login() {
   const navigate = useNavigate(); // Initialize navigate
@@ -94,13 +93,32 @@ function Login() {
     setLoading(true);
 
     try {
-      const variables = { email };
-      const result = await callGraphQL(CheckEmailID, variables);
-      if (result.checkEmailID.success) {
-        setuserId(result.checkEmailID.user_id);
+      const query = `
+      mutation {
+       checkEmailID(email: "${email}") {
+         user_id
+         success
+         message
+       }
+     }
+     `;
+
+     const response = await fetch('http://localhost:5000/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+    });
+    const result = await response.json();
+
+      if (result.data.checkEmailID.success) {
+        setuserId(result.data.checkEmailID.user_id);
+        toast.error(result.data.checkEmailID.user_id || "Failed!");
+
         sendOTP();
       } else {
-        toast.error(result.checkEmailID.message || "Failed!");
+        toast.error(result.data.checkEmailID.message || "Failed!");
       }
       setLoading(false);
     } catch (error) {
@@ -109,15 +127,26 @@ function Login() {
     }
   }
 
-  const sendOTP = () => {
+  const sendOTP = async () => {
     const otp = generateOtp();
     const updatedFormData = { ...formData, otp };
 
     try {
-      setOtpGenerate(otp);
-      toast.success("OTP sent successfully in your email ID " + otp);
-      setIsOtpDialogOpen(false);
-      setIsVerifyOtpDialogOpen(true)
+      const response = await emailjs.send(
+        'service_6xe7jwq',
+        'template_37k24z9',
+        updatedFormData,
+        'L_VRdVUB373P1fMgx'
+      );
+
+      if (response.status === 200) {
+        setOtpGenerate(otp);
+        toast.success("OTP sent successfully to your email ID: ");
+        setIsOtpDialogOpen(false);
+        setIsVerifyOtpDialogOpen(true);
+      } else {
+        toast.error('Failed to send OTP. Response status: ' + response.status);
+      }
     } catch (error) {
       toast.error('Failed to send OTP. Please try again.' + error.text);
     }
@@ -211,24 +240,46 @@ function Login() {
     setLoading(true);
 
     try {
-      const variables = { email, password };
-      const result = await callGraphQL(UserLogin, variables);
+      const query = `
+      mutation {
+        login(email: "${email}", password: "${password}") {
+          user {
+            _id
+            username
+            email
+            role
+          }
+          message
+          success
+        }
+      }
+    `;
+
+      const response = await fetch('http://localhost:5000/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+      const result = await response.json();
 
       setLoading(false);
-      if (result.login.success) {
+
+      if (result.data.login.success) {
         const userData = {
-          _id: result.login.user._id,
-          username: result.login.user.username,
-          email: result.login.user.email,
-          role: result.login.user.role,
+          _id: result.data.login.user._id,
+          username: result.data.login.user.username,
+          email: result.data.login.user.email,
+          role: result.data.login.user.role,
         };
 
         sessionStorage.setItem('usersession', JSON.stringify(userData));
 
-        toast.success(result.login.message || "Login successful!");
+        toast.success(result.data.login.message || "Login successful!");
         navigate('/HomePage');
       } else {
-        toast.error(result.login.message || "Login failed!");
+        toast.error(result.data.login.message || "Login failed!");
       }
     } catch (error) {
       setLoading(false);
