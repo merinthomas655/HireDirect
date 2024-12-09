@@ -61,7 +61,7 @@ function Footer() {
           </div>
           <div className="footer-navigation">
             <Link to="/HomePage">Home</Link>
-
+            <Link to="/aboutus">About Us</Link>
             <Link to="/contact">Contact Us</Link>
             {isLoggedIn ? (
               <Link to="/services">Services</Link>
