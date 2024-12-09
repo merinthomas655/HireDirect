@@ -50,6 +50,9 @@ function Header() {
                         Services
                     </Link>
                     )}
+                    <Link to="/aboutus" onClick={() => setShowSidebar(false)}>
+                        About Us
+                    </Link>
                     <Link to="/contact" onClick={() => setShowSidebar(false)}>
                         Contact Us
                     </Link>
@@ -97,6 +100,9 @@ function Header() {
                     <div className="sidebar-nav-link">
                         <Link to="/" onClick={() => setShowSidebar(false)}>
                             Home
+                        </Link>
+                        <Link to="/aboutus" onClick={() => setShowSidebar(false)}>
+                            About Us
                         </Link>
                         <Link
                             to="/services"
