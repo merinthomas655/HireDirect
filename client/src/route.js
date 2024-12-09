@@ -14,6 +14,8 @@ import ManageUsers from "./pages/ManageUsers";
 import ManageProviders from "./pages/ManageProviders";
 import ManageServices from "./pages/ManageServices";
 import ManageCategories from "./pages/ManageCategories";
+import ContactUs from "./pages/ContactUs";
+import AboutUs from "./pages/AboutUs";
 
 
 const router = createBrowserRouter([
@@ -24,6 +26,14 @@ const router = createBrowserRouter([
     {
         path:'/HomePage',
         element: <Home />,
+    },
+    {
+        path:'/contact',
+        element: <ContactUs />,
+    },
+    {
+        path:'/aboutus',
+        element: <AboutUs />,
     },
     {
         path:'/login',
