@@ -7,7 +7,7 @@ const availableSlotRoutes = require('./routes/availableSlotRoutes');
 const serviceRoutes = require('./routes/serviceRoutes')
 const bookingRoutes = require('./routes/bookingRoutes');
 
-const PORT = process.env.PORT || 8000; // Use 8000 or another safe port
+const PORT = process.env.PORT || 5000; // Use 5000 or another safe port
 
 const startServer = async () => {
     const app = express();
