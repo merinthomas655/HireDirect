@@ -114,8 +114,6 @@ function Login() {
 
       if (result.data.checkEmailID.success) {
         setuserId(result.data.checkEmailID.user_id);
-        toast.error(result.data.checkEmailID.user_id || "Failed!");
-
         sendOTP();
       } else {
         toast.error(result.data.checkEmailID.message || "Failed!");
